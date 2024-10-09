@@ -1,0 +1,13 @@
+version: '3'
+services:
+  truthy-mongodb:
+    image: mongo
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_DATABASE=truthy_db
+
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'

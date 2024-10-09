@@ -1,42 +1,11 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "incremental": true,
-    "jsx": "preserve",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
     "paths": {
-      "react": ["./node_modules/@types/react"],
-    }
+      "app/*": ["./packages/app/*"]
+    },
+    "jsx": "react-jsx"
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "ts-node": {
-    "transpileOnly": true,
-    "swc": true
-  }
+  "extends": "expo/tsconfig.base"
 }

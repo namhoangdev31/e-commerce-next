@@ -1,329 +1,167 @@
-# Payload E-Commerce Template
+# Solito + NativeWind Example Monorepo 🕴
 
-This is the official [Payload E-Commerce Template](https://github.com/payloadcms/payload/blob/main/templates/ecommerce). Use it to power e-commerce businesses and online stores of all sizes. This repo includes a fully-working backend, enterprise-grade admin panel, and a beautifully designed, production-ready website.
-
-This template is right for you if you are selling:
-
-- Physical products like clothing or merchandise
-- Digital assets like ebooks or videos
-- Access to content like courses or premium articles
-
-Core features:
-
-- [Pre-configured Payload Config](#how-it-works)
-- [Authentication](#users-authentication)
-- [Access Control](#access-control)
-- [Shopping Cart](#shopping-cart)
-- [Checkout](#checkout)
-- [Paywall](#paywall)
-- [Layout Builder](#layout-builder)
-- [SEO](#seo)
-- [Website](#website)
-
-## Quick Start
-
-To spin up this example locally, follow these steps:
-
-### Clone
-
-If you have not done so already, you need to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
-
-#### Method 1 (recommended)
-
-  Go to Payload Cloud and [clone this template](https://payloadcms.com/new/clone/ecommerce). This will create a new repository on your GitHub account with this template's code which you can then clone to your own machine.
-
-#### Method 2
-
-  Use the `create-payload-app` CLI to clone this template directly to your machine:
-
-    npx create-payload-app@latest my-project -t ecommerce
-
-#### Method 3
-
-  Use the `git` CLI to clone this template directly to your machine:
-
-    git clone -n --depth=1 --filter=tree:0 https://github.com/payloadcms/payload my-project && cd my-project && git sparse-checkout set --no-cone templates/ecommerce && git checkout && rm -rf .git && git init && git add . && git mv -f templates/ecommerce/{.,}* . && git add . && git commit -m "Initial commit"
-
-### Development
-
-1. First [clone the repo](#clone) if you have not done so already
-1. `cd my-project && cp .env.example .env` to copy the example environment variables
-1. `yarn && yarn dev` to install dependencies and start the dev server
-1. `open http://localhost:3000` to open the app in your browser
-
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. To begin accepting payment, follow the [Stripe](#stripe) guide. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
-
-## How it works
-
-The Payload config is tailored specifically to the needs of most e-commerce businesses. It is pre-configured in the following ways:
-
-### Collections
-
-See the [Collections](https://payloadcms.com/docs/configuration/collections)  docs for details on how to extend this functionality.
-
-- #### Users (Authentication)
-
-  Users are auth-enabled and encompass both admins and customers based on the value of their `roles` field. Only `admin` users can access your admin panel to manage your store whereas `customer` can authenticate on your front-end to create [shopping carts](#shopping-cart) and place [orders](#orders) but have limited access to the platform. See [Access Control](#access-control) for more details.
-
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
-
-- #### Products
-
-  Products are linked to Stripe via a custom select field that is dynamically populated in the sidebar of each product. This field fetches all available products in the background and displays them as options. Once a product has been selected, prices get automatically synced between Stripe and Payload through [Payload Hooks](https://payloadcms.com/docs/hooks) and [Stripe Webhooks](https://stripe.com/docs/webhooks). See [Stripe](#stripe) for more details.
-
-  All products are layout builder enabled so you can generate unique pages for each product using layout building blocks, see [Layout Builder](#layout-builder) for more details.
-
-  Products can also restrict access to content or digital assets behind a paywall (gated content), see [Paywall](#paywall) for more details.
-
-- #### Orders
-
-  Orders are created when a user successfully completes a checkout. They contain all the data about the order including the products purchased, the total price, and the user who placed the order. See [Checkout](#checkout) for more details.
-
-- #### Pages
-
-  All pages are layout builder enabled so you can generate unique layouts for each page using layout-building blocks, see [Layout Builder](#layout-builder) for more details.
-
-- #### Media
-
-  This is the uploads enabled collection used by products and pages to contain media like images, videos, downloads, and other assets.
-
-- #### Categories
-
-  A taxonomy used to group products together. Categories can be nested inside of one another, for example "Courses > Technology". See the official [Payload Nested Docs Plugin](https://github.com/payloadcms/plugin-nested-docs) for more details.
-
-### Globals
-
-See the [Globals](https://payloadcms.com/docs/configuration/globals) docs for details on how to extend this functionality.
-
-- `Header`
-
-  The data required by the header on your front-end like nav links.
-
-- `Footer`
-
-  Same as above but for the footer of your site.
-
-## Access control
-
-Basic role-based access control is setup to determine what users can and cannot do based on their roles, which are:
-
-- `admin`: They can access the Payload admin panel to manage your store. They can see all data and make all operations.
-- `customer`: They cannot access the Payload admin panel and can perform limited operations based on their user (see below).
-
-This applies to each collection in the following ways:
-
-- `users`: Only admins and the user themselves can access their profile. Anyone can create a user but only admins can delete users.
-- `products`: Everyone can access products, but only admins can create, update, or delete them. Paywall-enabled products may also have content that is only accessible to only users who have purchased the product. See [Paywall](#paywall) for more details.
-
-For more details on how to extend this functionality, see the [Payload Access Control](https://payloadcms.com/docs/access-control/overview#access-control) docs.
-
-## Shopping cart
-
-Logged-in users can have their shopping carts saved to their profiles as they shop. This way they can continue shopping at a later date or on another device. When not logged in, the cart can be saved to local storage and synced to Payload on the next login. This works by maintaining a `cart` field on the `user`:
-
-```ts
-{
-  name: 'cart',
-  label: 'Shopping Cart',
-  type: 'object',
-  fields: [
-    {
-      name: 'items',
-      label: 'Items',
-      type: 'array',
-      fields: [
-        // product, quantity, etc
-      ]
-    },
-    // other metadata like `createdOn`, etc
-  ]
-}
+```sh
+npx create-solito-app@latest my-solito-app -t with-tailwind
 ```
 
-## Stripe
+And just like that, you now have an Expo + Next.js app that is styled with Tailwind CSS.
 
-Payload itself handles no currency exchange. All payments are processed and billed using [Stripe](https://stripe.com). This means you must have access to a Stripe account via an API key, see [Connect Stripe](#connect-stripe) for how to get one. When you create a product in Payload that you wish to sell, it must be connected to a Stripe product by selecting one from the field in the product's sidebar, see [Products](#products) for more details. Once set, data is automatically synced between the two platforms in the following ways:
+## ⚡️ Instantly clone & deploy
 
-1. Stripe to Payload using [Stripe Webhooks](https://stripe.com/docs/webhooks):
-   - `product.created`
-   - `product.updated`
-   - `price.updated`
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fnandorojo%2Fsolito%2Ftree%2Fmaster%2Fexample-monorepos%2Fwith-tailwind&root-directory=apps/next&envDescription=Set%20this%20environment%20variable%20to%201%20for%20Turborepo%20to%20cache%20your%20node_modules.&envLink=https%3A%2F%2Ftwitter.com%2Fjaredpalmer%2Fstatus%2F1488954563533189124&project-name=solito-app&repo-name=solito-app&demo-title=Solito%20App%20%E2%9A%A1%EF%B8%8F&demo-description=React%20Native%20%2B%20Next.js%20starter%20with%20Solito.%20Made%20by%20Fernando%20Rojo.&demo-url=https%3A%2F%2Fsolito.dev%2Fstarter&demo-image=https%3A%2F%2Fsolito.dev%2Fimg%2Fog.png&build-command=cd+..%2F..%3Bnpx+turbo+run+build+--filter%3Dnext-app)
 
-1. Payload to Stripe using [Payload Hooks](https://payloadcms.com/docs/hooks/overview):
-   - `user.create`
+## 🔦 About
 
-For more details on how to extend this functionality, see the the official [Payload Stripe Plugin](https://github.com/payloadcms/plugin-stripe).
+This monorepo is a starter for an Expo + Next.js app using [NativeWind](https://nativewind.dev) for its styling & [Solito](https://solito.dev) for navigation.
 
-### Connect Stripe
+## 👓 How NativeWind works with Solito
 
-To integrate with Stripe, follow these steps:
+### Fast on every platform
 
-1. You will first need to create a [Stripe](https://stripe.com) account if you do not already have one.
-1. Retrieve your [Stripe API keys](https://dashboard.stripe.com/test/apikeys) and paste them into your `env`:
-   ```bash
-   STRIPE_SECRET_KEY=
-   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
-   ```
-1. In another terminal, listen for webhooks (optional):
-   ```bash
-   stripe login # follow the prompts
-   yarn stripe:webhooks
-   ```
-1. Paste the given webhook signing secret into your `env`:
-   ```bash
-   STRIPE_WEBHOOKS_SIGNING_SECRET=
-   ```
-1. Reboot Payload to ensure that Stripe connects and the webhooks are registered.
+NativeWind lets you use Tailwind while reducing runtime work on every platform.
 
-## Checkout
+### iOS and Android
 
-A custom endpoint is opened at `POST /api/create-payment-intent` which initiates the checkout process. This endpoint totals your cart and creates a [Stripe Payment Intent](https://stripe.com/docs/payments/payment-intents). The total price is recalculated on the server to ensure accuracy and security, and once completed, passes the `client_secret` back in the response for your front-end to finalize the payment. Once the payment has succeeded, an [Order](#orders) will be created in Payload with a `stripePaymentIntentID`. Each purchased product will be recorded to the user's profile, and the user's cart will be automatically cleared.
-
-## Paywall
-
-Products can optionally restrict access to content or digital assets behind a paywall. This will require the product to be purchased before it's data and resources are accessible. To do this, a `purchases` field is maintained on each user to track their purchase history:
+Most approaches to using Tailwind in React Native do something like this at runtime:
 
 ```ts
-{
-  name: 'purchases',
-  label: 'Purchases',
-  type: 'array',
-  fields: [
-    {
-      name: 'product',
-      label: 'Product',
-      type: 'relationship',
-      relationTo: 'products',
-    },
-    // other metadata like `createdOn`, etc
-  ]
-}
+const styles = props.className
+  .split(' ')
+  .map((className) => makeStyle(className))
+
+return <View style={styles} />
 ```
 
-Then, a `paywall` field is added to the `product` with `read` access control set to check for associated purchases. Every time a user requests a product, this will only return data to those who have purchased it:
+This means that every component ends up parsing strings to construct predictable style objects.
 
-```ts
-{
-  name: 'paywall',
-  label: 'Paywall',
-  type: 'blocks',
-  access: {
-    read: checkUserPurchases,
-  },
-  fields: [
-    // assets
-  ]
-}
+NativeWind takes a new approach by doing this work upfront with a Babel plugin.
+
+NativeWind turns `className` strings into cached `StyleSheet.create` objects at build time, avoiding the [slow string parsing problem](https://twitter.com/terrysahaidak/status/1470735820915150850?s=20&t=w9VUPwiTFxBkRBHWTtDz1g) of libraries like `styled-components/native`.
+
+Keep in mind that the Babel plugin will get used on iOS/Android only; on Web, we don't need the plugin since we are using `className`.
+
+### Web
+
+On Web, NativeWind uses Next.js' `PostCSS` feature to output CSS StyleSheets.
+
+Which means that **on Web, you're using CSS class names.**
+
+Yes, that's right. We aren't parsing className strings into objects for React Native Web to use. Instead, we're actually forwarding CSS classnames to the DOM. That means you can get responsive styles, dark mode support, & pseudo-selectors _with server-side rendering support_.
+
+This is finally possible with the release of React Native Web 0.18.
+
+As a result, using NativeWind with React Native doesn't have significant overhead compared to plain old Tailwind CSS in a regular React app.
+
+If you're planning on making a website with Tailwind, why not use Solito with NativeWind?
+
+You might accidentally make a great native app when you thought you were just making a website.
+
+### Bringing it together
+
+Components are written using the `styled()` higher-order component.
+
+In your app's design system, you can start by building your own UI primitives:
+
+```tsx
+// packages/app/design/typography
+import { Text } from 'react-native'
+import { styled } from 'nativewind'
+
+export const P = styled(Text, 'text-base text-black my-4')
 ```
 
-## Layout Builder
+Notice that you can set base styles using the second argument of `styled`.
 
-Create unique product and page layouts for any type fo content using a powerful layout builder. This template comes pre-configured with the following layout building blocks:
+You can then use the `className` prop, just like regular Tailwind CSS:
 
-- Hero
-- Content
-- Media
-- Call To Action
-- Archive
+```tsx
+<P className="dark:text-white">Solito + NativeWind</P>
+```
 
-Each block is fully designed and built into the front-end website that comes with this template. See [Website](#website) for more details.
+Take a look at the [`packages/app/design`](https://github.com/nandorojo/solito/tree/master/example-monorepos/with-tailwind/packages/app/design) folder to see how components are created with ease.
 
-## Draft Preview
+> If you're reading the NativeWind docs, you might find that you can use `className` directly without using `styled`. Since this requires the Babel plugin for all platforms, it won't work with Solito. Be sure to always wrap your components with `styled`.
 
-All pages and products are draft-enabled so you can preview them before publishing them to your website. To do this, these collections use [Versions](https://payloadcms.com/docs/configuration/collections#versions) with `drafts` set to `true`. This means that when you create a new page or product, it will be saved as a draft and will not be visible on your website until you publish it. This also means that you can preview your draft before publishing it to your website. To do this, we automatically format a custom URL which redirects to your front-end to securely fetch the draft version of your content.
+## 📦 Included packages
 
-Since the front-end of this template is statically generated, this also means that pages and products will need to be regenerated as changes are made to published documents. To do this, we use an `afterChange` hook to regenerate the front-end when a document has changed and its `_status` is `published`.
+- `solito` for cross-platform navigation
+- `moti` for animations
+- `nativewind` for theming/design (you can bring your own, too)
+- Expo SDK 49
+- Next.js 13
+- Expo Router 2
 
-For more details on how to extend this functionality, see the official [Draft Preview Example](https://github.com/payloadcms/payload/tree/main/examples/draft-preview).
+## 🗂 Folder layout
 
-## SEO
+- `apps` entry points for each app
 
-This template comes pre-configured with the official [Payload SEO Plugin](https://github.com/payloadcms/plugin-seo) for complete SEO control from the admin panel. All SEO data is fully integrated into the front-end website that comes with this template. See [Website](#website) for more details.
+   - `expo`
+    - `app` you'll be creating files inside of `apps/expo/app` to use file system routing on iOS and Android.
+  - `next`
 
-## Redirects
+- `packages` shared packages across apps
+  - `app` you'll be importing most files from `app/`
+    - `features` (don't use a `screens` folder. organize by feature.)
+    - `provider` (all the providers that wrap the app, and some no-ops for Web.)
+    - `design` your app's design system. organize this as you please.
+      - `typography` (components for all the different text styles)
+      - `layout` (components for layouts)
 
-If you are migrating an existing site or moving content to a new URL, you can use the `redirects` collection to create a proper redirect from old URLs to new ones. This will ensure that proper request status codes are returned to search engines and that your users are not left with a broken link. This template comes pre-configured with the official [Payload Redirects Plugin](https://github.com/payloadcms/plugin-redirects) for complete redirect control from the admin panel. All redirects are fully integrated into the front-end website that comes with this template. See [Website](#website) for more details.
+You can add other folders inside of `packages/` if you know what you're doing and have a good reason to.
 
-## Website
+## 🏁 Start the app
 
-This template includes a beautifully designed, production-ready front-end built with the [Next.js App Router](https://nextjs.org), served right alongside your Payload app in a single Express server. This makes is so that you can deploy both apps simultaneously and host them together. If you prefer a different front-end framework, this pattern works for any framework that supports a custom server. If you prefer to host your website separately from Payload, you can easily [Eject](#eject) the front-end out from this template to swap in your own, or to use it as a standalone CMS. For more details, see the official [Custom Server Example](https://github.com/payloadcms/payload/tree/main/examples/custom-server).
+- Install dependencies: `yarn`
 
-Core features:
+- Next.js local dev: `yarn web`
+  - Runs `yarn next`
+- Expo local dev:
+  - First, build a dev client onto your device or simulator
+    - `cd apps/expo`
+    - Then, either `expo run:ios`, or `eas build`
+  - After building the dev client, from the root of the monorepo...
+    - `yarn native` (This runs `expo start --dev-client`)
 
-- [Next.js App Router](https://nextjs.org)
-- [Stripe](https://stripe.com)
-- [GraphQL](https://graphql.org)
-- [TypeScript](https://www.typescriptlang.org)
-- [React Hook Form](https://react-hook-form.com)
-- [Payload Admin Bar](https://github.com/payloadcms/payload-admin-bar)
-- Authentication
-- Publication workflow
-- Shopping cart
-- Checkout
-- Customer accounts
-- Dark mode
-- Pre-made layout building blocks
-- SEO
-- Redirects
-- Paywall
+## 🆕 Add new dependencies
 
-### Cache
+### Pure JS dependencies
 
-Although Next.js includes a robust set of caching strategies out of the box, Payload Cloud proxies and caches all files through Cloudflare using the [Official Cloud Plugin](https://github.com/payloadcms/plugin-cloud). This means that Next.js caching is not needed and is disabled by default. If you are hosting your app outside of Payload Cloud, you can easily reenable the Next.js caching mechanisms by removing the `no-store` directive from all fetch requests in `./src/app/_api` and then removing all instances of `export const dynamic = 'force-dynamic'` from pages files, such as `./src/app/(pages)/[slug]/page.tsx`. For more details, see the official [Next.js Caching Docs](https://nextjs.org/docs/app/building-your-application/caching).
+If you're installing a JavaScript-only dependency that will be used across platforms, install it in `packages/app`:
 
-### Eject
+```sh
+cd packages/app
+yarn add date-fns
+cd ../..
+yarn
+```
 
-If you prefer another front-end framework or would like to use Payload as a standalone CMS, you can easily eject the front-end from this template. To eject, simply run `yarn eject`. This will uninstall all Next.js related dependencies and delete all files and folders related to the Next.js front-end. It also removes all custom routing from your `server.ts` file and updates your `eslintrc.js`.
+### Native dependencies
 
-> Note: Your eject script may not work as expected if you've made significant modifications to your project. If you run into any issues, compare your project's dependencies and file structure with this template. See [./src/eject](./src/eject) for full details.
+If you're installing a library with any native code, you must install it in `apps/expo`:
 
-For more details on how setup a custom server, see the official [Custom Server Example](https://github.com/payloadcms/payload/tree/main/examples/custom-server).
+```sh
+cd apps/expo
+yarn add react-native-reanimated
 
-##  Development
+cd ../..
+yarn
+```
 
-To spin up this example locally, follow the [Quick Start](#quick-start). Then [Connect Stripe](#connect-stripe) to enable payments, and [Seed](#seed) the database with a few products and pages.
+You can also install the native library inside of `packages/app` if you want to get autoimport for that package inside of the `app` folder. However, you need to be careful and install the _exact_ same version in both packages. If the versions mismatch at all, you'll potentially get terrible bugs. This is a classic monorepo issue. I use `lerna-update-wizard` to help with this (you don't need to use Lerna to use that lib).
 
-### Docker
+## 🎙 About the creator
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+### Fernando Rojo
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+Follow Fernando Rojo, creator of `solito`, on Twitter: [@FernandoTheRojo](https://twitter.com/fernandotherojo)
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+### Mark Lawlor
 
-### Seed
+Follow Mark Lawlor, creator of `NativeWind`, on Twitter: [@mark\_\_lawlor](https://twitter.com/mark__lawlor)
 
-To seed the database with a few products and pages you can run `yarn seed`. This template also comes with a `GET /api/seed` endpoint you can use to seed the database from the admin panel.
+## 🧐 Why use Expo + Next.js?
 
-> NOTICE: seeding the database is destructive because it drops your current database to populate a fresh one from the seed template. Only run this command if you are starting a new project or can afford to lose your current data.
+See my talk about this topic at Next.js Conf 2021:
 
-
-### Conflicting routes
-
->In a monorepo when routes are bootstrapped to the same host, they can conflict with Payload's own routes if they have the same name. In our template we've named the Nextjs API routes to `next` to avoid this conflict.
->
->This can happen with any other routes conflicting with Payload such as `admin` and we recommend using different names for custom routes.  
->Alternatively you can also rename Payload's own routes via the [configuration](https://payloadcms.com/docs/configuration/overview).
-
-## Production
-
-To run Payload in production, you need to build and serve the Admin panel. To do so, follow these steps:
-
-1. Invoke the `payload build` script by running `yarn build` or `npm run build` in your project root. This creates a `./build` directory with a production-ready admin bundle.
-1. Finally run `yarn serve` or `npm run serve` to run Node in production and serve Payload from the `./build` directory.
-1. When you're ready to go live, see [Deployment](#deployment) for more details.
-
-### Deployment
-
-Before deploying your app, you need to:
-
-1. Switch [your Stripe account to live mode](https://stripe.com/docs/test-mode) and update your [Stripe API keys](https://dashboard.stripe.com/test/apikeys). See [Connect Stripe](#connect-stripe) for more details.
-1. Ensure your app builds and serves in production. See [Production](#production) for more details.
-
-The easiest way to deploy your project is to use [Payload Cloud](https://payloadcms.com/new/import), a one-click hosting solution to deploy production-ready instances of your Payload apps directly from your GitHub repo. You can also deploy your app manually, check out the [deployment documentation](https://payloadcms.com/docs/production/deployment) for full details.
-
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+<a href="https://www.youtube.com/watch?v=0lnbdRweJtA"><img width="1332" alt="image" src="https://user-images.githubusercontent.com/13172299/157299915-b633e083-f271-48c6-a262-7b7eef765be5.png">
+</a>

@@ -1,0 +1,25 @@
+.menu :global(.ant-menu-item-selected) {
+    color: #1A1D1F !important;
+    background: #EFEFEF !important;
+    box-shadow:
+            0 -2px 1px rgba(0, 0, 0, 0.05),
+            0 1px 1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600; /* Semi-bold */
+    text-align: center;
+}
+
+
+.menuLogout :global(.ant-menu-title-content) {
+    color: #D55F5A;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 170%;
+}
+
+.menuLogout {
+    margin-top: auto;
+}

@@ -1,0 +1,63 @@
+.contentHeader {
+    padding: 20px 20px 1px 20px;
+    position: relative;
+    border-top-right-radius: 11px;
+}
+
+.infoHeader {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: left;
+}
+
+.collapsed {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center; 
+    transition: all 0.5s;
+}
+
+.info {
+    text-wrap: nowrap;
+    overflow: hidden;
+}
+
+.roleUser {
+    color: #757575;
+    font-family: Poppins;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.username {
+    color: #202020;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 170%;
+}
+
+.buttonMenu {
+    position: absolute;
+    top: 40px;
+    right: -12px;
+    z-index: 100;
+}
+
+.buttonMenu button {
+    border-radius: 7.906px !important;
+    border: 0.988px solid #E2E8F0 !important;
+}
+.buttonMenu button svg {
+    transition: transform 0.5s ease;
+}
+
+.buttonRigth button svg {
+    transition: transform 0.5s ease;
+    transform: rotate(180deg);
+}
