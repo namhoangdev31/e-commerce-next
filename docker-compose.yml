@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  main:
+    container_name: server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    env_file:
+      - .env
+    networks:
+      - webnet
+    depends_on:
+      - mongodb
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    networks:
+      - webnet
+    ports:
+      - ${DB_PORT}:27017
+    volumes:
+      - mongodata:/data/db
+
+  redis:
+    image: "redis:alpine"
+    container_name: redis
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+    volumes:
+      - .:/data
+    env_file:
+      - .env
+    ports:
+      - ${REDIS_PORT}:6379
+
+networks:
+  webnet:
+    driver: bridge
+volumes:
+  mongodata:

@@ -1,11 +1,18 @@
 {
   "compilerOptions": {
-    "strictNullChecks": true,
-    "noUncheckedIndexedAccess": true,
-    "paths": {
-      "app/*": ["./packages/app/*"]
-    },
-    "jsx": "react-jsx"
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true
   },
-  "extends": "expo/tsconfig.base"
+  "include": ["src/**/*", "test/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
