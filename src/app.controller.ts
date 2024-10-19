@@ -9,16 +9,4 @@ export class AppController {
   getHello(): string {
     return 'Hello World!';
   }
-
-  @Get('index')
-  @Render('index')
-  getIndex(): object {
-    return { title: 'Title', subtitle: 'Subtitle' };
-  }
-
-  @Get('dashboard')
-  @Render('dashboard/dashboard')
-  getDashboard(): object {
-    return { title: 'Dashboard', subtitle: 'Subtitle' };
-  }
 }

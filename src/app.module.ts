@@ -8,7 +8,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseModule } from './database/database.module';
 import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { StreamModule } from './modules/stream/stream.module';
+import { CallModule } from './modules/call/call.module';
 import { ViewsModule } from './modules/views/views.module';
+import { ClassModule } from './modules/class/class.module';
+import { UsersModule } from './modules/users/users.module';
+import { MessagesModule } from './modules/messages/messages.module';
 
 @Module({
   imports: [
@@ -28,6 +33,11 @@ import { ViewsModule } from './modules/views/views.module';
     HeaderModule,
     GlobalModule,
     ViewsModule,
+    StreamModule,
+    CallModule,
+    ClassModule,
+    UsersModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
