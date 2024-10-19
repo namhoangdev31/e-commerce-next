@@ -46,7 +46,7 @@ export class CallGateway {
   @SubscribeMessage('startCall')
   async handleStartCall(@MessageBody() data: { room: string }, @ConnectedSocket() client: Socket) {
     try {
-      const call = await this.callService.create({ room: data.room });
+      const [call] = await Promise.all([this.callService.create({room: data.room})]);
       this.server.to(data.room).emit('callStarted', { callId: call.id });
       return { event: 'callStarted', data: call };
     } catch (error) {
