@@ -93,7 +93,7 @@
 
     <!-- Header -->
     <header>
-        <h1>Demo Author</h1>  
+        <h1>Demo Author</h1>
     </header>
 
     <div class="sidebar" style="overflow-y: auto;">
@@ -108,7 +108,7 @@
             <a class="fw-light text-muted" href="#" style="font-size: 12px;"><i class="fas fa-comments me-2"></i>Comments</a>
             <a class="fw-light text-muted" href="#" style="font-size: 12px;"><i class="fas fa-exchange-alt me-2"></i>Redirects</a>
         </div>
-        
+
         <h6 class="fw-bold" data-bs-toggle="collapse" href="#globals">Globals <i class="fas fa-chevron-down ms-2"></i></h6>
         <div id="globals" class="collapse">
             <a class="fw-light text-muted" href="#" style="font-size: 12px;"><i class="fas fa-cog me-2"></i>Settings</a>
@@ -172,17 +172,17 @@
             try {
                 const jwt = localStorage.getItem('jwt');
                 if (!jwt) {
-                    window.location.href = '/api/admin/login';
+                    window.location.href = `${API_PREFIX}/admin-login`;
                 }
             } catch (error) {
                 console.error('Error checking JWT:', error);
-                window.location.href = '/api/admin/login';
+                window.location.href = `${API_PREFIX}/admin-login`;
             }
         });
 
         function logout() {
             localStorage.removeItem('jwt');
-            window.location.href = '/api/admin/login';
+            window.location.href = `${API_PREFIX}/admin-login`;
         }
     </script>
 </body>

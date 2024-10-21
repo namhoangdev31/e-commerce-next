@@ -14,7 +14,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { UserDocument } from '../../database/schemas/user.schema';
 import { User } from '../../shared/decorators';
 
-@Controller('/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 

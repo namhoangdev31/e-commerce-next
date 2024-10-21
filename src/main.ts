@@ -13,7 +13,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
 
-  app.setGlobalPrefix(configService.get('API_PREFIX'));
+  // app.setGlobalPrefix(configService.get('API_PREFIX'));
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
@@ -32,6 +32,9 @@ async function bootstrap() {
 
   const port = process.env.PORT || configService.get<number>('NEST_PORT');
   await app.listen(port);
+
+  console.log(`Server is running on port http://localhost:${port}`);
+
 }
 
 bootstrap();

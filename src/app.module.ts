@@ -15,6 +15,10 @@ import { ClassModule } from './modules/class/class.module'
 import { UsersModule } from './modules/users/users.module'
 import { MessagesModule } from './modules/messages/messages.module'
 import { RolesModule } from './modules/roles/roles.module'
+import { RouterModule } from '@nestjs/core'
+
+export const API_PREFIX = process.env.API_PREFIX || 'api'
+export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
 
 @Module({
   imports: [
@@ -30,16 +34,31 @@ import { RolesModule } from './modules/roles/roles.module'
     }),
     DatabaseModule,
     AuthModule,
-    SharedModule,
-    HeaderModule,
-    GlobalModule,
-    ViewsModule,
-    StreamModule,
     CallModule,
     ClassModule,
-    UsersModule,
+    GlobalModule,
+    HeaderModule,
     MessagesModule,
     RolesModule,
+    SharedModule,
+    StreamModule,
+    UsersModule,
+    ViewsModule,
+    RouterModule.register([
+      { path: ADMIN_PREFIX, module: ViewsModule },
+      {
+        path: API_PREFIX,
+        children: [
+          { path: '/', module: HeaderModule },
+          { path: '/', module: GlobalModule },
+          { path: '/', module: UsersModule },
+          { path: '/', module: AuthModule },
+          { path: '/', module: SharedModule },
+          { path: '/', module: RolesModule },
+          { path: '/', module: ClassModule },
+        ],
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [AppService],

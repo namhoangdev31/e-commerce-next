@@ -4,7 +4,7 @@ import { ViewsService } from './views.service';
 import { CreateViewDto } from './dto/create-view.dto';
 import { UpdateViewDto } from './dto/update-view.dto';
 
-@Controller('admin')
+@Controller()
 export class ViewsController {
   constructor(private readonly viewsService: ViewsService) {}
 
@@ -33,6 +33,11 @@ export class ViewsController {
     return this.viewsService.remove(id);
   }
 
+  @Get()
+  @Render('index')
+  async index() {
+    return {};
+  }
 
   @Get('dashboard')
   @Render('src/dashboard')
@@ -40,19 +45,19 @@ export class ViewsController {
     return { title: 'Dashboard', subtitle: 'Subtitle' };
   }
 
-  @Get('login')
+  @Get('admin-login')
   @Render('src/login')
   getLogin(): object {
     return { title: 'Login', subtitle: 'Subtitle' };
   }
 
-  @Get('register')
+  @Get('admin-register')
   @Render('src/register')
   getRegister(): object {
     return { title: 'Register', subtitle: 'Subtitle' };
   }
 
-  @Get('profile')
+  @Get('admin-profile')
   @Render('src/profile')
   getProfile(): object {
     return { title: 'Profile', subtitle: 'Subtitle' };
