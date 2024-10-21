@@ -14,6 +14,8 @@ import { ViewsModule } from './modules/views/views.module';
 import { ClassModule } from './modules/class/class.module';
 import { UsersModule } from './modules/users/users.module';
 import { MessagesModule } from './modules/messages/messages.module';
+import { RolesModule } from './modules/roles/roles.module';
+import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
   imports: [
@@ -38,6 +40,7 @@ import { MessagesModule } from './modules/messages/messages.module';
     ClassModule,
     UsersModule,
     MessagesModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
