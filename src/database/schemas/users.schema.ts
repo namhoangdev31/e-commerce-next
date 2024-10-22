@@ -11,11 +11,6 @@ export class Users {
   @Prop({ required: true, unique: true })
   @IsString()
   @IsNotEmpty()
-  userId: string
-
-  @Prop({ required: true, unique: true })
-  @IsString()
-  @IsNotEmpty()
   username: string
 
   @Prop({ required: true, unique: true })
@@ -42,6 +37,11 @@ export class Users {
   @IsOptional()
   @IsString()
   profilePictureUrl?: string
+
+  @Prop()
+  @IsOptional()
+  @IsString()
+  refreshToken: string
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users)

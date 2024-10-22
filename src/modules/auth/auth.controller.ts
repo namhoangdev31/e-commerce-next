@@ -1,44 +1,47 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { UserDocument } from '../../database/schemas/user.schema';
-import { User } from '../../shared/decorators';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common'
+import { AuthService } from './auth.service'
+import { LoginDto } from './dto/login.dto'
+import { RegisterDto } from './dto/register.dto'
+import { JwtAuthGuard } from './jwt-auth.guard'
+import { UserDocument } from '../../database/schemas/user.schema'
+import { User } from '../../shared/decorators'
+import { Public } from './decorators/public.decorator'
+import { RefreshTokenDto } from './dto/refreshToken.dto'
+import { ApiBearerAuth } from '@nestjs/swagger'
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
+  @Public()
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+    return this.authService.login(dto)
   }
 
   @Post('register')
+  @Public()
   @HttpCode(HttpStatus.CREATED)
   async registerCustomer(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+    return this.authService.register(dto)
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
+  @ApiBearerAuth()
   async getProfile(@User() user: UserDocument, @Req() req: Request) {
-    console.log('JWT:', req.headers['authorization']);
-    const { password, ...profile } = user.toJSON({ versionKey: false });
+    console.log('JWT:', req.headers['authorization'])
+    const userReturn = user
     return {
-      jwt: req.headers['authorization'],
-      profile,
-    };
+      userReturn,
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('refresh-token')
+  @ApiBearerAuth()
+  async refreshToken(@Body() dto: RefreshTokenDto) {
+    return this.authService.reGenAccessToken(dto)
   }
 }

@@ -1,31 +1,27 @@
-import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { ThrottlerModule } from '@nestjs/throttler';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { JwtStrategy } from './auth.jwt.strategy';
-import { DatabaseModule } from '../../database/database.module';
-import { SharedModule } from '../../shared/shared.module';
+import { Module } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { JwtModule } from '@nestjs/jwt'
+import { ThrottlerModule } from '@nestjs/throttler'
+import { AuthController } from './auth.controller'
+import { AuthService } from './auth.service'
+import { DatabaseModule } from '../../database/database.module'
+import { SharedModule } from '../../shared/shared.module'
+import { Error } from 'mongoose'
+import process from 'process'
+import { JwtAuthGuard } from './jwt-auth.guard'
+import { APP_GUARD } from '@nestjs/core'
 
 @Module({
   imports: [
     DatabaseModule,
     SharedModule,
-    JwtModule.registerAsync({
-      useFactory: (configService: ConfigService) => {
-        const expiresIn = configService.get('ACCESS_TOKEN_EXPIRES_IN');
-        if (typeof expiresIn !== 'string' && typeof expiresIn !== 'number') {
-          throw new Error('ACCESS_TOKEN_EXPIRES_IN must be a number or string');
-        }
-        return {
-          secret: configService.get('JWT_SECRET'),
-          signOptions: {
-            expiresIn: expiresIn,
-          },
-        };
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '30d',
+        allowInsecureKeySizes: true,
       },
-      inject: [ConfigService],
     }),
     ThrottlerModule.forRoot([
       {
@@ -34,8 +30,14 @@ import { SharedModule } from '../../shared/shared.module';
       },
     ]),
   ],
+  providers: [
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

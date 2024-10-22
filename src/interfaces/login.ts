@@ -1,11 +1,12 @@
-import { Expression, Types } from 'mongoose';
+import { Expression, Types } from 'mongoose'
 
 export interface LoginPayload {
-  email: string;
-  password: string;
+  email: string
+  password: string
 }
 
 export interface LoginResponse {
-  accessToken: string;
-  id: Types.ObjectId;
+  accessToken: string
+  refreshToken: string | null
+  id: Types.ObjectId
 }
