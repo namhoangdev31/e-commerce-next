@@ -6,14 +6,18 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
 import process from 'process'
+import { doubleCsrf } from 'csrf-csrf'
 
 async function bootstrap() {
+  // const { invalidCsrfTokenError, generateToken, validateRequest, doubleCsrfProtection } =
+  //   doubleCsrf(doubleCsrfOptions)
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
   const configService = app.get(ConfigService)
 
   app.useGlobalPipes(new ValidationPipe())
   app.enableCors()
 
+  // app.use(doubleCsrfProtection)
   // app.setGlobalPrefix(configService.get('API_PREFIX'));
 
   app.useStaticAssets(join(__dirname, '..', 'public'))

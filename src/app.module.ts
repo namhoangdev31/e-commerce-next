@@ -16,6 +16,13 @@ import { UsersModule } from './modules/users/users.module'
 import { MessagesModule } from './modules/messages/messages.module'
 import { RolesModule } from './modules/roles/roles.module'
 import { RouterModule } from '@nestjs/core'
+import { MailerModule } from '@nestjs-modules/mailer'
+import { MailModule } from './modules/mail/mail.module'
+import { ThrottlerModule } from '@nestjs/throttler'
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter'
+import { join } from 'path'
+import process from 'process'
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -32,6 +39,12 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       }),
       inject: [ConfigService],
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 300,
+        limit: 10,
+      },
+    ]),
     DatabaseModule,
     AuthModule,
     CallModule,
@@ -44,6 +57,27 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
     StreamModule,
     UsersModule,
     ViewsModule,
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.APP_MAIL,
+          pass: process.env.APP_PASSWORD,
+        },
+      },
+      defaults: {
+        from: '"No Reply" <no-reply@example.com>',
+      },
+      template: {
+        dir: join(__dirname, '..', 'views'),
+        adapter: new EjsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
     RouterModule.register([
       { path: ADMIN_PREFIX, module: ViewsModule },
       {
@@ -59,6 +93,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
         ],
       },
     ]),
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

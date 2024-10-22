@@ -51,11 +51,10 @@ export class UserRepository {
     return user
   }
 
-  async parseJwt(token: string): Promise<any> {
-    try {
-      return jwt.verify(token, process.env.JWT_SECRET)
-    } catch (err) {
-      throw new Error('Invalid token')
-    }
+  public async saveOtp(user: UsersDocument, otp: string): Promise<UsersDocument> {
+    return this.userModel.findByIdAndUpdate(user._id, {
+      otpConfirm: otp,
+      timeUpdateOtp: new Date(),
+    })
   }
 }

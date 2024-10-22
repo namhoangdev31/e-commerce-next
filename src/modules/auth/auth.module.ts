@@ -10,6 +10,7 @@ import { Error } from 'mongoose'
 import process from 'process'
 import { JwtAuthGuard } from './jwt-auth.guard'
 import { APP_GUARD } from '@nestjs/core'
+import { MailModule } from '../mail/mail.module'
 
 @Module({
   imports: [
@@ -23,12 +24,7 @@ import { APP_GUARD } from '@nestjs/core'
         allowInsecureKeySizes: true,
       },
     }),
-    ThrottlerModule.forRoot([
-      {
-        ttl: 60000,
-        limit: 3,
-      },
-    ]),
+    MailModule,
   ],
   providers: [
     AuthService,

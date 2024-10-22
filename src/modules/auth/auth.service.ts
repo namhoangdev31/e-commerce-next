@@ -8,12 +8,14 @@ import { INCORRECT_CREDENTIAL } from '../../shared/constants/strings.constants'
 import { LoginResponse } from 'src/interfaces/login'
 import { RefreshTokenDto } from './dto/refreshToken.dto'
 import process from 'process'
+import { MailService } from '../mail/mail.service'
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async login(data: LoginDto): Promise<LoginResponse> {
@@ -52,11 +54,30 @@ export class AuthService {
 
   async register(data: RegisterDto) {
     const user = await this.userRepository.create(data)
+    if (user) {
+      try {
+        const otp = Math.floor(100000 + Math.random() * 900000).toString()
+        await this.userRepository.saveOtp(user, otp)
+        const isSendMail = await this.mailService.sendUserOTP(user, otp)
+        if (!isSendMail) {
+          throw new BadRequestException('Failed to send OTP email')
+        }
+      } catch (e) {
+        console.error('Error sending OTP: ', e)
+        throw new BadRequestException('Failed to process OTP request')
+      }
+    }
 
-    return this.jwtService.sign({
-      _id: user._id,
-      user: user,
-    })
+    return this.jwtService.sign(
+      {
+        _id: user._id,
+        user: user,
+      },
+      {
+        secret: process.env.JWT_SECRET,
+        expiresIn: '30d',
+      },
+    )
   }
 
   async reGenAccessToken(data: RefreshTokenDto): Promise<LoginResponse> {
