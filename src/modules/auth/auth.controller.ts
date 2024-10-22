@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -32,8 +33,12 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getProfile(@User() user: UserDocument) {
+  async getProfile(@User() user: UserDocument, @Req() req: Request) {
+    console.log('JWT:', req.headers['authorization']);
     const { password, ...profile } = user.toJSON({ versionKey: false });
-    return profile;
+    return {
+      jwt: req.headers['authorization'],
+      profile,
+    };
   }
 }
