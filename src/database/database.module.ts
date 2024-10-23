@@ -23,7 +23,7 @@ import { Modules, ModuleSchema } from './schemas/modules.schema'
 import { CustomFields, CustomFieldsSchema } from './schemas/custom-fields.schema'
 import { UserSession, UserSessionSchema } from './schemas/user-session.schema'
 import { UserOnline, UserOnlineSchema } from './schemas/user-online.schema'
-
+import { RolesRepository } from './repositories/roles.repository'
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -44,10 +44,9 @@ import { UserOnline, UserOnlineSchema } from './schemas/user-online.schema'
       { name: Users.name, schema: UsersSchema },
       { name: UserSkills.name, schema: UserSkillsSchema },
       { name: UserSession.name, schema: UserSessionSchema },
-      { name: UserOnline.name, schema: UserOnlineSchema },
     ]),
   ],
-  providers: [UserRepository, HeaderRepository],
-  exports: [UserRepository, HeaderRepository],
+  providers: [UserRepository, HeaderRepository, RolesRepository],
+  exports: [UserRepository, HeaderRepository, RolesRepository],
 })
 export class DatabaseModule {}

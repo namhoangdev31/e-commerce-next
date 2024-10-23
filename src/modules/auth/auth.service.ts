@@ -161,4 +161,19 @@ export class AuthService {
     }
   }
 
+  async forgotPassword(email: string): Promise<void> {
+    const user = await this.userRepository.findByEmail(email)
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const user = await this.userRepository.findByToken(token)
+  }
+
+  async verifyEmail(token: string): Promise<void> {
+    const user = await this.userRepository.findByToken(token)
+  }
+
+  async changePassword(user: UsersDocument, oldPassword: string, newPassword: string): Promise<void> {
+    const foundUser = await this.userRepository.findByEmail(user.email)
+  }
 }

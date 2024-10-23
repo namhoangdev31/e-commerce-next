@@ -16,8 +16,6 @@ export class UserRepository {
     private userModel: Model<UsersDocument>,
     @InjectModel(UserSession.name)
     private userSessionModel: Model<UserSessionDocument>,
-    @InjectModel(UserOnline.name)
-    private userOnlineModel: Model<UserOnlineDocument>,
   ) {}
 
   public findById(id: string): Promise<UsersDocument> {
@@ -96,5 +94,16 @@ export class UserRepository {
 
   public async updateSession(filter: any, update: any): Promise<any> {
     return this.userSessionModel.updateOne(filter, update)
+  }
+
+  public async findByToken(token: string): Promise<UsersDocument> {
+    return this.userModel.findOne({ resetPasswordToken: token })
+  }
+
+  public async updateResetPasswordToken(
+    token: string,
+    userId: Types.ObjectId,
+  ): Promise<UsersDocument> {
+    return this.userModel.findByIdAndUpdate(userId, { resetPasswordToken: token })
   }
 }
