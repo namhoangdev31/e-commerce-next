@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RolesRepository } from '../../database/repositories/roles.repository';
+import { CreatePermissionDto } from './dto/create-permission.dto';
 
 @Injectable()
 export class RolesService {
@@ -56,5 +57,9 @@ export class RolesService {
 
   async removePermissionFromRole(roleId: string, permissionId: string) {
     return this.rolesRepository.removePermissionFromRole(roleId, permissionId);
+  }
+
+  async createPermissionByAdmin(createPermissionDto: CreatePermissionDto) {
+    return this.rolesRepository.createPermissionByAdmin(createPermissionDto);
   }
 }

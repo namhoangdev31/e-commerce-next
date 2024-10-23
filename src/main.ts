@@ -27,8 +27,8 @@ async function bootstrap() {
 
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
-      .setTitle('Pricesenz Backend API Docs')
-      .setDescription('Pricesenz Backend API Docs and Structure')
+      .setTitle('Welcome to Smart API Docs')
+      .setDescription('Smart API Docs and Structure')
       .setVersion('1.0')
       .addBearerAuth()
       .build()

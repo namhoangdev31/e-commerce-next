@@ -7,6 +7,8 @@ import { RolePermissions, RolePermissionsDocument } from '../schemas/role-permis
 import { Permissions, PermissionDocument } from '../schemas/permissions.schema'
 import { CreateRoleDto } from '../../modules/roles/dto/create-role.dto'
 import { UpdateRoleDto } from '../../modules/roles/dto/update-role.dto'
+import { CreatePermissionDto } from '../../modules/roles/dto/create-permission.dto'
+
 
 @Injectable()
 export class RolesRepository {
@@ -86,5 +88,10 @@ export class RolesRepository {
         permissionId: new Types.ObjectId(permissionId),
       })
       .exec()
+  }
+
+  async createPermissionByAdmin(createPermissionDto: CreatePermissionDto): Promise<PermissionDocument> {
+    const createdPermission = await this.permissionsModel.create(createPermissionDto)
+    return createdPermission
   }
 }
