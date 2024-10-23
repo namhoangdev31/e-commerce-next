@@ -22,7 +22,6 @@ import { User, UserSchema } from './schemas/user.schema'
 import { Modules, ModuleSchema } from './schemas/modules.schema'
 import { CustomFields, CustomFieldsSchema } from './schemas/custom-fields.schema'
 import { UserSession, UserSessionSchema } from './schemas/user-session.schema'
-import { UserOnline, UserOnlineSchema } from './schemas/user-online.schema'
 import { RolesRepository } from './repositories/roles.repository'
 @Module({
   imports: [

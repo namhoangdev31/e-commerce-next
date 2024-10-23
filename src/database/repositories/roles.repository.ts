@@ -11,10 +11,14 @@ import { UpdateRoleDto } from '../../modules/roles/dto/update-role.dto'
 @Injectable()
 export class RolesRepository {
   constructor(
-    @InjectModel(Roles.name) private rolesModel: Model<RolesDocument>,
-    @InjectModel(CustomRoles.name) private customRolesModel: Model<CustomRolesDocument>,
-    @InjectModel(RolePermissions.name) private rolePermissionsModel: Model<RolePermissionsDocument>,
-    @InjectModel(Permissions.name) private permissionsModel: Model<PermissionDocument>,
+    @InjectModel(Roles.name)
+    private rolesModel: Model<RolesDocument>,
+    @InjectModel(CustomRoles.name)
+    private customRolesModel: Model<CustomRolesDocument>,
+    @InjectModel(RolePermissions.name)
+    private rolePermissionsModel: Model<RolePermissionsDocument>,
+    @InjectModel(Permissions.name)
+    private permissionsModel: Model<PermissionDocument>,
   ) {}
 
   async findAll(): Promise<RolesDocument[]> {
