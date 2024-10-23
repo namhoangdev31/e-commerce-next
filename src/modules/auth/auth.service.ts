@@ -16,6 +16,7 @@ import { User } from '../../shared/decorators'
 import { UsersDocument } from '../../database/schemas/users.schema'
 import { Types } from 'mongoose'
 import { LogoutResponse } from '../../interfaces/logout.interface'
+import { OtpDto } from './dto/otp.dto'
 
 @Injectable()
 export class AuthService {
@@ -169,11 +170,27 @@ export class AuthService {
     const user = await this.userRepository.findByToken(token)
   }
 
-  async verifyEmail(token: string): Promise<void> {
-    const user = await this.userRepository.findByToken(token)
+  async verifyEmail(otp: OtpDto, user: UsersDocument): Promise<void> {
+    const result = await this.userRepository.findByFilter({
+      _id: user._id,
+      otpConfirm: otp.otpContent,
+    })
+
+    if (!result) {
+      throw new BadRequestException('Mã OTP không hợp lệ hoặc đã hết hạn')
+    }
+
+    await this.userRepository.updateOne(
+      { _id: user._id },
+      { $set: { isValidateEmail: true }, $unset: { otpConfirm: 1 } }
+    )
   }
 
-  async changePassword(user: UsersDocument, oldPassword: string, newPassword: string): Promise<void> {
+  async changePassword(
+    user: UsersDocument,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<void> {
     const foundUser = await this.userRepository.findByEmail(user.email)
   }
 }

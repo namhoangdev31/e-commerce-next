@@ -19,6 +19,7 @@ import { Public } from './decorators/public.decorator'
 import { RefreshTokenDto } from './dto/refreshToken.dto'
 import { ApiBearerAuth, ApiResponse, ApiOperation } from '@nestjs/swagger'
 import { UsersDocument } from '../../database/schemas/users.schema'
+import { OtpDto } from './dto/otp.dto'
 
 @Controller('auth')
 export class AuthController {
@@ -89,9 +90,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Verify email' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Verify email successfully' })
-  async verifyEmail(@Body('token') token: string) {
-    return this.authService.verifyEmail(token)
+  @ApiResponse({ status: HttpStatus.OK, description: 'Verify email successfully!' })
+  async verifyEmail(@Body() body: OtpDto, @User() user: UsersDocument) {
+    return this.authService.verifyEmail(body, user)
   }
 
   @UseGuards(JwtAuthGuard)

@@ -26,6 +26,10 @@ export class UserRepository {
     return this.userModel.findOne({ email })
   }
 
+  public findByFilter(filter: any): Promise<UsersDocument> {
+    return this.userModel.findOne(filter)
+  }
+
   public async saveSession(session: UserSession): Promise<UserSessionDocument> {
     return this.userSessionModel.create(session)
   }
@@ -105,5 +109,9 @@ export class UserRepository {
     userId: Types.ObjectId,
   ): Promise<UsersDocument> {
     return this.userModel.findByIdAndUpdate(userId, { resetPasswordToken: token })
+  }
+
+  public async updateOne(filter: any, update: any): Promise<UsersDocument> {
+    return this.userModel.findOneAndUpdate(filter, update, { new: true })
   }
 }
