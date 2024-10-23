@@ -7,6 +7,7 @@ import { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
 import process from 'process'
 import { doubleCsrf } from 'csrf-csrf'
+const requestIp = require('request-ip')
 
 async function bootstrap() {
   // const { invalidCsrfTokenError, generateToken, validateRequest, doubleCsrfProtection } =
@@ -16,7 +17,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe())
   app.enableCors()
-
+  app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
   // app.setGlobalPrefix(configService.get('API_PREFIX'));
 

@@ -52,6 +52,7 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
+    "request-ip": "^3.3.0",
     "rxjs": "^7.2.0",
     "uuid": "^10.0.0",
     "ws": "^8.18.0"
@@ -67,6 +68,7 @@
     "@types/node": "18.16.12",
     "@types/nodemailer": "^6.4.16",
     "@types/passport-jwt": "^4.0.1",
+    "@types/request-ip": "^0.0.41",
     "@types/supertest": "^2.0.11",
     "@types/uuid": "^10.0.0",
     "@types/ws": "^8.5.12",

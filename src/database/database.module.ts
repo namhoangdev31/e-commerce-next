@@ -21,6 +21,8 @@ import {
 import { User, UserSchema } from './schemas/user.schema'
 import { Modules, ModuleSchema } from './schemas/modules.schema'
 import { CustomFields, CustomFieldsSchema } from './schemas/custom-fields.schema'
+import { UserSession, UserSessionSchema } from './schemas/user-session.schema'
+import { UserOnline, UserOnlineSchema } from './schemas/user-online.schema'
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { CustomFields, CustomFieldsSchema } from './schemas/custom-fields.schema
       { name: UserRoles.name, schema: UserRolesSchema },
       { name: Users.name, schema: UsersSchema },
       { name: UserSkills.name, schema: UserSkillsSchema },
+      { name: UserSession.name, schema: UserSessionSchema },
+      { name: UserOnline.name, schema: UserOnlineSchema },
     ]),
   ],
   providers: [UserRepository, HeaderRepository],

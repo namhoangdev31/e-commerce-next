@@ -8,6 +8,7 @@ import { User } from '../../shared/decorators'
 import { Public } from './decorators/public.decorator'
 import { RefreshTokenDto } from './dto/refreshToken.dto'
 import { ApiBearerAuth } from '@nestjs/swagger'
+import { UsersDocument } from '../../database/schemas/users.schema'
 
 @Controller('auth')
 export class AuthController {
@@ -16,8 +17,8 @@ export class AuthController {
   @Post('login')
   @Public()
   @HttpCode(HttpStatus.OK)
-  async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto)
+  async login(@Body() dto: LoginDto, @Req() req: Request) {
+    return this.authService.login(dto, req)
   }
 
   @Post('register')
@@ -30,8 +31,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   @ApiBearerAuth()
-  async getProfile(@User() user: UserDocument, @Req() req: Request) {
-    console.log('JWT:', req.headers['authorization'])
+  async getProfile(@User() user: UsersDocument, @Req() req: Request) {
     const userReturn = user
     return {
       userReturn,
@@ -43,5 +43,12 @@ export class AuthController {
   @ApiBearerAuth()
   async refreshToken(@Body() dto: RefreshTokenDto) {
     return this.authService.reGenAccessToken(dto)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  @ApiBearerAuth()
+  async logout(@User() user: UsersDocument, @Req() req: Request) {
+    return this.authService.logout(user, req)
   }
 }

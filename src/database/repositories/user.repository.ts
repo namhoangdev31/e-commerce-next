@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
 import * as bcrypt from 'bcrypt'
@@ -6,14 +6,18 @@ import { RegisterDto } from '../../modules/auth/dto/register.dto'
 import { DUPLICATED_EMAIL } from '../../shared/constants/strings.constants'
 import { Users, UsersDocument } from '../schemas/users.schema'
 import { RefreshTokenDto } from '../../modules/auth/dto/refreshToken.dto'
-import * as jwt from 'jsonwebtoken'
-import process from 'process'
+import { UserSession, UserSessionDocument } from '../schemas/user-session.schema'
+import { UserOnline, UserOnlineDocument, UserStatus } from '../schemas/user-online.schema'
 
 @Injectable()
 export class UserRepository {
   constructor(
     @InjectModel(Users.name)
     private userModel: Model<UsersDocument>,
+    @InjectModel(UserSession.name)
+    private userSessionModel: Model<UserSessionDocument>,
+    @InjectModel(UserOnline.name)
+    private userOnlineModel: Model<UserOnlineDocument>,
   ) {}
 
   public findById(id: string): Promise<UsersDocument> {
@@ -24,10 +28,20 @@ export class UserRepository {
     return this.userModel.findOne({ email })
   }
 
-  public saveRefresh(refreshToken: string, id: any): Promise<UsersDocument> {
-    return this.userModel.findByIdAndUpdate(id, {
+  public async saveSession(session: UserSession): Promise<UserSessionDocument> {
+    return this.userSessionModel.create(session)
+  }
+
+  public async saveRefresh(refreshToken: string, id: any): Promise<UsersDocument> {
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, {
       refreshToken: refreshToken,
     })
+
+    if (!updatedUser) {
+      throw new BadRequestException('User not found or update failed')
+    }
+
+    return updatedUser
   }
 
   public async create(data: RegisterDto): Promise<UsersDocument> {
@@ -56,5 +70,31 @@ export class UserRepository {
       otpConfirm: otp,
       timeUpdateOtp: new Date(),
     })
+  }
+
+  public async updateSessionToken(sessionId: any, token: string): Promise<UserSessionDocument> {
+    return this.userSessionModel.findByIdAndUpdate(sessionId, { token })
+  }
+
+  public async findValidSession(
+    sessionId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<UserSessionDocument | null> {
+    return this.userSessionModel.findOne({
+      _id: sessionId,
+      userId: userId,
+    })
+  }
+
+  public async deleteManySessions(filter: any): Promise<any> {
+    return this.userSessionModel.deleteMany(filter)
+  }
+
+  public async findAllSession(): Promise<UserSessionDocument[]> {
+    return this.userSessionModel.find().exec()
+  }
+
+  public async updateSession(filter: any, update: any): Promise<any> {
+    return this.userSessionModel.updateOne(filter, update)
   }
 }
