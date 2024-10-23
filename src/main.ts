@@ -25,16 +25,14 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views'))
   app.setViewEngine('ejs')
 
-  if (process.env.NODE_ENV !== 'production') {
-    const config = new DocumentBuilder()
-      .setTitle('Welcome to Smart API Docs')
-      .setDescription('Smart API Docs and Structure')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build()
-    const document = SwaggerModule.createDocument(app, config)
-    SwaggerModule.setup('docs', app, document)
-  }
+  const config = new DocumentBuilder()
+    .setTitle('Welcome to Smart API Docs')
+    .setDescription('Smart API Docs and Structure')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build()
+  const document = SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup('docs', app, document)
 
   const port = process.env.NEST_PORT
   await app.listen(port)
