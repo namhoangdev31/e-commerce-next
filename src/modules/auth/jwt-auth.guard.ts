@@ -12,6 +12,7 @@ import { Reflector } from '@nestjs/core'
 import { IS_PUBLIC_KEY } from './decorators/public.decorator'
 import { UserRepository } from '../../database/repositories/user.repository'
 import { Types } from 'mongoose'
+import { Request } from 'express'
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -68,6 +69,14 @@ export class JwtAuthGuard implements CanActivate {
 
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers['authorization']?.split(' ') ?? []
-    return type === 'Bearer' ? token : undefined
+    const tokenSignature = request.cookies?.['tokenSignature']
+    if (type === 'Bearer' && token) {
+      if (tokenSignature) {
+        return `${token}.${tokenSignature}`
+      }
+      return token
+    }
+
+    return undefined
   }
 }
