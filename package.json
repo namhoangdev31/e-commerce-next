@@ -42,6 +42,7 @@
     "@nestjs/throttler": "^5.1.2",
     "@nestjs/websockets": "^10.4.5",
     "@types/ws": "^8.5.12",
+    "@vercel/node": "^3.2.23",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
