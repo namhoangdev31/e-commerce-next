@@ -23,6 +23,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { join } from 'path'
 import process from 'process'
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
+import { TypeOrmModule } from '@nestjs/typeorm'
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -38,6 +39,17 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
         uri: configService.get<string>('DB_URL'),
       }),
       inject: [ConfigService],
+    }),
+    TypeOrmModule.forRoot({
+      type: process.env.DB_TYPE as any,
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT, 10),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+      synchronize: process.env.NODE_ENV === 'development',
+      retryAttempts: 3,
+      retryDelay: 3000,
     }),
     ThrottlerModule.forRoot([
       {

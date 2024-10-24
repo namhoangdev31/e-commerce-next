@@ -7,7 +7,9 @@ import { DUPLICATED_EMAIL } from '../../shared/constants/strings.constants'
 import { Users, UsersDocument } from '../schemas/users.schema'
 import { RefreshTokenDto } from '../../modules/auth/dto/refreshToken.dto'
 import { UserSession, UserSessionDocument } from '../schemas/user-session.schema'
-import { UserOnline, UserOnlineDocument, UserStatus } from '../schemas/user-online.schema'
+import { UsersEntities } from '../../modules/users/entities/user.entity'
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
 
 @Injectable()
 export class AuthRepository {
@@ -16,6 +18,8 @@ export class AuthRepository {
     private userModel: Model<UsersDocument>,
     @InjectModel(UserSession.name)
     private userSessionModel: Model<UserSessionDocument>,
+    @InjectRepository(UsersEntities)
+    private usersSqlModel: Repository<UsersEntities>,
   ) {}
 
   public findById(id: string): Promise<UsersDocument> {
@@ -111,7 +115,10 @@ export class AuthRepository {
     return this.userModel.findByIdAndUpdate(userId, { resetPasswordToken: token })
   }
 
-  public async updateOne(filter: FilterQuery<UsersDocument>, update: UpdateQuery<UsersDocument>): Promise<UsersDocument | null> {
+  public async updateOne(
+    filter: FilterQuery<UsersDocument>,
+    update: UpdateQuery<UsersDocument>,
+  ): Promise<UsersDocument | null> {
     return this.userModel.findOneAndUpdate(filter, update, { new: true }).exec()
   }
 }

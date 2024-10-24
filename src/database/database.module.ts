@@ -25,6 +25,8 @@ import { RolesRepository } from './repositories/roles.repository'
 import { SharedModule } from '../shared/shared.module'
 import { UsersRepository } from './repositories/users.repository'
 import { CoursesRepository } from './repositories/courses.repository'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { UsersEntities } from '../modules/users/entities/user.entity'
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -46,6 +48,7 @@ import { CoursesRepository } from './repositories/courses.repository'
       { name: UserSession.name, schema: UserSessionSchema },
     ]),
     SharedModule,
+    TypeOrmModule.forFeature([UsersEntities]),
   ],
   providers: [
     AuthRepository,
