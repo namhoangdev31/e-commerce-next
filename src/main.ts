@@ -18,7 +18,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService)
 
   app.useGlobalPipes(new ValidationPipe())
-  // Cấu hình CORS (Cross-Origin Resource Sharing) cho ứng dụng
   app.enableCors()
   app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
@@ -38,21 +37,10 @@ async function bootstrap() {
 
   SwaggerModule.setup('docs', app, document)
 
-  app.use(
-    '/swagger',
-    swaggerUI.serve,
-    swaggerUI.setup(document, {
-      customSiteTitle: 'Smart API Documentation',
-      swaggerOptions: {
-        persistAuthorization: true,
-      },
-    }),
-  )
-
   const port = process.env.NEST_PORT || 3000
   await app.listen(port)
 
-  console.log(`Server is running on port http://localhost:${port}/swagger`)
+  console.log(`Server is running on port http://localhost:${port}/admin`)
 }
 
 bootstrap()

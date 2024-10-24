@@ -57,6 +57,11 @@ export class Users {
   @IsOptional()
   @IsDate()
   timeUpdateOtp?: Date
+
+  @Prop()
+  @IsString()
+  @IsOptional()
+  termPassword: string
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users)

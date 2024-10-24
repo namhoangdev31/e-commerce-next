@@ -7,7 +7,7 @@ export type UserRolesDocument = HydratedDocument<UserRoles>
 
 enum RoleModelEnum {
   Roles = 'Roles',
-  CustomRoles = 'CustomRoles'
+  CustomRoles = 'CustomRoles',
 }
 
 @Injectable()
@@ -36,9 +36,8 @@ export class UserRoles {
   @IsDate()
   assignmentEndDate?: Date
 
-  @Prop({ type: Types.ObjectId, ref: 'Courses' })
   @IsOptional()
-  courseId?: Types.ObjectId
+  courseId?: string
 }
 
 export const UserRolesSchema = SchemaFactory.createForClass(UserRoles)

@@ -7,7 +7,6 @@ import { Header, HeaderSchema } from './schemas/header.schema'
 import { NavItem, NavItemSchema } from './schemas/navItem.schema'
 import { Roles, RolesSchema } from './schemas/roles.schema'
 import { UserSkills, UserSkillsSchema } from './schemas/user-skills.schema'
-import { Courses, CoursesSchema } from './schemas/courses.schema'
 import { UserRoles, UserRolesSchema } from './schemas/user-roles.schema'
 import { Skills, SkillsSchema } from './schemas/skills.schema'
 import { CustomRoles, CustomRolesSchema } from './schemas/custom-roles.schema'
@@ -29,7 +28,6 @@ import { CoursesRepository } from './repositories/courses.repository'
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: Courses.name, schema: CoursesSchema },
       { name: CustomFields.name, schema: CustomFieldsSchema },
       { name: CustomRoles.name, schema: CustomRolesSchema },
       { name: Header.name, schema: HeaderSchema },

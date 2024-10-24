@@ -19,7 +19,7 @@ export class JwtAuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
-    private readonly userRepository: AuthRepository,
+    private readonly authRepository: AuthRepository,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -43,13 +43,13 @@ export class JwtAuthGuard implements CanActivate {
       })
       const userId = new Types.ObjectId(data.userId)
       const sessionId = new Types.ObjectId(data.sessionId)
-      const session = await this.userRepository.findValidSession(sessionId, userId)
+      const session = await this.authRepository.findValidSession(sessionId, userId)
 
       if (!session) {
-        // await this.userRepository.deleteManySessions({ userId })
+        // await this.authRepository.deleteManySessions({ userId })
         throw new UnauthorizedException('Session expired')
       } else {
-        await this.userRepository.updateSession(
+        await this.authRepository.updateSession(
           { _id: session._id },
           { isOnline: true, lastActiveAt: new Date() },
         )

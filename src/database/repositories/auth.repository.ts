@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model, Types } from 'mongoose'
+import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose'
 import * as bcrypt from 'bcrypt'
 import { RegisterDto } from '../../modules/auth/dto/register.dto'
 import { DUPLICATED_EMAIL } from '../../shared/constants/strings.constants'
@@ -111,7 +111,7 @@ export class AuthRepository {
     return this.userModel.findByIdAndUpdate(userId, { resetPasswordToken: token })
   }
 
-  public async updateOne(filter: any, update: any): Promise<UsersDocument> {
-    return this.userModel.findOneAndUpdate(filter, update, { new: true })
+  public async updateOne(filter: FilterQuery<UsersDocument>, update: UpdateQuery<UsersDocument>): Promise<UsersDocument | null> {
+    return this.userModel.findOneAndUpdate(filter, update, { new: true }).exec()
   }
 }

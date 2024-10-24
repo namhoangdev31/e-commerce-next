@@ -65,47 +65,4 @@ export class AuthController {
   async logout(@User() user: UsersDocument, @Req() req: Request) {
     return this.authService.logout(user, req)
   }
-  @UseGuards(JwtAuthGuard)
-  @Post('forgot-password')
-  @ApiOperation({ summary: 'Forgot password' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Forgot password successfully' })
-  @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth()
-  async forgotPassword(@Body('email') email: string) {
-    return this.authService.forgotPassword(email)
-  }
-
-  @Post('reset-password')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Reset password' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Reset password successfully' })
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  async resetPassword(@Body('token') token: string, @Body('newPassword') newPassword: string) {
-    return this.authService.resetPassword(token, newPassword)
-  }
-
-  @Post('verify-email')
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Verify email' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Verify email successfully!' })
-  async verifyEmail(@Body() body: OtpDto, @User() user: UsersDocument) {
-    return this.authService.verifyEmail(body, user)
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('change-password')
-  @ApiBearerAuth()
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Change password' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Change password successfully' })
-  async changePassword(
-    @User() user: UsersDocument,
-    @Body('oldPassword') oldPassword: string,
-    @Body('newPassword') newPassword: string,
-  ) {
-    return this.authService.changePassword(user, oldPassword, newPassword)
-  }
 }

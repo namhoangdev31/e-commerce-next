@@ -161,36 +161,4 @@ export class AuthService {
       throw new UnauthorizedException('Failed to logout. Please try again.')
     }
   }
-
-  async forgotPassword(email: string): Promise<void> {
-    const user = await this.userRepository.findByEmail(email)
-  }
-
-  async resetPassword(token: string, newPassword: string): Promise<void> {
-    const user = await this.userRepository.findByToken(token)
-  }
-
-  async verifyEmail(otp: OtpDto, user: UsersDocument): Promise<void> {
-    const result = await this.userRepository.findByFilter({
-      _id: user._id,
-      otpConfirm: otp.otpContent,
-    })
-
-    if (!result) {
-      throw new BadRequestException('Mã OTP không hợp lệ hoặc đã hết hạn')
-    }
-
-    await this.userRepository.updateOne(
-      { _id: user._id },
-      { $set: { isValidateEmail: true }, $unset: { otpConfirm: 1 } },
-    )
-  }
-
-  async changePassword(
-    user: UsersDocument,
-    oldPassword: string,
-    newPassword: string,
-  ): Promise<void> {
-    const foundUser = await this.userRepository.findByEmail(user.email)
-  }
 }

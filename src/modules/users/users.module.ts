@@ -4,6 +4,7 @@ import { UsersController } from './users.controller'
 import { JwtModule } from '@nestjs/jwt'
 import process from 'process'
 import { DatabaseModule } from '../../database/database.module'
+import { MailModule } from '../mail/mail.module'
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { DatabaseModule } from '../../database/database.module'
         allowInsecureKeySizes: true,
       },
     }),
+    MailModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],
