@@ -7,6 +7,7 @@ import { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
 import process from 'process'
 import { doubleCsrf } from 'csrf-csrf'
+import * as swaggerUi from 'swagger-ui-express';
 const requestIp = require('request-ip')
 
 async function bootstrap() {
@@ -33,7 +34,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('docs', app, document)
-
+  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(document));
   const port = process.env.NEST_PORT
   await app.listen(port)
 
