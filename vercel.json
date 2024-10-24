@@ -5,7 +5,7 @@
       "src": "src/main.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["prisma/**/*"]
+        "includeFiles": ["prisma/schema.prisma"]
       }
     }
   ],
@@ -23,8 +23,5 @@
       ]
     }
   ],
-  "env": {
-    "DATABASE_URL": "@database_url"
-  },
   "buildCommand": "prisma generate && npm run build"
 }
