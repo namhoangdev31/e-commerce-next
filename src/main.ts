@@ -19,7 +19,6 @@ async function bootstrap() {
   app.enableCors()
   app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
-  // app.setGlobalPrefix(configService.get('API_PREFIX'));
 
   app.useStaticAssets(join(__dirname, '..', 'public'))
   app.setBaseViewsDir(join(__dirname, '..', 'views'))

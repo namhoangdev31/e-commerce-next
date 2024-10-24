@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataSource name="Cluster0@cluster0.vzzvn.mongodb.net">
+<dataSource name="@cluster0.vzzvn.mongodb.net">
   <database-model serializer="dbm" dbms="MONGO" family-id="MONGO" format-version="4.51">
     <root id="1">
       <ServerVersion>7.0.14</ServerVersion>

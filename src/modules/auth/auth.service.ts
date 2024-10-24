@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
-import { UserRepository } from '../../database/repositories/user.repository'
+import { AuthRepository } from '../../database/repositories/auth.repository'
 import { INCORRECT_CREDENTIAL } from '../../shared/constants/strings.constants'
 import { LoginResponse } from 'src/interfaces/login'
 import { RefreshTokenDto } from './dto/refreshToken.dto'
@@ -21,7 +21,7 @@ import { OtpDto } from './dto/otp.dto'
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: AuthRepository,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
   ) {}
@@ -182,7 +182,7 @@ export class AuthService {
 
     await this.userRepository.updateOne(
       { _id: user._id },
-      { $set: { isValidateEmail: true }, $unset: { otpConfirm: 1 } }
+      { $set: { isValidateEmail: true }, $unset: { otpConfirm: 1 } },
     )
   }
 

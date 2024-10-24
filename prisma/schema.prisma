@@ -1,0 +1,220 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Course {
+  id              Int           @id @default(autoincrement())
+  elementId       Int           @unique
+  elementType     ElementType
+  parentElementId Int?
+  title           String
+  description     String
+  content         String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  parentElement   Course?       @relation("ParentChild", fields: [parentElementId], references: [id])
+  childElements   Course[]      @relation("ParentChild")
+  contentItems    ContentItem[]
+  prerequisites   Prerequisite[] @relation("ElementPrerequisites")
+  prerequisiteFor Prerequisite[] @relation("PrerequisiteForElements")
+  releaseRules    ContentReleaseRule[]
+  learningActivities LearningActivity[]
+  assessments     Assessment[]
+  pathCourses     PathCourse[]
+  learnerProgresses LearnerPathProgress[]
+
+  @@unique([id, elementId])
+  @@map("courses")
+}
+
+enum ElementType {
+  MODULE
+  LESSON
+  ACTIVITY
+}
+
+model ContentItem {
+  id          Int         @id @default(autoincrement())
+  elementId   Int
+  contentType ContentType
+  content     String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  course      Course      @relation(fields: [elementId], references: [elementId])
+
+  @@map("content_items")
+}
+
+enum ContentType {
+  TEXT
+  VIDEO
+  AUDIO
+  DOCUMENT
+  QUIZ
+  INTERACTIVE
+}
+
+model Prerequisite {
+  id                    Int              @id @default(autoincrement())
+  elementId             Int
+  prerequisiteElementId Int
+  prerequisiteType      PrerequisiteType
+  prerequisiteValue     String
+
+  element               Course           @relation("ElementPrerequisites", fields: [elementId], references: [elementId])
+  prerequisiteElement   Course           @relation("PrerequisiteForElements", fields: [prerequisiteElementId], references: [elementId])
+
+  @@map("prerequisites")
+}
+
+enum PrerequisiteType {
+  COMPLETION
+  SCORE
+  DATE
+}
+
+model ContentReleaseRule {
+  id        Int       @id @default(autoincrement())
+  elementId Int
+  ruleType  RuleType
+  ruleValue String
+  startDate DateTime?
+  endDate   DateTime?
+
+  element   Course    @relation(fields: [elementId], references: [elementId])
+
+  @@map("content_release_rules")
+}
+
+enum RuleType {
+  DATE
+  PROGRESS
+  PERFORMANCE
+}
+
+model LearningActivity {
+  id              Int           @id @default(autoincrement())
+  elementId       Int
+  activityType    ActivityType
+  startDateTime   DateTime
+  endDateTime     DateTime
+  maxParticipants Int
+
+  element         Course        @relation(fields: [elementId], references: [elementId])
+
+  @@map("learning_activities")
+}
+
+enum ActivityType {
+  WEBINAR
+  SELF_PACED
+  BLENDED
+}
+
+model Question {
+  id            Int           @id @default(autoincrement())
+  quizId        Int
+  questionType  QuestionType
+  questionText  String
+  correctAnswer String
+  points        Int
+
+  quiz          Quiz          @relation(fields: [quizId], references: [id])
+
+  @@map("questions")
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  SHORT_ANSWER
+  ESSAY
+}
+
+model Quiz {
+  id        Int        @id @default(autoincrement())
+  title     String
+  questions Question[]
+
+  @@map("quizzes")
+}
+
+model Assessment {
+  id                     Int      @id @default(autoincrement())
+  courseId               Int
+  title                  String
+  description            String
+  timeLimit              Int
+  randomizeQuestions     Boolean
+  showFeedback           Boolean
+  plagiarismCheckEnabled Boolean
+  course                 Course   @relation(fields: [courseId], references: [elementId])
+
+  @@map("assessments")
+}
+
+model CourseTemplate {
+  id               Int      @id @default(autoincrement())
+  templateName     String
+  description      String
+  creatorId        String
+  isPublic         Boolean
+  createdDate      DateTime @default(now())
+  lastModifiedDate DateTime @updatedAt
+
+  @@map("course_templates")
+}
+
+model LearningPath {
+  id                Int                 @id @default(autoincrement())
+  pathName          String
+  description       String
+  creatorId         String
+  pathCourses       PathCourse[]
+  learnerProgresses LearnerPathProgress[]
+
+  @@map("learning_paths")
+}
+
+model PathCourse {
+  id                 Int          @id @default(autoincrement())
+  pathId             Int
+  courseId           Int
+  orderIndex         Int
+  isMandatory        Boolean
+  completionCriteria String
+
+  learningPath       LearningPath @relation(fields: [pathId], references: [id])
+  course             Course       @relation(fields: [courseId], references: [elementId])
+
+  @@map("path_courses")
+}
+
+model LearnerPathProgress {
+  id               Int          @id @default(autoincrement())
+  learnerId        String
+  pathId           Int
+  currentCourseId  Int
+  overallProgress  Float
+  lastActivityDate DateTime
+  completionDate   DateTime?
+
+  learner          String
+  learningPath     LearningPath @relation(fields: [pathId], references: [id])
+  currentCourse    Course       @relation(fields: [currentCourseId], references: [elementId])
+
+  @@map("learner_path_progress")
+}

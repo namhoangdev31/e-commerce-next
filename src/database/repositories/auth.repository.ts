@@ -10,7 +10,7 @@ import { UserSession, UserSessionDocument } from '../schemas/user-session.schema
 import { UserOnline, UserOnlineDocument, UserStatus } from '../schemas/user-online.schema'
 
 @Injectable()
-export class UserRepository {
+export class AuthRepository {
   constructor(
     @InjectModel(Users.name)
     private userModel: Model<UsersDocument>,

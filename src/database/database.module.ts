@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Users, UsersSchema } from './schemas/users.schema'
-import { UserRepository } from './repositories/user.repository'
+import { AuthRepository } from './repositories/auth.repository'
 import { HeaderRepository } from './repositories/header.repository'
 import { Header, HeaderSchema } from './schemas/header.schema'
 import { NavItem, NavItemSchema } from './schemas/navItem.schema'
@@ -23,6 +23,9 @@ import { Modules, ModuleSchema } from './schemas/modules.schema'
 import { CustomFields, CustomFieldsSchema } from './schemas/custom-fields.schema'
 import { UserSession, UserSessionSchema } from './schemas/user-session.schema'
 import { RolesRepository } from './repositories/roles.repository'
+import { SharedModule } from '../shared/shared.module'
+import { UsersRepository } from './repositories/users.repository'
+import { CoursesRepository } from './repositories/courses.repository'
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -44,8 +47,15 @@ import { RolesRepository } from './repositories/roles.repository'
       { name: UserSkills.name, schema: UserSkillsSchema },
       { name: UserSession.name, schema: UserSessionSchema },
     ]),
+    SharedModule,
   ],
-  providers: [UserRepository, HeaderRepository, RolesRepository],
-  exports: [UserRepository, HeaderRepository, RolesRepository],
+  providers: [
+    AuthRepository,
+    HeaderRepository,
+    RolesRepository,
+    UsersRepository,
+    CoursesRepository,
+  ],
+  exports: [AuthRepository, HeaderRepository, RolesRepository, UsersRepository, CoursesRepository],
 })
 export class DatabaseModule {}

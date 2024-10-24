@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt'
 import process from 'process'
 import { Reflector } from '@nestjs/core'
 import { IS_PUBLIC_KEY } from './decorators/public.decorator'
-import { UserRepository } from '../../database/repositories/user.repository'
+import { AuthRepository } from '../../database/repositories/auth.repository'
 import { Types } from 'mongoose'
 import { Request } from 'express'
 
@@ -19,7 +19,7 @@ export class JwtAuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: AuthRepository,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

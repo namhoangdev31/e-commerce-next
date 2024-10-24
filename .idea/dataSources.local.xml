@@ -12,7 +12,7 @@
         </introspection-scope>
       </schema-mapping>
     </data-source>
-    <data-source name="Cluster0@cluster0.vzzvn.mongodb.net" uuid="1f286365-157c-46df-9ca7-9a3aaeca5750">
+    <data-source name="nest-test@cluster0.vzzvn.mongodb.net" uuid="a1f17610-2baf-474d-9141-6344c229b2ec">
       <database-info product="Mongo DB" version="7.0.14" jdbc-version="4.2" driver-name="MongoDB JDBC Driver" driver-version="1.18" dbms="MONGO" exact-version="7.0.14" exact-driver-version="1.18" />
       <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
       <secret-storage>master_key</secret-storage>
