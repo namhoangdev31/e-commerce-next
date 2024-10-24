@@ -17,7 +17,15 @@ async function bootstrap() {
   const configService = app.get(ConfigService)
 
   app.useGlobalPipes(new ValidationPipe())
-  app.enableCors()
+  // Cấu hình CORS (Cross-Origin Resource Sharing) cho ứng dụng
+  app.enableCors({
+    // Chỉ cho phép truy cập từ domain này
+    origin: 'https://dev-server-api.vercel.app',
+    // Chỉ cho phép phương thức GET
+    methods: ['GET'],
+    // Cho phép gửi cookies hoặc headers xác thực
+    credentials: true,
+  })
   app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
 
@@ -34,11 +42,23 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('docs', app, document)
-  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(document));
-  const port = process.env.NEST_PORT
-  await app.listen(port)
+  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(document, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Smart API Documentation',
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  }));
 
-  console.log(`Server is running on port http://localhost:${port}/admin,`)
+  app.use((req, res, next) => {
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    next();
+  });
+
+  const port = process.env.NEST_PORT || 3000
+  await app.listen(port, '0.0.0.0')
+
+  console.log(`Server is running on port http://localhost:${port}/swagger`)
 }
 
 bootstrap()
