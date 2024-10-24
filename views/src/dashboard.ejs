@@ -172,17 +172,17 @@
             try {
                 const jwt = localStorage.getItem('jwt');
                 if (!jwt) {
-                    window.location.href = `${API_PREFIX}/admin-login`;
+                    window.location.href = `admin/admin-login`;
                 }
             } catch (error) {
                 console.error('Error checking JWT:', error);
-                window.location.href = `${API_PREFIX}/admin-login`;
+                window.location.href = `admin/admin-login`;
             }
         });
 
         function logout() {
             localStorage.removeItem('jwt');
-            window.location.href = `${API_PREFIX}/admin-login`;
+            window.location.href = `admin/admin-login`;
         }
     </script>
 </body>

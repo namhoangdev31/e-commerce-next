@@ -7,7 +7,8 @@ import { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
 import process from 'process'
 import { doubleCsrf } from 'csrf-csrf'
-import * as swaggerUi from 'swagger-ui-express';
+import * as swaggerUI from 'swagger-ui-express'
+
 const requestIp = require('request-ip')
 
 async function bootstrap() {
@@ -18,14 +19,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe())
   // Cấu hình CORS (Cross-Origin Resource Sharing) cho ứng dụng
-  app.enableCors({
-    // Chỉ cho phép truy cập từ domain này
-    origin: 'https://dev-server-api.vercel.app',
-    // Chỉ cho phép phương thức GET
-    methods: ['GET'],
-    // Cho phép gửi cookies hoặc headers xác thực
-    credentials: true,
-  })
+  app.enableCors()
   app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
 
@@ -41,22 +35,22 @@ async function bootstrap() {
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('docs', app, document)
-  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(document, {
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Smart API Documentation',
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-  }));
 
-  app.use((req, res, next) => {
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-    next();
-  });
+  SwaggerModule.setup('docs', app, document)
+
+  app.use(
+    '/swagger',
+    swaggerUI.serve,
+    swaggerUI.setup(document, {
+      customSiteTitle: 'Smart API Documentation',
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    }),
+  )
 
   const port = process.env.NEST_PORT || 3000
-  await app.listen(port, '0.0.0.0')
+  await app.listen(port)
 
   console.log(`Server is running on port http://localhost:${port}/swagger`)
 }
