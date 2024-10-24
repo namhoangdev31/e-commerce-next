@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
+    "postinstall": "prisma generate",
     "build": "prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -26,7 +27,8 @@
     "seed": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/ormconfig.ts",
     "precommit": "lint-staged && npm run lint",
     "prepush": "npm run test:unit && npm run test:e2e",
-    "prepare": "husky"
+    "prepare": "husky",
+    "vercel-build": "prisma generate && nest build"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
