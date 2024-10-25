@@ -10,11 +10,6 @@ export type CustomRolesDocument = HydratedDocument<CustomRoles>
 @Injectable()
 @Schema({ timestamps: true })
 export class CustomRoles {
-  @Prop({ required: true, unique: true })
-  @IsString()
-  @IsNotEmpty()
-  customRoleId: string
-
   @Prop({ required: true })
   @IsString()
   @IsNotEmpty()

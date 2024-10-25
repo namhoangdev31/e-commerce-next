@@ -5,6 +5,8 @@ import { JwtModule } from '@nestjs/jwt'
 import process from 'process'
 import { DatabaseModule } from '../../database/database.module'
 import { MailModule } from '../mail/mail.module'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { UsersEntities } from './entities/user.entity'
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { MailModule } from '../mail/mail.module'
       },
     }),
     MailModule,
+    TypeOrmModule.forFeature([UsersEntities]),
   ],
   controllers: [UsersController],
   providers: [UsersService],

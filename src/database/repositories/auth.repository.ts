@@ -18,11 +18,9 @@ export class AuthRepository {
     private userModel: Model<UsersDocument>,
     @InjectModel(UserSession.name)
     private userSessionModel: Model<UserSessionDocument>,
-    @InjectRepository(UsersEntities)
-    private usersSqlModel: Repository<UsersEntities>,
   ) {}
 
-  public findById(id: string): Promise<UsersDocument> {
+  public findById(id: any): Promise<UsersDocument> {
     return this.userModel.findById(id)
   }
 
@@ -96,8 +94,8 @@ export class AuthRepository {
     return this.userSessionModel.deleteMany(filter)
   }
 
-  public async findAllSession(): Promise<UserSessionDocument[]> {
-    return this.userSessionModel.find().exec()
+  public async deleteSession(id: Types.ObjectId): Promise<any> {
+    return this.userSessionModel.findOneAndDelete({ userId: id })
   }
 
   public async updateSession(filter: any, update: any): Promise<any> {
@@ -120,5 +118,9 @@ export class AuthRepository {
     update: UpdateQuery<UsersDocument>,
   ): Promise<UsersDocument | null> {
     return this.userModel.findOneAndUpdate(filter, update, { new: true }).exec()
+  }
+
+  public async deleteById(id: string): Promise<UsersDocument | null> {
+    return this.userModel.findByIdAndDelete(id).exec()
   }
 }

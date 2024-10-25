@@ -24,10 +24,19 @@
       </schema-mapping>
     </data-source>
     <data-source name="oqopaojh_nest_test@103.97.126.29" uuid="85f757aa-06a6-47cb-8e05-12a9ff690a8a">
-      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" />
+      <database-info product="MySQL" version="5.7.41-cll-lve" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-9.1.0 (Revision: cf2917ea44ae2e43a4514a33771035aa99de73bf)" dbms="MYSQL" exact-version="5.7.41" exact-driver-version="9.1">
+        <extra-name-characters>$</extra-name-characters>
+        <identifier-quote-string>`</identifier-quote-string>
+        <jdbc-catalog-is-schema>true</jdbc-catalog-is-schema>
+      </database-info>
+      <case-sensitivity plain-identifiers="exact" quoted-identifiers="exact" />
       <secret-storage>master_key</secret-storage>
       <user-name>oqopaojh_nest_test</user-name>
-      <schema-mapping />
+      <schema-mapping>
+        <introspection-scope>
+          <node kind="schema" negative="1" />
+        </introspection-scope>
+      </schema-mapping>
     </data-source>
   </component>
 </project>

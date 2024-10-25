@@ -11,6 +11,8 @@ import process from 'process'
 import { JwtAuthGuard } from './jwt-auth.guard'
 import { APP_GUARD } from '@nestjs/core'
 import { MailModule } from '../mail/mail.module'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { UsersEntities } from '../users/entities/user.entity'
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { MailModule } from '../mail/mail.module'
       },
     }),
     MailModule,
+    TypeOrmModule.forFeature([UsersEntities]),
   ],
   providers: [
     AuthService,

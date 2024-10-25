@@ -46,7 +46,6 @@ export class JwtAuthGuard implements CanActivate {
       const session = await this.authRepository.findValidSession(sessionId, userId)
 
       if (!session) {
-        // await this.authRepository.deleteManySessions({ userId })
         throw new UnauthorizedException('Session expired')
       } else {
         await this.authRepository.updateSession(
@@ -54,9 +53,12 @@ export class JwtAuthGuard implements CanActivate {
           { isOnline: true, lastActiveAt: new Date() },
         )
       }
-      if (!data.user.isValidateEmail) {
+      const isEmailVerificationRoute = request.url === '/api/users/verify-email'
+
+      if (!isEmailVerificationRoute && !data.user.isValidateEmail) {
         throw new HttpException('Please validate your email!', HttpStatus.FORBIDDEN)
       }
+
       request['user'] = data.user
       return true
     } catch (e) {

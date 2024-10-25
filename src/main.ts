@@ -8,6 +8,7 @@ import { join } from 'path'
 import process from 'process'
 import { doubleCsrf } from 'csrf-csrf'
 import * as swaggerUI from 'swagger-ui-express'
+import { HttpExceptionFilter } from './shared/exceptions/http-exception-filter.exception'
 
 const requestIp = require('request-ip')
 
@@ -21,7 +22,7 @@ async function bootstrap() {
   app.enableCors()
   app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
-
+  app.useGlobalFilters(new HttpExceptionFilter())
   app.useStaticAssets(join(__dirname, '..', 'public'))
   app.setBaseViewsDir(join(__dirname, '..', 'views'))
   app.setViewEngine('ejs')

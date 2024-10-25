@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, Req, UnauthorizedException } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Req,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { LoginDto } from './dto/login.dto'
@@ -17,17 +23,22 @@ import { UsersDocument } from '../../database/schemas/users.schema'
 import { Types } from 'mongoose'
 import { LogoutResponse } from '../../interfaces/logout.interface'
 import { OtpDto } from './dto/otp.dto'
+import { InjectRepository } from '@nestjs/typeorm'
+import { UsersEntities } from '../users/entities/user.entity'
+import { Repository } from 'typeorm'
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userRepository: AuthRepository,
+    private readonly authRepository: AuthRepository,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    @InjectRepository(UsersEntities)
+    private usersSqlModel: Repository<UsersEntities>,
   ) {}
 
   async login(data: LoginDto, @Req() req: Request): Promise<LoginResponse> {
-    const user = await this.userRepository.findByEmail(data.email)
+    const user = await this.authRepository.findByEmail(data.email)
     if (!user) {
       throw new BadRequestException(INCORRECT_CREDENTIAL)
     }
@@ -45,11 +56,11 @@ export class AuthService {
       isRevoked: false,
       token: '',
     }
-    const deleteOldSession = await this.userRepository.deleteManySessions({ userId: user._id })
+    const deleteOldSession = await this.authRepository.deleteManySessions({ userId: user._id })
     if (!deleteOldSession) {
       throw new BadRequestException()
     }
-    const savedSession = await this.userRepository.saveSession({
+    const savedSession = await this.authRepository.saveSession({
       ...session,
       isOnline: true,
       lastActiveAt: new Date(),
@@ -62,7 +73,7 @@ export class AuthService {
     const accessToken = this.generateAccessToken(user, savedSession._id.toString())
     const refreshToken = this.generateRefreshToken(user._id.toString(), savedSession._id.toString())
 
-    await this.userRepository.updateSessionToken(savedSession._id, accessToken)
+    await this.authRepository.updateSessionToken(savedSession._id, accessToken)
 
     return {
       id: user._id,
@@ -72,29 +83,45 @@ export class AuthService {
   }
 
   async register(data: RegisterDto): Promise<RegisterInterface> {
-    const user = await this.userRepository.create(data)
-    if (user) {
-      try {
-        const otp = this.generateOTP()
-        await this.userRepository.saveOtp(user, otp)
-        const isSendMail = await this.mailService.sendUserOTP(user, otp)
-        if (!isSendMail) {
-          throw new BadRequestException('Failed to send OTP email')
-        }
-      } catch (e) {
-        console.error('Error sending OTP: ', e)
-        throw new BadRequestException('Failed to process OTP request')
+    let user, createUser
+    try {
+      user = await this.authRepository.create(data)
+      createUser = await this.usersSqlModel.save({
+        ...data,
+        passwordHash: user.passwordHash,
+        isValidateEmail: false,
+      })
+      if (!user && !createUser) {
+        throw new Error('Failed to create user in one of the databases')
       }
-    }
 
-    return {
-      accessToken: this.generateAccessToken(user),
-      message: 'Registration successful! Please check your email to validate your account.',
+      const otp = this.generateOTP()
+      await this.authRepository.saveOtp(user, otp)
+      const isSendMail = await this.mailService.sendUserOTP(user, otp)
+
+      if (!isSendMail) {
+        throw new InternalServerErrorException('Failed to send OTP email')
+      }
+
+      return {
+        accessToken: this.generateAccessToken(user),
+        message: 'Registration successful! Please check your email to validate your account.',
+      }
+    } catch (e) {
+      console.error('Error during registration: ', e)
+      // Rollback if either creation failed
+      if (user) await this.authRepository.deleteById(user._id)
+      if (createUser) await this.usersSqlModel.delete({ id: createUser.id })
+
+      throw new InternalServerErrorException(
+        `${e.toString().split(': ')[1]}`,
+        'Failed to process registration request',
+      )
     }
   }
 
   async reGenAccessToken(data: RefreshTokenDto): Promise<LoginResponse> {
-    const user = await this.userRepository.refreshToken(data)
+    const user = await this.authRepository.refreshToken(data)
     if (!user) {
       throw new UnauthorizedException('Invalid refresh token')
     }
@@ -102,7 +129,7 @@ export class AuthService {
     const accessToken = this.generateAccessToken(user)
     const refreshToken = this.generateRefreshToken(user._id)
 
-    const updatedUser = await this.userRepository.saveRefresh(refreshToken, user._id)
+    const updatedUser = await this.authRepository.saveRefresh(refreshToken, user._id)
     if (!updatedUser) {
       throw new BadRequestException('Failed to update refresh token')
     }
@@ -145,7 +172,7 @@ export class AuthService {
 
   async logout(@User() user: UsersDocument, @Req() req: Request): Promise<LogoutResponse> {
     try {
-      const deleteResult = await this.userRepository.deleteManySessions({
+      const deleteResult = await this.authRepository.deleteManySessions({
         userId: new Types.ObjectId(user._id),
       })
 

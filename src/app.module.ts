@@ -24,6 +24,7 @@ import { join } from 'path'
 import process from 'process'
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { UsersEntities } from './modules/users/entities/user.entity'
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -47,8 +48,9 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      synchronize: process.env.NODE_ENV === 'development',
+      synchronize: false,
       retryAttempts: 3,
+      entities: [UsersEntities],
       retryDelay: 3000,
     }),
     ThrottlerModule.forRoot([

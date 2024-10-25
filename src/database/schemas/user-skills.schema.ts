@@ -8,16 +8,12 @@ export type UserSkillsDocument = HydratedDocument<UserSkills>
 enum ProficiencyLevel {
   BEGINNER = 'Beginner',
   INTERMEDIATE = 'Intermediate',
-  EXPERT = 'Expert'
+  EXPERT = 'Expert',
 }
 
 @Injectable()
 @Schema({ timestamps: true })
 export class UserSkills {
-  @Prop({ required: true, unique: true })
-  @IsString()
-  userSkillId: string
-
   @Prop({ type: Types.ObjectId, ref: 'Users', required: true })
   userId: Types.ObjectId
 

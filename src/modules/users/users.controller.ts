@@ -21,10 +21,9 @@ import { UsersDocument } from '../../database/schemas/users.schema'
 import { ForgotPassDto, ResetPassDto } from './dto/forgot-pass.dto'
 import { ResetPassInterface } from '../../interfaces/reset-pass.interface'
 import { Public } from '../auth/decorators/public.decorator'
+import { ChangePassDto } from './dto/change-pass.dto'
 
 @Controller('users')
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -72,8 +71,9 @@ export class UsersController {
     },
   })
   @HttpCode(HttpStatus.OK)
-  async forgotPassword(@Body() email: ForgotPassDto, @User() user: UsersDocument) {
-    const result = await this.usersService.forgotPassword(email, user)
+  @Public()
+  async forgotPassword(@Body() email: ForgotPassDto) {
+    const result = await this.usersService.forgotPassword(email)
     return {
       status_code: HttpStatus.OK,
       message: 'Forgot password successfully!',
@@ -85,6 +85,7 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reset password' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Reset password successfully' })
+  @Public()
   async resetPassword(@Body() data: ResetPassDto): Promise<ResetPassInterface> {
     return this.usersService.resetPassword(data)
   }
@@ -93,6 +94,8 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verify email' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Verify email successfully!' })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async verifyEmail(@Body() body: OtpDto, @User() user: UsersDocument) {
     return this.usersService.verifyEmail(body, user)
   }
@@ -101,11 +104,10 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Change password' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Change password successfully' })
-  async changePassword(
-    @User() user: UsersDocument,
-    @Body('oldPassword') oldPassword: string,
-    @Body('newPassword') newPassword: string,
-  ) {
-    return this.usersService.changePassword(user, oldPassword, newPassword)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async changePassword(@User() user: UsersDocument, @Body() data: ChangePassDto) {
+    await this.usersService.changePassword(user, data)
+    return { status: HttpStatus.OK, message: 'Change password successfully' }
   }
 }
