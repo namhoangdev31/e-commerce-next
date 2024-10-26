@@ -22,7 +22,6 @@ async function bootstrap() {
   app.enableCors()
   app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
-  // app.useGlobalFilters(new HttpExceptionFilter())
   app.setViewEngine('ejs')
   app.useStaticAssets(join(__dirname, '..', 'public'))
   app.setBaseViewsDir(join(__dirname, '..', 'views'))
@@ -36,7 +35,13 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config)
 
-  SwaggerModule.setup('docs', app, document)
+  SwaggerModule.setup('docs', app, document, {
+    customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+    customJs: [
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js',
+    ],
+  })
 
   const port = process.env.NEST_PORT || 3000
   await app.listen(port)
