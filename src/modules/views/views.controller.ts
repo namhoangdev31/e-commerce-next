@@ -4,9 +4,11 @@ import { ViewsService } from './views.service'
 import { CreateViewDto } from './dto/create-view.dto'
 import { UpdateViewDto } from './dto/update-view.dto'
 import { Public } from '../auth/decorators/public.decorator'
+import { ApiTags } from '@nestjs/swagger'
 
 @Controller()
 @Public()
+@ApiTags('Views')
 export class ViewsController {
   constructor(private readonly viewsService: ViewsService) {}
 

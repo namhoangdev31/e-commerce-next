@@ -14,7 +14,7 @@ import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { OtpDto } from '../auth/dto/otp.dto'
 import { User } from '../../shared/decorators'
 import { UsersDocument } from '../../database/schemas/users.schema'
@@ -24,6 +24,7 @@ import { Public } from '../auth/decorators/public.decorator'
 import { ChangePassDto } from './dto/change-pass.dto'
 
 @Controller('users')
+@ApiTags('Users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

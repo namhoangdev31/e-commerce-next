@@ -17,11 +17,12 @@ import { UserDocument } from '../../database/schemas/user.schema'
 import { User } from '../../shared/decorators'
 import { Public } from './decorators/public.decorator'
 import { RefreshTokenDto } from './dto/refreshToken.dto'
-import { ApiBearerAuth, ApiResponse, ApiOperation } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { UsersDocument } from '../../database/schemas/users.schema'
 import { OtpDto } from './dto/otp.dto'
 
 @Controller('auth')
+@ApiTags('Authentication')
 export class AuthController {
   constructor(private authService: AuthService) {}
 

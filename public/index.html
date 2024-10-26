@@ -1,30 +1,491 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- The first thing in any HTML file should be the charset -->
   <meta charset="utf-8">
-
-  <!-- Make the page mobile compatible -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Allow installing the app to the homescreen -->
   <meta name="mobile-web-app-capable" content="yes">
-
-  <link rel="icon" href="./assets/images/icons/favicon.ico" />
-  <title>Truthy CMS</title>
+  <link rel="icon" href="./appIcon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+      background-color: #f4f7f6;
+      color: #333;
+      overflow-x: hidden;
+    }
+    .hero {
+      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      color: white;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') no-repeat center center;
+      background-size: cover;
+      opacity: 0.1;
+      animation: zoomInOut 20s infinite alternate;
+    }
+    @keyframes zoomInOut {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
+    }
+    .hero-content {
+      max-width: 800px;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 {
+      font-size: 4.5rem;
+      margin-bottom: 20px;
+      animation: fadeInUp 1s ease-out;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      background: linear-gradient(45deg, #fff, #f0f0f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      animation: fadeInUp 1s ease-out 0.5s both;
+      line-height: 1.6;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 15px 30px;
+      background-color: #fff;
+      color: #6e8efb;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      animation: fadeInUp 1s ease-out 1s both;
+      margin: 0 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,.3), transparent);
+      transition: all 0.5s;
+    }
+    .cta-button:hover::before {
+      left: 100%;
+    }
+    .cta-button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      background-color: #6e8efb;
+      color: #fff;
+    }
+    .features {
+      padding: 100px 20px;
+      background-color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .features::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: #fff;
+      transform: skewY(-3deg);
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .feature-card {
+      background-color: #f8f9fa;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+    .feature-card:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    .feature-card i {
+      font-size: 3rem;
+      color: #6e8efb;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .feature-card:hover i {
+      transform: scale(1.2);
+    }
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .feature-card p {
+      color: #666;
+      line-height: 1.6;
+    }
+    .nav-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    .nav-bar.scrolled {
+      padding: 10px 30px;
+      background-color: rgba(255, 255, 255, 0.98);
+    }
+    .nav-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #6e8efb;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .nav-logo:hover {
+      transform: scale(1.05);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+    }
+    .nav-links a {
+      color: #333;
+      text-decoration: none;
+      margin-left: 20px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #6e8efb;
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+    .nav-links a:hover {
+      color: #6e8efb;
+    }
+    .menu-toggle {
+      display: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #6e8efb;
+    }
+    .testimonials {
+      padding: 100px 20px;
+      background-color: #f4f7f6;
+      position: relative;
+      overflow: hidden;
+    }
+    .testimonials::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: #f4f7f6;
+      transform: skewY(3deg);
+    }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .testimonial-card {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .testimonial-card::before {
+      content: '\201C';
+      position: absolute;
+      top: -20px;
+      left: 20px;
+      font-size: 100px;
+      color: rgba(110, 142, 251, 0.1);
+      font-family: serif;
+    }
+    .testimonial-card:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    .testimonial-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      border: 4px solid #6e8efb;
+      transition: all 0.3s ease;
+    }
+    .testimonial-card:hover img {
+      transform: scale(1.1);
+    }
+    .testimonial-card p {
+      font-style: italic;
+      margin-bottom: 20px;
+      line-height: 1.6;
+      color: #555;
+    }
+    .testimonial-card h4 {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    .testimonial-card span {
+      color: #6e8efb;
+      font-size: 0.9rem;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 50px;
+      color: #333;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background-color: #6e8efb;
+    }
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 3rem;
+      }
+      .hero p {
+        font-size: 1.2rem;
+      }
+      .nav-bar {
+        padding: 10px 20px;
+      }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 20px 0;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .nav-links a {
+        margin: 10px 0;
+      }
+      .menu-toggle {
+        display: block;
+      }
+    }
+  </style>
 </head>
-
 <body>
-<!-- Display a message if JS has been disabled on the browser. -->
-<noscript>If you're seeing this message, that means
-  <strong>JavaScript has been disabled on your browser</strong>, please
-  <strong>enable JS</strong> to make this app work.</noscript>
+  <nav class="nav-bar">
+    <a href="#" class="nav-logo">LMS</a>
+    <div class="menu-toggle">
+      <i class="fas fa-bars"></i>
+    </div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="/admin">Documentation</a>
+      <a href="/admin/admin-login">Admin</a>
+      <a href="https://lms-learning-nhn.vercel.app" target="_blank">Learning Platform</a>
+    </div>
+  </nav>
 
-<!-- The app hooks into this div -->
-<div id="app"></div>
-<!-- A lot of magic happens in this file. HtmlWebpackPlugin automatically injects all assets (e.g. bundle.js, main.css) with the correct HTML tags, which is why they are missing in this file. Don't add any assets here! (Check out webpack.dev.babel.js and webpack.prod.babel.js if you want to know more) -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Revolutionize Your Learning Journey</h1>
+      <p>Embark on a transformative educational experience with our cutting-edge Learning Management System. Engage, evolve, and excel like never before.</p>
+      <a href="#features" class="cta-button">Discover Features</a>
+      <a href="https://lms-learning-nhn.vercel.app" class="cta-button" target="_blank">Begin Your Journey</a>
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <h2 class="section-title">Innovative Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <i class="fas fa-book-open"></i>
+        <h3>Intelligent Course Management</h3>
+        <p>Effortlessly organize and optimize your learning materials with our AI-powered interface.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-chart-line"></i>
+        <h3>Advanced Progress Analytics</h3>
+        <p>Gain deep insights into your learning journey with our comprehensive tracking and reporting system.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-puzzle-piece"></i>
+        <h3>Immersive Learning Modules</h3>
+        <p>Dive into interactive, gamified learning experiences that make education engaging and enjoyable.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-user-friends"></i>
+        <h3>Intuitive User Experience</h3>
+        <p>Navigate seamlessly through our platform, meticulously designed for learners and educators alike.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimonials" class="testimonials">
+    <h2 class="section-title">Success Stories</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User">
+        <p>"This LMS has completely transformed my approach to learning. The progress tracking keeps me motivated and focused!"</p>
+        <h4>Sarah Johnson</h4>
+        <span>Lifelong Learner</span>
+      </div>
+      <div class="testimonial-card">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+        <p>"As an educator, I find the course management tools revolutionary. It's streamlined my teaching process significantly."</p>
+        <h4>Michael Chen</h4>
+        <span>University Professor</span>
+      </div>
+      <div class="testimonial-card">
+        <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="User">
+        <p>"The interactive modules are captivating and effective. Learning has become an adventure I look forward to every day!"</p>
+        <h4>Emily Rodriguez</h4>
+        <span>Online Student</span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.body.style.opacity = '0';
+      setTimeout(() => {
+        document.body.style.transition = 'opacity 1s ease';
+        document.body.style.opacity = '1';
+      }, 100);
+
+      const navbar = document.querySelector('.nav-bar');
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.feature-card, .testimonial-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(el);
+      });
+    });
+  </script>
 </body>
-
 </html>

@@ -3,6 +3,7 @@ import { CreateRoleDto } from './dto/create-role.dto'
 import { UpdateRoleDto } from './dto/update-role.dto'
 import { RolesRepository } from '../../database/repositories/roles.repository'
 import { CreatePermissionDto } from './dto/create-permission.dto'
+import { AddRoleUserDto } from './dto/add-role-user.dto'
 
 @Injectable()
 export class RolesService {
@@ -25,6 +26,14 @@ export class RolesService {
     }
     return {
       message: 'Create successful!',
+      statusCode: 200,
+    }
+  }
+
+  async addRoleForUser(data: AddRoleUserDto) {
+    return {
+      message: 'Create successful!',
+      statusCode: 200,
     }
   }
 }

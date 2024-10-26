@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Matches, MaxLength, MinLength } from 'class-validator'
+import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 import {
   INVALID_PASSWORD_FORMAT,
@@ -10,10 +10,12 @@ export class RegisterDto {
   @MinLength(2)
   @MaxLength(25)
   @ApiProperty({ example: 'hoangnam' })
+  @IsNotEmpty({ message: 'UserName is required' })
   username: string
 
   @IsEmail()
   @ApiProperty({ example: 'nguyenhoangnam31082000@gmail.com' })
+  @IsNotEmpty({ message: 'Email is required' })
   email: string
 
   @IsString()
@@ -22,13 +24,16 @@ export class RegisterDto {
     message: INVALID_PASSWORD_FORMAT,
   })
   @ApiProperty({ example: 'Nam310820@' })
+  @IsNotEmpty({ message: 'Password is required' })
   password: string
 
   @IsString()
   @ApiProperty({ example: 'Hoang' })
+  @IsNotEmpty({ message: 'First Name is required' })
   firstName: string
 
   @IsString()
   @ApiProperty({ example: 'Nam' })
+  @IsNotEmpty({ message: 'Last Name is required' })
   lastName: string
 }

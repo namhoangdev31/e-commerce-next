@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsString } from 'class-validator'
 
 export class RefreshTokenDto {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'refreshToken is emtpy' })
   @IsString()
   refreshToken: string
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'userId is emtpy' })
   @IsString()
   userId: string
 }
