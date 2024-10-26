@@ -22,7 +22,7 @@ async function bootstrap() {
   app.enableCors()
   app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
-  app.useGlobalFilters(new HttpExceptionFilter())
+  // app.useGlobalFilters(new HttpExceptionFilter())
   app.setViewEngine('ejs')
   app.useStaticAssets(join(__dirname, '..', 'public'))
   app.setBaseViewsDir(join(__dirname, '..', 'views'))
