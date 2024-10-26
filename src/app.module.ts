@@ -27,6 +27,8 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersEntities } from './modules/users/entities/user.entity'
 import { SyncDataScheduleService } from './modules/sync-data-schedule/sync-data-schedule.service'
 import { ScheduleModule } from '@nestjs/schedule'
+import { SyncDataScheduleController } from './modules/sync-data-schedule/sync-data-schedule.controller'
+import { SyncDataScheduleModule } from './modules/sync-data-schedule/sync-data-schedule.module'
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -111,8 +113,9 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
     ]),
     MailModule,
     ScheduleModule.forRoot(),
+    SyncDataScheduleModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SyncDataScheduleService],
+  providers: [AppService],
 })
 export class AppModule {}

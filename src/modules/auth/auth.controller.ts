@@ -17,9 +17,16 @@ import { UserDocument } from '../../database/schemas/user.schema'
 import { User } from '../../shared/decorators'
 import { Public } from './decorators/public.decorator'
 import { RefreshTokenDto } from './dto/refreshToken.dto'
-import { ApiBearerAuth, ApiResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiResponse,
+  ApiOperation,
+  ApiTags,
+  ApiExcludeEndpoint,
+} from '@nestjs/swagger'
 import { UsersDocument } from '../../database/schemas/users.schema'
 import { OtpDto } from './dto/otp.dto'
+import { PROD_ENV } from '../../shared/constants/strings.constants'
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -66,4 +73,14 @@ export class AuthController {
   async logout(@User() user: UsersDocument, @Req() req: Request) {
     return this.authService.logout(user, req)
   }
+}
+
+const isProduction = process.env.NODE_ENV === PROD_ENV
+
+if (isProduction) {
+  ApiExcludeEndpoint()(
+    AuthController.prototype,
+    'login',
+    Object.getOwnPropertyDescriptor(AuthController.prototype, 'login'),
+  )
 }
