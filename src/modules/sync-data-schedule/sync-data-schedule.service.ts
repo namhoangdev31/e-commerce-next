@@ -8,6 +8,6 @@ export class SyncDataScheduleService {
     timeZone: process.env.TIMEZONE,
   })
   async syncData() {
-    Logger.log('ADD Setting')
+    Logger.error('ADD Setting')
   }
 }
