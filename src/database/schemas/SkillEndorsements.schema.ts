@@ -10,10 +10,6 @@ export type SkillEndorsementsDocument = HydratedDocument<SkillEndorsements>
 @Injectable()
 @Schema({ timestamps: true })
 export class SkillEndorsements {
-  @Prop({ required: true, unique: true })
-  @IsNotEmpty()
-  endorsementId: string
-
   @Prop({ type: Types.ObjectId, ref: 'UserSkills', required: true })
   userSkillId: Types.ObjectId
 

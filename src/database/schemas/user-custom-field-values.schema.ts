@@ -10,10 +10,6 @@ export type UserCustomFieldValuesDocument = HydratedDocument<UserCustomFieldValu
 @Injectable()
 @Schema({ timestamps: true })
 export class UserCustomFieldValues {
-  @Prop({ required: true, unique: true })
-  @IsString()
-  userCustomFieldValueId: string // UserCustomFieldValueID as the primary key
-
   @Prop({ type: Types.ObjectId, ref: 'Users', required: true }) // FK to Users
   userId: Types.ObjectId // Foreign Key to Users
 

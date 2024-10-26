@@ -1,26 +1,21 @@
-import { Injectable } from "@nestjs/common";
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
-import { IsNotEmpty, IsString, IsEnum } from "class-validator";
-import { Types } from "mongoose";
-import { Roles } from "./roles.schema";
+import { Injectable } from '@nestjs/common'
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { HydratedDocument } from 'mongoose'
+import { IsNotEmpty, IsString, IsEnum } from 'class-validator'
+import { Types } from 'mongoose'
+import { Roles } from './roles.schema'
 
-export type RolePermissionsDocument = HydratedDocument<RolePermissions>;
+export type RolePermissionsDocument = HydratedDocument<RolePermissions>
 
 export enum AccessLevelEnum {
-  READ = "Read",
-  WRITE = "Write",
-  DELETE = "Delete"
+  READ = 'Read',
+  WRITE = 'Write',
+  DELETE = 'Delete',
 }
 
 @Injectable()
 @Schema({ timestamps: true })
 export class RolePermissions {
-  @Prop({ required: true, unique: true })
-  @IsString()
-  @IsNotEmpty()
-  rolePermissionId: string
-
   @Prop({ type: Types.ObjectId, refPath: 'roleModel' })
   @IsNotEmpty()
   roleId: Types.ObjectId // FK to Roles or CustomRoles
@@ -39,4 +34,4 @@ export class RolePermissions {
   accessLevel: AccessLevelEnum
 }
 
-export const RolePermissionsSchema = SchemaFactory.createForClass(RolePermissions);
+export const RolePermissionsSchema = SchemaFactory.createForClass(RolePermissions)

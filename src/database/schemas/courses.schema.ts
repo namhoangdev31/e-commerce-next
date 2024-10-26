@@ -15,11 +15,6 @@ export class Courses {
   @Prop({ required: true, unique: true })
   @IsString()
   @IsNotEmpty()
-  courseId: string
-
-  @Prop({ required: true, unique: true })
-  @IsString()
-  @IsNotEmpty()
   elementId: string
 
   @Prop({ required: true, enum: ElementType })

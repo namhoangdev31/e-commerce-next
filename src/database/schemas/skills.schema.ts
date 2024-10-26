@@ -8,10 +8,6 @@ export type SkillsDocument = HydratedDocument<Skills>
 @Injectable()
 @Schema({ timestamps: true })
 export class Skills {
-  @Prop({ required: true, unique: true })
-  @IsString()
-  skillId: string // SkillID as the primary key
-
   @Prop({ required: true })
   @IsString()
   @IsNotEmpty()

@@ -8,11 +8,6 @@ export type ModulesDocument = HydratedDocument<Modules>
 @Injectable()
 @Schema({ timestamps: true })
 export class Modules {
-  @Prop({ required: true, unique: true })
-  @IsString()
-  @IsNotEmpty()
-  moduleID: string
-
   @Prop({ required: true })
   @IsNotEmpty()
   @IsString()

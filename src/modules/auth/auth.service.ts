@@ -39,6 +39,7 @@ export class AuthService {
 
   async login(data: LoginDto, @Req() req: Request): Promise<LoginResponse> {
     const user = await this.authRepository.findByEmail(data.email)
+    let role
     if (!user) {
       throw new BadRequestException(INCORRECT_CREDENTIAL)
     }
@@ -70,6 +71,11 @@ export class AuthService {
       throw new UnauthorizedException('Failed to create session')
     }
 
+    const findRoles = await this.authRepository.findUsersRoles({ userId: user._id })
+
+    if (!findRoles) {
+      role = ''
+    }
     const accessToken = this.generateAccessToken(user, savedSession._id.toString())
     const refreshToken = this.generateRefreshToken(user._id.toString(), savedSession._id.toString())
 

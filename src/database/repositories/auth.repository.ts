@@ -10,6 +10,7 @@ import { UserSession, UserSessionDocument } from '../schemas/user-session.schema
 import { UsersEntities } from '../../modules/users/entities/user.entity'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
+import { UserRoles, UserRolesDocument } from '../schemas/user-roles.schema'
 
 @Injectable()
 export class AuthRepository {
@@ -18,6 +19,8 @@ export class AuthRepository {
     private userModel: Model<UsersDocument>,
     @InjectModel(UserSession.name)
     private userSessionModel: Model<UserSessionDocument>,
+    @InjectModel(UserRoles.name)
+    private userRolesModel: Model<UserRolesDocument>,
   ) {}
 
   public findById(id: any): Promise<UsersDocument> {
@@ -122,5 +125,9 @@ export class AuthRepository {
 
   public async deleteById(id: string): Promise<UsersDocument | null> {
     return this.userModel.findByIdAndDelete(id).exec()
+  }
+
+  public async findUsersRoles(filter: any): Promise<UserRolesDocument> {
+    return this.userRolesModel.findOne(filter)
   }
 }

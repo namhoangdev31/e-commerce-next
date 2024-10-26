@@ -8,10 +8,6 @@ export type CustomFieldsDocument = HydratedDocument<CustomFields>
 @Injectable()
 @Schema({ timestamps: true })
 export class CustomFields {
-  @Prop({ required: true, unique: true })
-  @IsString()
-  customFieldId: string // CustomFieldID as the primary key
-
   @Prop({ required: true })
   @IsString()
   fieldName: string // FieldName

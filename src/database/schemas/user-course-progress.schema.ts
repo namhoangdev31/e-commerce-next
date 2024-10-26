@@ -1,6 +1,6 @@
 import { HydratedDocument, Types } from 'mongoose'
 import { Injectable } from '@nestjs/common'
-import { Prop, Schema } from '@nestjs/mongoose'
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { ModuleProgress } from './module-progress.schema'
 
 enum CourseStatus {
@@ -11,6 +11,7 @@ enum CourseStatus {
 }
 
 export type UserCourseProgressDocument = HydratedDocument<UserCourseProgress>
+
 @Injectable()
 @Schema({ timestamps: true })
 export class UserCourseProgress {
@@ -34,9 +35,6 @@ export class UserCourseProgress {
 
   @Prop([{ type: Types.ObjectId, ref: 'ModuleProgress' }])
   moduleProgress: ModuleProgress[]
-
-  @Prop([{ type: Types.ObjectId, ref: 'AssessmentScore' }])
-  assessmentScores: AssessmentScore[]
 
   @Prop({ default: 0 })
   timeSpent: number

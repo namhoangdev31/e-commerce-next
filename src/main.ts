@@ -10,7 +10,7 @@ import { doubleCsrf } from 'csrf-csrf'
 import * as swaggerUI from 'swagger-ui-express'
 import { HttpExceptionFilter } from './shared/exceptions/http-exception-filter.exception'
 
-const requestIp = require('request-ip')
+import requestIp from 'request-ip'
 
 async function bootstrap() {
   // const { invalidCsrfTokenError, generateToken, validateRequest, doubleCsrfProtection } =
@@ -23,9 +23,9 @@ async function bootstrap() {
   app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
   app.useGlobalFilters(new HttpExceptionFilter())
+  app.setViewEngine('ejs')
   app.useStaticAssets(join(__dirname, '..', 'public'))
   app.setBaseViewsDir(join(__dirname, '..', 'views'))
-  app.setViewEngine('ejs')
 
   const config = new DocumentBuilder()
     .setTitle('Welcome to Smart API Docs')

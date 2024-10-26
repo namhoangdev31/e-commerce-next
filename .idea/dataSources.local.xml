@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="dataSourceStorageLocal" created-in="IU-233.15619.7">
+  <component name="dataSourceStorageLocal" created-in="WS-242.23726.96">
     <data-source name="nest-test@localhost" uuid="aa5862b6-bccb-4a1b-ad2b-d3f202519d9f">
       <database-info product="Mongo DB" version="7.0.14" jdbc-version="4.2" driver-name="MongoDB JDBC Driver" driver-version="1.18" dbms="MONGO" exact-version="7.0.14" exact-driver-version="1.18" />
       <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
@@ -24,10 +24,9 @@
       </schema-mapping>
     </data-source>
     <data-source name="oqopaojh_nest_test@103.97.126.29" uuid="85f757aa-06a6-47cb-8e05-12a9ff690a8a">
-      <database-info product="MySQL" version="5.7.41-cll-lve" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-9.1.0 (Revision: cf2917ea44ae2e43a4514a33771035aa99de73bf)" dbms="MYSQL" exact-version="5.7.41" exact-driver-version="9.1">
-        <extra-name-characters>$</extra-name-characters>
+      <database-info product="MySQL" version="5.7.41-cll-lve" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-8.2.0 (Revision: 06a1f724497fd81c6a659131fda822c9e5085b6c)" dbms="MYSQL" exact-version="5.7.41" exact-driver-version="8.2">
+        <extra-name-characters>#@</extra-name-characters>
         <identifier-quote-string>`</identifier-quote-string>
-        <jdbc-catalog-is-schema>true</jdbc-catalog-is-schema>
       </database-info>
       <case-sensitivity plain-identifiers="exact" quoted-identifiers="exact" />
       <secret-storage>master_key</secret-storage>

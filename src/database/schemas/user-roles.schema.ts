@@ -13,10 +13,6 @@ enum RoleModelEnum {
 @Injectable()
 @Schema({ timestamps: true })
 export class UserRoles {
-  @Prop({ required: true, unique: true })
-  @IsString()
-  userRoleId: string
-
   @Prop({ type: Types.ObjectId, ref: 'Users', required: true })
   userId: Types.ObjectId
 
