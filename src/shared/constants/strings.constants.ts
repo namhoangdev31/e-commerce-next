@@ -1,3 +1,5 @@
+import process from 'process'
+
 export const USER_NOT_FOUND = 'User not found'
 export const DUPLICATED_EMAIL = 'Email is already in use'
 export const INVALID_PASSWORD_LENGTH = 'Password must be at least 8 characters long'
@@ -6,3 +8,6 @@ export const INVALID_PASSWORD_FORMAT =
 export const INCORRECT_CREDENTIAL = 'Incorrect login credentials'
 export const OTP_EMAIL_SEND_FAILED = 'Failed to send OTP email'
 export const OTP_EMAIL_SEND_SUCCESS = 'OTP email sent successfully'
+export const EMAIL_ADMIN = 'nguyenhoangnam31082000@gmail.com'
+export const SUPER_ADMIN = 'superadmin'
+export const DEFAULT_ROLE = 'student'

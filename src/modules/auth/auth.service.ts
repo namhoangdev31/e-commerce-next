@@ -10,7 +10,12 @@ import * as bcrypt from 'bcrypt'
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
 import { AuthRepository } from '../../database/repositories/auth.repository'
-import { INCORRECT_CREDENTIAL } from '../../shared/constants/strings.constants'
+import {
+  DEFAULT_ROLE,
+  EMAIL_ADMIN,
+  INCORRECT_CREDENTIAL,
+  SUPER_ADMIN,
+} from '../../shared/constants/strings.constants'
 import { LoginResponse } from 'src/interfaces/login'
 import { RefreshTokenDto } from './dto/refreshToken.dto'
 import process from 'process'
@@ -71,18 +76,21 @@ export class AuthService {
     if (!savedSession) {
       throw new UnauthorizedException('Failed to create session')
     }
+    if (user.email !== EMAIL_ADMIN) {
+      const findRoleInUser = await this.authRepository.findUsersRoles({ userId: userId })
 
-    const findRoleInUser = await this.authRepository.findUsersRoles({ userId: userId })
+      if (!findRoleInUser) {
+        role = DEFAULT_ROLE
+      }
 
-    if (!findRoleInUser) {
-      role = 'student'
+      roleId = new Types.ObjectId(findRoleInUser.roleId)
+
+      const findRole = await this.authRepository.findRolesFilter({ _id: roleId })
+
+      role = findRole.roleName
+    } else {
+      role = SUPER_ADMIN
     }
-
-    roleId = new Types.ObjectId(findRoleInUser.roleId)
-
-    const findRole = await this.authRepository.findRolesFilter({ _id: roleId })
-
-    role = findRole.roleName
 
     const accessToken = this.generateAccessToken(user, savedSession._id.toString(), role)
 

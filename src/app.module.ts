@@ -25,6 +25,8 @@ import process from 'process'
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersEntities } from './modules/users/entities/user.entity'
+import { SyncDataScheduleService } from './modules/sync-data-schedule/sync-data-schedule.service'
+import { ScheduleModule } from '@nestjs/schedule'
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -108,8 +110,9 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       },
     ]),
     MailModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SyncDataScheduleService],
 })
 export class AppModule {}
