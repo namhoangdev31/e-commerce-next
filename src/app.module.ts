@@ -108,6 +108,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
           { path: '/', module: SharedModule },
           { path: '/', module: RolesModule },
           { path: '/', module: ClassModule },
+          { path: '/db', module: SyncDataScheduleModule },
         ],
       },
     ]),

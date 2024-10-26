@@ -7,7 +7,7 @@ export class SyncDataScheduleController {
   constructor(private readonly syncDataScheduleService: SyncDataScheduleService) {}
 
   @Get()
-  @ApiExcludeEndpoint()
+  // @ApiExcludeEndpoint()
   syncData() {
     return this.syncDataScheduleService.syncDataURL()
   }
