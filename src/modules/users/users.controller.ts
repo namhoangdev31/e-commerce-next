@@ -27,38 +27,7 @@ import { ChangePassDto } from './dto/change-pass.dto'
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto)
-  }
-
-  @Get()
-  findAll() {
-    return this.usersService.findAll()
-  }
-
-  @Get(':id')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id)
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto)
-  }
-
-  @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id)
-  }
-
-  @Post('forgot-password')
+  @Post('forgotPassword')
   @ApiOperation({ summary: 'Forgot password' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -81,7 +50,7 @@ export class UsersController {
   }
 
   @Public()
-  @Post('reset-password')
+  @Post('resetPassword')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reset password' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Reset password successfully' })
@@ -90,7 +59,7 @@ export class UsersController {
     return this.usersService.resetPassword(data)
   }
 
-  @Post('verify-email')
+  @Post('verifyEmail')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verify email' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Verify email successfully!' })
@@ -100,7 +69,7 @@ export class UsersController {
     return this.usersService.verifyEmail(body, user)
   }
 
-  @Post('change-password')
+  @Post('changePassword')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Change password' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Change password successfully' })
@@ -110,4 +79,9 @@ export class UsersController {
     await this.usersService.changePassword(user, data)
     return { status: HttpStatus.OK, message: 'Change password successfully' }
   }
+
+  @Get('getProfile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getProfile() {}
 }

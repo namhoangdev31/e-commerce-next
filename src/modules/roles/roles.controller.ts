@@ -11,13 +11,13 @@ import { ApiBearerAuth } from '@nestjs/swagger'
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
-  @Post('create-permission-by-admin')
+  @Post('createPermissionByAdmin')
   createPermissionByAdmin(@Body() createPermissionDto: CreatePermissionDto) {
     return this.rolesService.createPermissionByAdmin(createPermissionDto)
   }
 
-  @Post('make-roles')
-  create(@Body() createRoleDto: CreateRoleDto) {
+  @Post('createRoleBySuperAdmin')
+  createRoleBySuperAdmin(@Body() createRoleDto: CreateRoleDto): Promise<any> {
     return this.rolesService.create(createRoleDto)
   }
 }

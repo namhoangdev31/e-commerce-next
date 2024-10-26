@@ -23,6 +23,8 @@ export class RolesService {
     if (!createdRole) {
       throw new InternalServerErrorException('Failed to create role')
     }
-    return createdRole
+    return {
+      message: 'Create successful!',
+    }
   }
 }

@@ -51,7 +51,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('refresh-token')
+  @Post('refreshToken')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   async refreshToken(@Body() dto: RefreshTokenDto) {

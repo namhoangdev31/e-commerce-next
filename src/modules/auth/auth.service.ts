@@ -39,7 +39,8 @@ export class AuthService {
 
   async login(data: LoginDto, @Req() req: Request): Promise<LoginResponse> {
     const user = await this.authRepository.findByEmail(data.email)
-    let role
+    let role, roleId
+    let userId = new Types.ObjectId(user._id)
     if (!user) {
       throw new BadRequestException(INCORRECT_CREDENTIAL)
     }
@@ -57,7 +58,7 @@ export class AuthService {
       isRevoked: false,
       token: '',
     }
-    const deleteOldSession = await this.authRepository.deleteManySessions({ userId: user._id })
+    const deleteOldSession = await this.authRepository.deleteManySessions({ userId: userId })
     if (!deleteOldSession) {
       throw new BadRequestException()
     }
@@ -71,12 +72,20 @@ export class AuthService {
       throw new UnauthorizedException('Failed to create session')
     }
 
-    const findRoles = await this.authRepository.findUsersRoles({ userId: user._id })
+    const findRoleInUser = await this.authRepository.findUsersRoles({ userId: userId })
 
-    if (!findRoles) {
-      role = ''
+    if (!findRoleInUser) {
+      role = 'student'
     }
-    const accessToken = this.generateAccessToken(user, savedSession._id.toString())
+
+    roleId = new Types.ObjectId(findRoleInUser.roleId)
+
+    const findRole = await this.authRepository.findRolesFilter({ _id: roleId })
+
+    role = findRole.roleName
+
+    const accessToken = this.generateAccessToken(user, savedSession._id.toString(), role)
+
     const refreshToken = this.generateRefreshToken(user._id.toString(), savedSession._id.toString())
 
     await this.authRepository.updateSessionToken(savedSession._id, accessToken)
@@ -147,13 +156,14 @@ export class AuthService {
     }
   }
 
-  private generateAccessToken(user: any, sessionId?: string): string {
+  private generateAccessToken(user: any, sessionId?: string, role?: string): string {
     const payload = {
       userId: user._id,
       sessionId,
       user: {
         _id: user._id,
         email: user.email,
+        role: role,
         firstName: user.firstName,
         lastName: user.lastName,
         isValidateEmail: user.isValidateEmail,
