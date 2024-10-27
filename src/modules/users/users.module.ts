@@ -6,7 +6,7 @@ import process from 'process'
 import { DatabaseModule } from '../../database/database.module'
 import { MailModule } from '../mail/mail.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { UsersEntities } from './entities/user.entity'
+import { UsersEntities } from '../../database/entity/user.entity'
 
 @Module({
   imports: [

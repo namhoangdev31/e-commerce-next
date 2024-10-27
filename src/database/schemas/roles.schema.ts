@@ -8,7 +8,7 @@ export type RolesDocument = HydratedDocument<Roles>
 @Injectable()
 @Schema({ timestamps: true })
 export class Roles {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   @IsString()
   @IsNotEmpty()
   roleName: string

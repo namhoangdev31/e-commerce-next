@@ -29,7 +29,7 @@ import { Types } from 'mongoose'
 import { LogoutResponse } from '../../interfaces/logout.interface'
 import { OtpDto } from './dto/otp.dto'
 import { InjectRepository } from '@nestjs/typeorm'
-import { UsersEntities } from '../users/entities/user.entity'
+import { UsersEntities } from '../../database/entity/user.entity'
 import { Repository } from 'typeorm'
 
 @Injectable()
@@ -44,8 +44,6 @@ export class AuthService {
 
   async login(data: LoginDto, @Req() req: Request): Promise<LoginResponse> {
     const user = await this.authRepository.findByEmail(data.email)
-    let role, roleId
-    let userId = new Types.ObjectId(user._id)
     if (!user) {
       throw new BadRequestException(INCORRECT_CREDENTIAL)
     }
@@ -54,7 +52,10 @@ export class AuthService {
     if (!passwordMatched) {
       throw new BadRequestException(INCORRECT_CREDENTIAL)
     }
+
+    const userId = new Types.ObjectId(user._id)
     const clientIp = requestIp.getClientIp(req as any)
+
     const session = {
       userId: user._id,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
@@ -62,38 +63,29 @@ export class AuthService {
       ipAddress: clientIp,
       isRevoked: false,
       token: '',
-    }
-    const deleteOldSession = await this.authRepository.deleteManySessions({ userId: userId })
-    if (!deleteOldSession) {
-      throw new BadRequestException()
-    }
-    const savedSession = await this.authRepository.saveSession({
-      ...session,
       isOnline: true,
       lastActiveAt: new Date(),
-    })
+    }
 
+    await this.authRepository.deleteManySessions({ userId })
+
+    const savedSession = await this.authRepository.saveSession(session)
     if (!savedSession) {
       throw new UnauthorizedException('Failed to create session')
     }
+
+    let role = user.email === EMAIL_ADMIN ? SUPER_ADMIN : DEFAULT_ROLE
+
     if (user.email !== EMAIL_ADMIN) {
-      const findRoleInUser = await this.authRepository.findUsersRoles({ userId: userId })
-
-      if (!findRoleInUser) {
-        role = DEFAULT_ROLE
+      const findRoleInUser = await this.authRepository.findUsersRoles({ userId })
+      if (findRoleInUser) {
+        const roleId = new Types.ObjectId(findRoleInUser.roleId)
+        const findRole = await this.authRepository.findRolesFilter({ _id: roleId })
+        role = findRole.roleName
       }
-
-      roleId = new Types.ObjectId(findRoleInUser.roleId)
-
-      const findRole = await this.authRepository.findRolesFilter({ _id: roleId })
-
-      role = findRole.roleName
-    } else {
-      role = SUPER_ADMIN
     }
 
     const accessToken = this.generateAccessToken(user, savedSession._id.toString(), role)
-
     const refreshToken = this.generateRefreshToken(user._id.toString(), savedSession._id.toString())
 
     await this.authRepository.updateSessionToken(savedSession._id, accessToken)
@@ -108,23 +100,21 @@ export class AuthService {
   async register(data: RegisterDto): Promise<RegisterInterface> {
     let user, createUser
     try {
-      user = await this.authRepository.create(data)
-      createUser = await this.usersSqlModel.save({
+      const user = await this.authRepository.create(data)
+      const createUser = await this.usersSqlModel.save({
         ...data,
         passwordHash: user.passwordHash,
         isValidateEmail: false,
       })
-      if (!user && !createUser) {
+      if (!user || !createUser) {
         throw new Error('Failed to create user in one of the databases')
       }
 
       const otp = this.generateOTP()
-      await this.authRepository.saveOtp(user, otp)
-      const isSendMail = await this.mailService.sendUserOTP(user, otp)
-
-      if (!isSendMail) {
-        throw new InternalServerErrorException('Failed to send OTP email')
-      }
+      await Promise.all([
+        this.authRepository.saveOtp(user, otp),
+        this.mailService.sendUserOTP(user, otp),
+      ])
 
       return {
         accessToken: this.generateAccessToken(user),
@@ -132,10 +122,10 @@ export class AuthService {
       }
     } catch (e) {
       console.error('Error during registration: ', e)
-      // Rollback if either creation failed
-      if (user) await this.authRepository.deleteById(user._id)
-      if (createUser) await this.usersSqlModel.delete({ id: createUser.id })
-
+      await Promise.all([
+        user && this.authRepository.deleteById(user._id),
+        createUser && this.usersSqlModel.delete({ id: createUser.id }),
+      ])
       throw new InternalServerErrorException(
         `${e.toString().split(': ')[1]}`,
         'Failed to process registration request',
@@ -143,8 +133,9 @@ export class AuthService {
     }
   }
 
-  async reGenAccessToken(data: RefreshTokenDto): Promise<LoginResponse> {
+  async refreshToken(data: RefreshTokenDto): Promise<LoginResponse> {
     const user = await this.authRepository.refreshToken(data)
+
     if (!user) {
       throw new UnauthorizedException('Invalid refresh token')
     }
@@ -177,6 +168,7 @@ export class AuthService {
         isValidateEmail: user.isValidateEmail,
       },
     }
+
     return this.jwtService.sign(payload, {
       expiresIn: '30d',
       secret: process.env.JWT_SECRET,

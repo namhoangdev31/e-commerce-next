@@ -63,7 +63,7 @@ export class AuthController {
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   async refreshToken(@Body() dto: RefreshTokenDto) {
-    return this.authService.reGenAccessToken(dto)
+    return this.authService.refreshToken(dto)
   }
 
   @UseGuards(JwtAuthGuard)

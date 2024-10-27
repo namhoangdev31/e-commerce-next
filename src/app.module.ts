@@ -24,10 +24,7 @@ import { join } from 'path'
 import process from 'process'
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { UsersEntities } from './modules/users/entities/user.entity'
-import { SyncDataScheduleService } from './modules/sync-data-schedule/sync-data-schedule.service'
 import { ScheduleModule } from '@nestjs/schedule'
-import { SyncDataScheduleController } from './modules/sync-data-schedule/sync-data-schedule.controller'
 import { SyncDataScheduleModule } from './modules/sync-data-schedule/sync-data-schedule.module'
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
@@ -38,6 +35,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -54,7 +52,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       database: process.env.DB_DATABASE,
       synchronize: false,
       retryAttempts: 3,
-      entities: [UsersEntities],
+      entities: [__dirname + './database/entity/*.entity{.ts,.js}'],
       retryDelay: 3000,
     }),
     ThrottlerModule.forRoot([
@@ -63,18 +61,6 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
         limit: 10,
       },
     ]),
-    DatabaseModule,
-    AuthModule,
-    CallModule,
-    ClassModule,
-    GlobalModule,
-    HeaderModule,
-    MessagesModule,
-    RolesModule,
-    SharedModule,
-    StreamModule,
-    UsersModule,
-    ViewsModule,
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
@@ -96,6 +82,18 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
         },
       },
     }),
+    DatabaseModule,
+    AuthModule,
+    CallModule,
+    ClassModule,
+    GlobalModule,
+    HeaderModule,
+    MessagesModule,
+    RolesModule,
+    SharedModule,
+    StreamModule,
+    UsersModule,
+    ViewsModule,
     RouterModule.register([
       { path: ADMIN_PREFIX, module: ViewsModule },
       {
@@ -113,7 +111,6 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       },
     ]),
     MailModule,
-    ScheduleModule.forRoot(),
     SyncDataScheduleModule,
   ],
   controllers: [AppController],

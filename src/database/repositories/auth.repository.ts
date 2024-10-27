@@ -7,7 +7,7 @@ import { DUPLICATED_EMAIL } from '../../shared/constants/strings.constants'
 import { Users, UsersDocument } from '../schemas/users.schema'
 import { RefreshTokenDto } from '../../modules/auth/dto/refreshToken.dto'
 import { UserSession, UserSessionDocument } from '../schemas/user-session.schema'
-import { UsersEntities } from '../../modules/users/entities/user.entity'
+import { UsersEntities } from '../entity/user.entity'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UserRoles, UserRolesDocument } from '../schemas/user-roles.schema'
@@ -68,11 +68,11 @@ export class AuthRepository {
   }
 
   public async refreshToken(data: RefreshTokenDto): Promise<UsersDocument> {
-    const user = await this.userModel.findOne({
+    let userId = new Types.ObjectId(data.userId)
+    return this.userModel.findOne({
       refreshToken: data.refreshToken,
-      _id: data.userId,
+      _id: userId,
     })
-    return user
   }
 
   public async saveOtp(user: UsersDocument, otp: string): Promise<UsersDocument> {

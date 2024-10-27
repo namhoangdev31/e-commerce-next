@@ -26,7 +26,11 @@ import { SharedModule } from '../shared/shared.module'
 import { UsersRepository } from './repositories/users.repository'
 import { CoursesRepository } from './repositories/courses.repository'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { UsersEntities } from '../modules/users/entities/user.entity'
+import { UsersEntities } from './entity/user.entity'
+import { RoleEntity } from './entity/role.entity'
+import { ModulesEntity } from './entity/modules.entity'
+import { PermissionsEntity } from './entity/permissions.entity'
+import { UserRolesEntity } from './entity/user-roles.entity'
 
 @Module({
   imports: [
@@ -49,7 +53,13 @@ import { UsersEntities } from '../modules/users/entities/user.entity'
       { name: UserSession.name, schema: UserSessionSchema },
     ]),
     SharedModule,
-    TypeOrmModule.forFeature([UsersEntities]),
+    TypeOrmModule.forFeature([
+      UsersEntities,
+      RoleEntity,
+      ModulesEntity,
+      PermissionsEntity,
+      UserRolesEntity,
+    ]),
   ],
   providers: [
     AuthRepository,
