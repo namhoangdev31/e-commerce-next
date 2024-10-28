@@ -13,8 +13,6 @@ import { IsEmail, IsNotEmpty, IsString, IsOptional, IsBoolean, IsDate } from 'cl
 import { RoleEntity } from './role.entity'
 import { UserRolesEntity } from './user-roles.entity'
 import { UserSkillEntity } from './user-skill.entity'
-import { UserCustomFieldValuesEntity } from './user-custom-field-values.entity'
-import { CourseTemplatesEntity } from './course-templates.entity'
 import { UserSessionEntity } from './user-session.entity'
 
 @Entity('users')
@@ -104,17 +102,9 @@ export class UsersEntities {
   @OneToMany(() => UserRolesEntity, userRole => userRole.user)
   userRoles: UserRolesEntity[]
 
-  @OneToMany(() => UserSkillEntity, userRole => userRole.user)
+  @OneToMany(() => UserSkillEntity, userSkill => userSkill.user)
   userSkills: UserSkillEntity[]
 
-  @OneToMany(() => UserCustomFieldValuesEntity, userCustomFieldValues => userCustomFieldValues.user)
-  userCustomFieldValues: UserCustomFieldValuesEntity[]
-
-  //courseTemplates
-  @OneToMany(() => CourseTemplatesEntity, courseTemplates => courseTemplates.creator)
-  courseTemplates: CourseTemplatesEntity[]
-
-  //userSessions
-  @OneToMany(() => UserSessionEntity, userSessions => userSessions.user)
+  @OneToMany(() => UserSessionEntity, userSession => userSession.user)
   userSessions: UserSessionEntity[]
 }

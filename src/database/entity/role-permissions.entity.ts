@@ -1,6 +1,16 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { Permissions } from './Permissions'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm'
+
 import { RoleEntity } from './role.entity'
+import { PermissionsEntity } from './permissions.entity'
 
 @Index('role_permission_id', ['rolePermissionId'], { unique: true })
 @Index('role_id', ['roleId'], {})
@@ -25,15 +35,15 @@ export class RolePermissionsEntity {
   @Column('enum', { name: 'access_level', enum: ['Read', 'Write', 'Delete'] })
   accessLevel: 'Read' | 'Write' | 'Delete'
 
-  @Column('timestamp', {
+  @CreateDateColumn({
     name: 'created_at',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'timestamp',
   })
   createdAt: Date
 
-  @Column('timestamp', {
+  @UpdateDateColumn({
     name: 'updated_at',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'timestamp',
   })
   updatedAt: Date
 
@@ -44,10 +54,10 @@ export class RolePermissionsEntity {
   @JoinColumn([{ name: 'role_id', referencedColumnName: 'id' }])
   role: RoleEntity
 
-  @ManyToOne(() => Permissions, permissions => permissions.rolePermissions, {
+  @ManyToOne(() => PermissionsEntity, permissions => permissions.rolePermissions, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
   })
   @JoinColumn([{ name: 'permission_id', referencedColumnName: 'id' }])
-  permission: Permissions
+  permission: PermissionsEntity
 }

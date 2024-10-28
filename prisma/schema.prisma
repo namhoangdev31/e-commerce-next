@@ -150,7 +150,7 @@ model PathCourse {
   @@map("path_courses")
 }
 
-model LearnerPathProgressEntity {
+model LearnerPathProgress {
   id               Int          @id @default(autoincrement())
   learnerId        String
   pathId           Int

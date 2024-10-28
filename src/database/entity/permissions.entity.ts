@@ -4,10 +4,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
 import { ModulesEntity } from './modules.entity'
+import { RolePermissionsEntity } from './role-permissions.entity'
 
 @Entity('permissions')
 export class PermissionsEntity {
@@ -35,4 +37,8 @@ export class PermissionsEntity {
   @ManyToOne(() => ModulesEntity, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'module_id' })
   module: ModulesEntity
+
+  //rolePermissions
+  @OneToMany(() => RolePermissionsEntity, rolePermissions => rolePermissions.permission)
+  rolePermissions: RolePermissionsEntity[]
 }

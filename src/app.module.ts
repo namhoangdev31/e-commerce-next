@@ -31,6 +31,10 @@ import { RoleEntity } from './database/entity/role.entity'
 import { BadgesEntity } from './database/entity/badges.entity'
 import { PermissionsEntity } from './database/entity/permissions.entity'
 import { ModulesEntity } from './database/entity/modules.entity'
+import { UserSkillEntity } from './database/entity/user-skill.entity'
+import { UserSessionEntity } from './database/entity/user-session.entity'
+import { RolePermissionsEntity } from './database/entity/role-permissions.entity'
+import { SkillsEntity } from './database/entity/skills.entity'
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -59,11 +63,15 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       retryAttempts: 3,
       entities: [
         UsersEntities,
-        UserRolesEntity,
-        RoleEntity,
-        BadgesEntity,
         PermissionsEntity,
+        RoleEntity,
         ModulesEntity,
+        UserRolesEntity,
+        BadgesEntity,
+        UserSkillEntity,
+        UserSessionEntity,
+        RolePermissionsEntity,
+        SkillsEntity,
       ],
       retryDelay: 3000,
     }),

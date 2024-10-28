@@ -32,6 +32,10 @@ import { ModulesEntity } from './entity/modules.entity'
 import { PermissionsEntity } from './entity/permissions.entity'
 import { UserRolesEntity } from './entity/user-roles.entity'
 import { BadgesEntity } from './entity/badges.entity'
+import { UserSkillEntity } from './entity/user-skill.entity'
+import { UserSessionEntity } from './entity/user-session.entity'
+import { SkillsEntity } from './entity/skills.entity'
+import { RolePermissionsEntity } from './entity/role-permissions.entity'
 
 @Module({
   imports: [
@@ -56,11 +60,15 @@ import { BadgesEntity } from './entity/badges.entity'
     SharedModule,
     TypeOrmModule.forFeature([
       UsersEntities,
+      PermissionsEntity,
       RoleEntity,
       ModulesEntity,
-      PermissionsEntity,
       UserRolesEntity,
       BadgesEntity,
+      UserSkillEntity,
+      UserSessionEntity,
+      RolePermissionsEntity,
+      SkillsEntity,
     ]),
   ],
   providers: [

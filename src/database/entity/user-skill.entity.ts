@@ -1,13 +1,14 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm'
-import { SkillEndorsementsEntity } from './skill-endorsements.entity'
 import { SkillsEntity } from './skills.entity'
 import { UsersEntities } from './user.entity'
 
@@ -33,20 +34,17 @@ export class UserSkillEntity {
   @Column('tinyint', { name: 'selfAssessed', width: 1 })
   selfAssessed: boolean
 
-  @Column('timestamp', {
-    name: 'createdAt',
-    default: () => "'CURRENT_TIMESTAMP(6)'",
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp',
   })
   createdAt: Date
 
-  @Column('timestamp', {
-    name: 'updatedAt',
-    default: () => "'CURRENT_TIMESTAMP(6)'",
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp',
   })
   updatedAt: Date
-
-  @OneToMany(() => SkillEndorsementsEntity, skillEndorsements => skillEndorsements.userSkill)
-  skillEndorsements: SkillEndorsementsEntity[]
 
   @ManyToOne(() => SkillsEntity, skills => skills.userSkills, {
     onDelete: 'RESTRICT',

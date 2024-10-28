@@ -7,7 +7,6 @@ import {
   OneToMany,
 } from 'typeorm'
 import { IsEmpty, IsNotEmpty, MinLength } from 'class-validator'
-import { CustomRolesEntity } from './custom-roles.entity'
 
 @Entity('roles')
 export class RoleEntity {
@@ -49,8 +48,4 @@ export class RoleEntity {
     name: 'updated_at',
   })
   updated_at: Date
-
-  //customRoles
-  @OneToMany(() => CustomRolesEntity, customRoles => customRoles.parentRole)
-  customRoles: CustomRolesEntity[]
 }
