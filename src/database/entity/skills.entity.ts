@@ -1,16 +1,18 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { UserSkillEntity } from './user-skill.entity'
+import { IsNotEmpty } from 'class-validator'
 
 @Entity('skills')
 export class SkillsEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number
 
-  @Column('varchar', { name: 'skillName', length: 100 })
+  @Column({ name: 'skill_name', length: 100, type: 'varchar' })
   skillName: string
 
-  @Column('varchar', { name: 'description', nullable: true, length: 256 })
-  description: string | null
+  @Column({ name: 'description', nullable: true, type: 'text' })
+  @IsNotEmpty()
+  description: string
 
   @OneToMany(() => UserSkillEntity, userSkill => userSkill.skill)
   userSkills: UserSkillEntity[]

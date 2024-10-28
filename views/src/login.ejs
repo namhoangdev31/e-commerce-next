@@ -85,7 +85,7 @@
             .then(data => {
                 if (data.accessToken) {
                     localStorage.setItem('jwt', data.accessToken);
-                    window.location.href = `admin/admin-dashboard`;
+                    window.location.href = `/admin/dashboard`;
                 } else {
                     alert(data.message);
                 }
