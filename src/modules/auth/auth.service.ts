@@ -101,12 +101,20 @@ export class AuthService {
     let user, createUser
     try {
       const user = await this.authRepository.create(data)
-      const createUser = await this.usersSqlModel.save({
-        ...data,
-        passwordHash: user.passwordHash,
-        isValidateEmail: false,
-      })
-      if (!user || !createUser) {
+      const findUser = await this.usersSqlModel
+        .createQueryBuilder('users')
+        .where('email = :email', { email: data.email })
+        .getOne()
+
+      if (!findUser) {
+        createUser = await this.usersSqlModel.save({
+          ...data,
+          passwordHash: user.passwordHash,
+          isValidateEmail: false,
+        })
+      }
+
+      if (!user) {
         throw new Error('Failed to create user in one of the databases')
       }
 
