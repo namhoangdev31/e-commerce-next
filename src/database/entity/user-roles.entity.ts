@@ -74,24 +74,19 @@ export class UserRolesEntity {
 
   @CreateDateColumn({
     name: 'created_at',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date
 
   @UpdateDateColumn({
     name: 'updated_at',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date
 
-  @ManyToOne(() => UsersEntities, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UsersEntities, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: UsersEntities
 
-  @ManyToOne(() => RoleEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => RoleEntity, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'role_id' })
   role: RoleEntity
 

@@ -5,8 +5,15 @@ import {
   Unique,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
 } from 'typeorm'
 import { IsEmail, IsNotEmpty, IsString, IsOptional, IsBoolean, IsDate } from 'class-validator'
+import { RoleEntity } from './role.entity'
+import { UserRolesEntity } from './user-roles.entity'
+import { UserSkillEntity } from './user-skill.entity'
+import { UserCustomFieldValuesEntity } from './user-custom-field-values.entity'
 
 @Entity('users')
 @Unique(['username', 'email'])
@@ -14,12 +21,16 @@ export class UsersEntities {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   @IsString()
   @IsNotEmpty()
   username: string
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   @IsEmail()
   @IsNotEmpty()
   email: string
@@ -64,9 +75,36 @@ export class UsersEntities {
   @IsDate()
   timeUpdateOtp?: Date
 
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date
+  @Column({
+    name: 'role_id',
+    type: 'int',
+    nullable: true,
+  })
+  roleId: number
 
-  @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt: Date
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  created_at: Date
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updated_at: Date
+
+  @ManyToOne(() => RoleEntity, { nullable: true, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'role_id' })
+  role: RoleEntity
+
+  @OneToMany(() => UserRolesEntity, userRole => userRole.user)
+  userRoles: UserRolesEntity[]
+
+  @OneToMany(() => UserSkillEntity, userRole => userRole.user)
+  userSkills: UserSkillEntity[]
+
+  @OneToMany(() => UserCustomFieldValuesEntity, userCustomFieldValues => userCustomFieldValues.user)
+  userCustomFieldValues: UserCustomFieldValuesEntity[]
 }

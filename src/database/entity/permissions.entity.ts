@@ -32,7 +32,7 @@ export class PermissionsEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
 
-  @ManyToOne(() => ModulesEntity)
+  @ManyToOne(() => ModulesEntity, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'module_id' })
   module: ModulesEntity
 }

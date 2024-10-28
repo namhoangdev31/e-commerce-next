@@ -18,7 +18,7 @@ export enum AccessLevelEnum {
 export class RolePermissions {
   @Prop({ type: Types.ObjectId, refPath: 'roleModel' })
   @IsNotEmpty()
-  roleId: Types.ObjectId // FK to Roles or CustomRoles
+  roleId: Types.ObjectId // FK to Roles or CustomRolesEntity
 
   @Prop({ type: String, required: true, enum: ['Roles', 'CustomRoles'] })
   @IsString()

@@ -82,7 +82,10 @@ export class UsersController {
   }
 
   @Get('getProfile')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  async getProfile() {}
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  @Public()
+  async getProfile() {
+    return await this.usersService.getDetailUser()
+  }
 }

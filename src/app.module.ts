@@ -19,13 +19,18 @@ import { RouterModule } from '@nestjs/core'
 import { MailerModule } from '@nestjs-modules/mailer'
 import { MailModule } from './modules/mail/mail.module'
 import { ThrottlerModule } from '@nestjs/throttler'
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter'
 import { join } from 'path'
 import process from 'process'
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ScheduleModule } from '@nestjs/schedule'
 import { SyncDataScheduleModule } from './modules/sync-data-schedule/sync-data-schedule.module'
+import { UsersEntities } from './database/entity/user.entity'
+import { UserRolesEntity } from './database/entity/user-roles.entity'
+import { RoleEntity } from './database/entity/role.entity'
+import { BadgesEntity } from './database/entity/badges.entity'
+import { PermissionsEntity } from './database/entity/permissions.entity'
+import { ModulesEntity } from './database/entity/modules.entity'
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -50,9 +55,16 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      synchronize: false,
+      synchronize: true,
       retryAttempts: 3,
-      entities: [__dirname + './database/entity/*.entity{.ts,.js}'],
+      entities: [
+        UsersEntities,
+        UserRolesEntity,
+        RoleEntity,
+        BadgesEntity,
+        PermissionsEntity,
+        ModulesEntity,
+      ],
       retryDelay: 3000,
     }),
     ThrottlerModule.forRoot([

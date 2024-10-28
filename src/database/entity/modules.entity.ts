@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm'
+import { Permissions } from './Permissions'
 
 @Entity('modules')
 export class ModulesEntity {
@@ -16,4 +24,7 @@ export class ModulesEntity {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
+
+  @OneToMany(() => Permissions, permissions => permissions.module)
+  permissions: Permissions[]
 }

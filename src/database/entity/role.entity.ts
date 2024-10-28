@@ -1,5 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm'
 import { IsEmpty, IsNotEmpty, MinLength } from 'class-validator'
+import { CustomRolesEntity } from './custom-roles.entity'
 
 @Entity('roles')
 export class RoleEntity {
@@ -19,10 +27,9 @@ export class RoleEntity {
   @Column({
     name: 'description',
     type: 'text',
-    unique: true,
+    nullable: true,
   })
   @IsNotEmpty()
-  @MinLength(6)
   description: string
 
   @Column({
@@ -33,17 +40,17 @@ export class RoleEntity {
   @IsEmpty()
   isSystem: boolean
 
-  @Column({
+  @CreateDateColumn({
     name: 'created_at',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
   })
-  createdAt: Date
-  @Column({
+  created_at: Date
+
+  @UpdateDateColumn({
     name: 'updated_at',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
   })
-  updatedAt: Date
+  updated_at: Date
+
+  //customRoles
+  @OneToMany(() => CustomRolesEntity, customRoles => customRoles.parentRole)
+  customRoles: CustomRolesEntity[]
 }

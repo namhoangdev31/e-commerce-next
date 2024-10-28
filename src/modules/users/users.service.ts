@@ -6,12 +6,9 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
-import { CreateUserDto } from './dto/create-user.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
 import { OtpDto } from '../auth/dto/otp.dto'
 import { UsersDocument } from '../../database/schemas/users.schema'
 import { AuthRepository } from '../../database/repositories/auth.repository'
-import { JwtService } from '@nestjs/jwt'
 import { MailService } from '../mail/mail.service'
 import { ForgotPassDto, ResetPassDto } from './dto/forgot-pass.dto'
 import { User } from '../../shared/decorators'
@@ -33,26 +30,6 @@ export class UsersService {
     @InjectRepository(UsersEntities)
     private usersSqlModel: Repository<UsersEntities>,
   ) {}
-
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user'
-  }
-
-  findAll() {
-    return `This action returns all users`
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`
-  }
 
   async forgotPassword(data: ForgotPassDto): Promise<void> {
     try {
@@ -208,41 +185,12 @@ export class UsersService {
       throw new InternalServerErrorException()
     }
   }
-  // async getDetailUser(user: UsersDocument): Promise<any> {
-  //   try {
-  //     const userDetails: UserDetailInterfaces = {
-  //       userID: user._id.toString(),
-  //       username: user.username,
-  //       firstName: user.firstName,
-  //       lastName: user.lastName,
-  //       email: user.email,
-  //       profilePictureUrl: user.profilePictureUrl,
-  //     };
-  //
-  //     // Fetch user skills
-  //     const userSkills = await this.userSkillsModel.find({ userId: user._id }).populate('skillId');
-  //     userDetails.skills = userSkills.map(skill => ({
-  //       skillId: skill.skillId._id.toString(),
-  //       skillName: skill.skillId.skillName,
-  //       description: skill.skillId.description,
-  //       proficiencyLevel: skill.proficiencyLevel,
-  //       selfAssessed: skill.selfAssessed,
-  //     }));
-  //
-  //     // Fetch course progress
-  //     const courseProgress = await this.courseProgressModel.find({ userId: user._id });
-  //     userDetails.courseProgress = courseProgress.map(progress => ({
-  //       courseId: progress.courseId.toString(),
-  //       progressPercentage: progress.progressPercentage,
-  //       lastAccessDate: progress.lastAccessDate,
-  //     }));
-  //
-  //     // Fetch achievements, badges, and certifications
-  //     // Note: These would require additional models and queries
-  //
-  //     return userDetails;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Failed to fetch user details');
-  //   }
-  // }
+
+  async getDetailUser(): Promise<any> {
+    let user
+    user = await this.usersSqlModel.createQueryBuilder('users').getMany()
+    return {
+      user: user,
+    }
+  }
 }

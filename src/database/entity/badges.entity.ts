@@ -1,8 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
 import { IsNotEmpty, IsString, IsUrl, Length, IsOptional } from 'class-validator'
 
-@Entity()
-export class Badges {
+@Entity('badges')
+export class BadgesEntity {
   @PrimaryGeneratedColumn()
   id: number
 
@@ -12,10 +12,9 @@ export class Badges {
   @Length(2, 100)
   badgeName: string
 
-  @Column({ nullable: true, length: 500, type: 'text' })
+  @Column({ nullable: true, type: 'text' })
   @IsString()
   @IsOptional()
-  @Length(0, 500)
   description: string
 
   @Column({ nullable: true, name: 'image_url', type: 'varchar' })
@@ -26,15 +25,12 @@ export class Badges {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date
 
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date
 }

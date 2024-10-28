@@ -31,6 +31,7 @@ import { RoleEntity } from './entity/role.entity'
 import { ModulesEntity } from './entity/modules.entity'
 import { PermissionsEntity } from './entity/permissions.entity'
 import { UserRolesEntity } from './entity/user-roles.entity'
+import { BadgesEntity } from './entity/badges.entity'
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { UserRolesEntity } from './entity/user-roles.entity'
       ModulesEntity,
       PermissionsEntity,
       UserRolesEntity,
+      BadgesEntity,
     ]),
   ],
   providers: [
