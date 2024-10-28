@@ -1,5 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { Users } from './Users'
+import { UsersEntities } from './user.entity'
 
 @Index('course_templates_users_id_fk', ['creatorId'], {})
 @Entity('course_templates')
@@ -31,10 +31,10 @@ export class CourseTemplatesEntity {
   })
   lastModifiedDate: Date
 
-  @ManyToOne(() => Users, users => users.courseTemplates, {
+  @ManyToOne(() => UsersEntities, users => users.courseTemplates, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
   })
   @JoinColumn([{ name: 'creatorId', referencedColumnName: 'id' }])
-  creator: Users
+  creator: UsersEntities
 }

@@ -1,9 +1,9 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { Users } from './Users'
+import { UsersEntities } from './user.entity'
 
 @Index('userId', ['userId'], {})
 @Entity('user_session')
-export class UserSession {
+export class UserSessionEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number
 
@@ -63,10 +63,10 @@ export class UserSession {
   })
   updateAt: Date | null
 
-  @ManyToOne(() => Users, users => users.userSessions, {
+  @ManyToOne(() => UsersEntities, users => users.userSessions, {
     onDelete: 'CASCADE',
     onUpdate: 'RESTRICT',
   })
-  @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
-  user: Users
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
+  user: UsersEntities
 }

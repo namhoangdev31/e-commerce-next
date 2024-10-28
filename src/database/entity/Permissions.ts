@@ -1,5 +1,4 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
-import { Modules } from './Modules'
 import { RolePermissionsEntity } from './role-permissions.entity'
 import { ModulesEntity } from './modules.entity'
 

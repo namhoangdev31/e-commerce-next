@@ -14,6 +14,8 @@ import { RoleEntity } from './role.entity'
 import { UserRolesEntity } from './user-roles.entity'
 import { UserSkillEntity } from './user-skill.entity'
 import { UserCustomFieldValuesEntity } from './user-custom-field-values.entity'
+import { CourseTemplatesEntity } from './course-templates.entity'
+import { UserSessionEntity } from './user-session.entity'
 
 @Entity('users')
 @Unique(['username', 'email'])
@@ -107,4 +109,12 @@ export class UsersEntities {
 
   @OneToMany(() => UserCustomFieldValuesEntity, userCustomFieldValues => userCustomFieldValues.user)
   userCustomFieldValues: UserCustomFieldValuesEntity[]
+
+  //courseTemplates
+  @OneToMany(() => CourseTemplatesEntity, courseTemplates => courseTemplates.creator)
+  courseTemplates: CourseTemplatesEntity[]
+
+  //userSessions
+  @OneToMany(() => UserSessionEntity, userSessions => userSessions.user)
+  userSessions: UserSessionEntity[]
 }
