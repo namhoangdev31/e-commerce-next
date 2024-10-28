@@ -50,3 +50,5 @@ async function bootstrap() {
 }
 
 bootstrap()
+
+//update the .env file with the following values:
