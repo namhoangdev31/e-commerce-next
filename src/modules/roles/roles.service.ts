@@ -4,6 +4,7 @@ import { UpdateRoleDto } from './dto/update-role.dto'
 import { RolesRepository } from '../../database/repositories/roles.repository'
 import { CreatePermissionDto } from './dto/create-permission.dto'
 import { AddRoleUserDto } from './dto/add-role-user.dto'
+import { GetListDto } from './dto/get-list.dto'
 
 @Injectable()
 export class RolesService {
@@ -35,5 +36,10 @@ export class RolesService {
       message: 'Create successful!',
       statusCode: 200,
     }
+  }
+
+  async getList(data: GetListDto): Promise<any[]> {
+    const roles = await this.rolesRepository.getList(data)
+    return roles
   }
 }

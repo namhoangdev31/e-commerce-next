@@ -10,6 +10,7 @@ import { CreatePermissionDto } from '../../modules/roles/dto/create-permission.d
 import { InjectRepository } from '@nestjs/typeorm'
 import { RoleEntity } from '../entity/role.entity'
 import { Repository } from 'typeorm'
+import { GetListDto } from '../../modules/roles/dto/get-list.dto'
 
 @Injectable()
 export class RolesRepository {
@@ -76,5 +77,12 @@ export class RolesRepository {
         })),
       )
     }
+  }
+
+  async getList(data: GetListDto): Promise<any[]> {
+    const { page, limit } = data
+    const skip = (page - 1) * limit
+    const roles = await this.rolesModel.find()
+    return roles
   }
 }

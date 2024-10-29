@@ -733,12 +733,12 @@ oqopaojh\\_nest\\_test|schema||oqopaojh_nest_test||UPDATE|G</Grants>
       <Charset>utf8mb4</Charset>
     </collation>
     <schema id="224" parent="1" name="information_schema">
-      <LastIntrospectionLocalTimestamp>2024-10-26.19:34:28</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-10-29.08:31:17</LastIntrospectionLocalTimestamp>
       <CollationName>utf8_general_ci</CollationName>
     </schema>
     <schema id="225" parent="1" name="oqopaojh_nest_test">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-10-28.13:47:44</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-10-29.08:31:19</LastIntrospectionLocalTimestamp>
       <CollationName>utf8_vietnamese_ci</CollationName>
     </schema>
     <user id="226" parent="1" name="oqopaojh_nest_test"/>

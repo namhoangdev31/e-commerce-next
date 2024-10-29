@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common'
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common'
 import { RolesService } from './roles.service'
 import { CreateRoleDto } from './dto/create-role.dto'
 import { UpdateRoleDto } from './dto/update-role.dto'
@@ -6,9 +6,11 @@ import { CreatePermissionDto } from './dto/create-permission.dto'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { AddRoleUserDto } from './dto/add-role-user.dto'
+import { GetListDto } from './dto/get-list.dto'
+
 @Controller('roles')
-@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @ApiTags('Roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
@@ -26,5 +28,10 @@ export class RolesController {
   @Post('addRoleForUser')
   addRoleForUser(@Body() data: AddRoleUserDto): Promise<any> {
     return this.rolesService.addRoleForUser(data)
+  }
+
+  @Get('getList')
+  getList(@Query() data: GetListDto): Promise<any[]> {
+    return this.rolesService.getList(data)
   }
 }

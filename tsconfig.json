@@ -13,11 +13,6 @@
     "incremental": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "test/**/*", "src/views/**/*.ejs"],
-  "exclude": ["node_modules", "dist"],
-  "watchOptions": {
-    "watchFile": "dynamicPriorityPolling",
-    "watchDirectory": "dynamicPriorityPolling",
-    "fallbackPolling": "dynamicPriority"
-  }
+  "include": ["src/**/*", "test/**/*" , "views/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
