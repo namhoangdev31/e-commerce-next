@@ -22,9 +22,10 @@ async function bootstrap() {
   app.enableCors()
   app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
-  app.setViewEngine('ejs')
+
   app.useStaticAssets(join(__dirname, '..', 'public'))
   app.setBaseViewsDir(join(__dirname, '..', 'views'))
+  app.setViewEngine('ejs')
 
   const config = new DocumentBuilder()
     .setTitle('Welcome to Smart API Docs')

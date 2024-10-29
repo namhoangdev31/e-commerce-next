@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, InternalServerErrorException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Roles, RolesDocument } from '../schemas/roles.schema'
@@ -35,9 +35,27 @@ export class RolesRepository {
   }
 
   async createRoleByAdmin(createRoleDto: CreateRoleDto): Promise<RolesDocument> {
-    return await this.rolesModel.create({
-      ...createRoleDto,
-    })
+    try {
+      const result = await this.rolesModel.create({
+        ...createRoleDto,
+      })
+      if (!result) {
+        throw new InternalServerErrorException('Failed to create role')
+      }
+      await this.roleRepository
+        .createQueryBuilder()
+        .insert()
+        .into(RoleEntity)
+        .values({
+          roleName: result.roleName,
+          description: result.description,
+          isSystem: result.isSystem,
+        })
+        .execute()
+      return result
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to create role')
+    }
   }
 
   async syncRolesFromMySQLToMongoDB(): Promise<void> {
