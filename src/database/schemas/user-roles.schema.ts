@@ -19,7 +19,8 @@ export class UserRoles {
   @Prop({ type: Types.ObjectId, refPath: 'roleModel', required: true })
   roleId: Types.ObjectId
 
-  @Prop({ type: String, required: true, enum: RoleModelEnum })
+  @Prop({ type: String, enum: RoleModelEnum })
+  @IsOptional()
   @IsEnum(RoleModelEnum)
   roleModel: RoleModelEnum
 

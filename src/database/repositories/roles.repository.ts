@@ -1,6 +1,6 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common'
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { Model, Types } from 'mongoose'
 import { Roles, RolesDocument } from '../schemas/roles.schema'
 import { CustomRoles, CustomRolesDocument } from '../schemas/custom-roles.schema'
 import { RolePermissions, RolePermissionsDocument } from '../schemas/role-permissions.schema'
@@ -12,6 +12,12 @@ import { RoleEntity } from '../entity/role.entity'
 import { Repository } from 'typeorm'
 import { GetListDto } from '../../modules/roles/dto/get-list.dto'
 import { RolesInterface } from '../../interfaces/get-list-roles.interface'
+import { AddRoleUserDto } from '../../modules/roles/dto/add-role-user.dto'
+
+import { Users, UsersDocument } from '../schemas/users.schema'
+import { UserRoles, UserRolesDocument } from '../schemas/user-roles.schema'
+import { UserRolesEntity } from '../entity/user-roles.entity'
+import { UsersEntities } from '../entity/user.entity'
 
 @Injectable()
 export class RolesRepository {
@@ -24,8 +30,16 @@ export class RolesRepository {
     private rolePermissionsModel: Model<RolePermissionsDocument>,
     @InjectModel(Permissions.name)
     private permissionsModel: Model<PermissionDocument>,
+    @InjectModel(Users.name)
+    private userModel: Model<UsersDocument>,
+    @InjectModel(UserRoles.name)
+    private userRoleModel: Model<UserRolesDocument>,
     @InjectRepository(RoleEntity)
     private roleEntity: Repository<RoleEntity>,
+    @InjectRepository(UserRolesEntity)
+    private userRolesEntity: Repository<UserRolesEntity>,
+    @InjectRepository(UsersEntities)
+    private userEntity: Repository<UsersEntities>,
   ) {}
 
   async createPermissionByAdmin(
@@ -87,7 +101,7 @@ export class RolesRepository {
       const roles = await this.roleEntity.find({
         skip,
         take: limit,
-        where: { id }
+        where: { id },
       })
       return roles.map(role => ({
         roleCode: role.roleCode,
@@ -104,5 +118,62 @@ export class RolesRepository {
       description: role.description,
       isSystem: role.isSystem,
     }))
+  }
+
+  async addRoleForUser(data: AddRoleUserDto): Promise<any> {
+    try {
+      const findRole = await this.rolesModel.findOne({
+        roleCode: data.roleCode,
+      })
+
+      const findUser = await this.userModel.findOne({
+        _id: new Types.ObjectId(data.userId),
+      })
+
+      if (!findRole || !findUser) {
+        throw new BadRequestException('Error not found')
+      }
+
+      const findRoleId = await this.roleEntity
+        .createQueryBuilder('roles')
+        .where('roles.roleCode = :roleCode', { roleCode: data.roleCode })
+        .getOne()
+
+      const findUserId = await this.userEntity
+        .createQueryBuilder('users')
+        .where('users.username = :username', { username: findUser.username })
+        .getOne()
+
+      if (!findRoleId || !findUserId) {
+        throw new BadRequestException('Error not found')
+      }
+
+      const userRole = await this.userRoleModel.create({
+        userId: data.userId,
+        roleId: findRole._id,
+        assignmentStartDate: new Date(),
+      })
+
+      if (!userRole) {
+        throw new InternalServerErrorException('Failed to add role for user')
+      }
+
+      await this.userRolesEntity
+        .createQueryBuilder()
+        .insert()
+        .into(UserRolesEntity)
+        .values({
+          userId: findUserId.id,
+          roleId: findRoleId.id,
+          assignmentStartDate: new Date(),
+        })
+        .execute()
+
+      return {
+        message: 'Add role successful!',
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to add role for user')
+    }
   }
 }

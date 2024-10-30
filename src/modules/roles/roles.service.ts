@@ -48,6 +48,7 @@ export class RolesService {
   }
 
   async addRoleForUser(data: AddRoleUserDto) {
+    await this.rolesRepository.addRoleForUser(data)
     return {
       message: 'Create successful!',
       statusCode: 200,
