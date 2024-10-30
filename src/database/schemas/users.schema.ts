@@ -62,6 +62,11 @@ export class Users {
   @IsString()
   @IsOptional()
   termPassword: string
+
+  @Prop()
+  @IsString()
+  @IsOptional()
+  roleCode: string
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users)

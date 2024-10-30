@@ -25,7 +25,7 @@ export class RolesRepository {
     @InjectModel(Permissions.name)
     private permissionsModel: Model<PermissionDocument>,
     @InjectRepository(RoleEntity)
-    private roleRepository: Repository<RoleEntity>,
+    private roleEntity: Repository<RoleEntity>,
   ) {}
 
   async createPermissionByAdmin(
@@ -38,18 +38,17 @@ export class RolesRepository {
 
   async createRoleByAdmin(createRoleDto: CreateRoleDto): Promise<RolesDocument> {
     try {
-      const result = await this.rolesModel.create({
-        ...createRoleDto,
-      })
+      const result = await this.rolesModel.create(createRoleDto)
       if (!result) {
         throw new InternalServerErrorException('Failed to create role')
       }
-      await this.roleRepository
+      await this.roleEntity
         .createQueryBuilder()
         .insert()
         .into(RoleEntity)
         .values({
           roleName: result.roleName,
+          roleCode: result.roleCode,
           description: result.description,
           isSystem: result.isSystem,
         })
@@ -61,7 +60,7 @@ export class RolesRepository {
   }
 
   async syncRolesFromMySQLToMongoDB(): Promise<void> {
-    const mysqlRoles = await this.roleRepository.find()
+    const mysqlRoles = await this.roleEntity.find()
     const existingRoles = await this.rolesModel.find({
       roleName: { $in: mysqlRoles.map(role => role.roleName) },
     })
@@ -81,12 +80,29 @@ export class RolesRepository {
   }
 
   async getList(data: GetListDto): Promise<RolesInterface[]> {
-    const { page = 1, limit = 10 } = data
+    const { page = 1, limit = 10, id } = data
     const skip = (page - 1) * limit
+
+    if (id) {
+      const roles = await this.roleEntity.find({
+        skip,
+        take: limit,
+        where: { id }
+      })
+      return roles.map(role => ({
+        roleCode: role.roleCode,
+        roleName: role.roleName,
+        description: role.description,
+        isSystem: role.isSystem,
+      }))
+    }
+
     const roles = await this.rolesModel.find().skip(skip).limit(limit)
     return roles.map(role => ({
+      roleCode: role.roleCode,
       roleName: role.roleName,
-      isSystem: role.isSystem
+      description: role.description,
+      isSystem: role.isSystem,
     }))
   }
 }

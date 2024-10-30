@@ -1,28 +1,31 @@
 import { Injectable } from '@nestjs/common'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument } from 'mongoose'
-import { IsNotEmpty, IsString } from 'class-validator'
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 
 export type RolesDocument = HydratedDocument<Roles>
 
 @Injectable()
 @Schema({ timestamps: true })
 export class Roles {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true, unique: true, type: String })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Role name is required' })
   roleName: string
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true, unique: true, type: String })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Role code is required' })
   roleCode: string
 
-  @Prop()
+  @Prop({ type: String })
   @IsString()
+  @IsOptional()
   description: string
 
-  @Prop({ default: false })
+  @Prop({ default: false, type: Boolean })
+  @IsBoolean()
+  @IsOptional()
   isSystem: boolean
 }
 

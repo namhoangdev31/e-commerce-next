@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  Unique,
 } from 'typeorm'
-import { IsEmpty, IsNotEmpty, MinLength } from 'class-validator'
+import { IsEmpty, IsNotEmpty, IsString, MinLength } from 'class-validator'
 
+@Unique(['roleCode', 'roleName'])
 @Entity('roles')
 export class RoleEntity {
   @PrimaryGeneratedColumn()
@@ -16,6 +18,7 @@ export class RoleEntity {
 
   @Column({ name: 'role_code', type: 'varchar' })
   @IsNotEmpty()
+  @IsString()
   roleCode: string
 
   @Column({

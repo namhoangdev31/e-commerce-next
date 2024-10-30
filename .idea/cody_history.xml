@@ -7,16 +7,15 @@
           <accountId value="VXNlcjo1NDg4MzY=" />
           <defaultLlm>
             <llm>
-              <model value="anthropic::2024-10-22::claude-3-5-sonnet-latest" />
-              <provider value="anthropic" />
+              <model value="google::v1::gemini-1.5-flash" />
+              <provider value="google" />
               <tags>
                 <list>
                   <option value="free" />
-                  <option value="vision" />
-                  <option value="power" />
+                  <option value="speed" />
                 </list>
               </tags>
-              <title value="Claude 3.5 Sonnet (Latest)" />
+              <title value="Gemini 1.5 Flash" />
               <usage>
                 <list>
                   <option value="edit" />

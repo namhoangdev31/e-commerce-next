@@ -2,6 +2,14 @@ build
 dist
 /media
 node_modules
+.idea
+.vscode
+test
+docker-compose-test.yml
+docker-compose.yml
+docker.dev
+docker.production
+vercel.json
 .DS_Store
 .next
 .vercel

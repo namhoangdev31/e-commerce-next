@@ -1,9 +1,6 @@
 export interface RolesInterface {
+  roleCode: string
   roleName: string
+  description: string
   isSystem: boolean
-}
-export interface PageSizeInterface {
-  data: any[]
-  page: number
-  pageSize: number
 }

@@ -7,7 +7,9 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { AddRoleUserDto } from './dto/add-role-user.dto'
 import { GetListDto } from './dto/get-list.dto'
-import { PageSizeInterface } from '../../interfaces/get-list-roles.interface'
+import { PageSizeInterface } from '../../interfaces/page-size.interface'
+import { Users, UsersDocument } from '../../database/schemas/users.schema'
+import { User } from '../../shared/decorators'
 
 @Controller('roles')
 @ApiBearerAuth()
@@ -22,8 +24,11 @@ export class RolesController {
   }
 
   @Post('createRoleBySuperAdmin')
-  createRoleBySuperAdmin(@Body() createRoleDto: CreateRoleDto): Promise<any> {
-    return this.rolesService.create(createRoleDto)
+  createRoleBySuperAdmin(
+    @Body() createRoleDto: CreateRoleDto,
+    @User() user: UsersDocument,
+  ): Promise<any> {
+    return this.rolesService.create(createRoleDto, user)
   }
 
   @Post('addRoleForUser')
