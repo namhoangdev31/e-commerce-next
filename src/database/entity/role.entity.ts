@@ -14,6 +14,10 @@ export class RoleEntity {
   @IsNotEmpty()
   id: number
 
+  @Column({ name: 'role_code', type: 'varchar' })
+  @IsNotEmpty()
+  roleCode: string
+
   @Column({
     name: 'role_name',
     type: 'varchar',

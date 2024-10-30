@@ -4,13 +4,6 @@ import { Transform, Type } from 'class-transformer'
 
 export class GetListDto {
   @IsOptional()
-  @IsString()
-  @ApiProperty({
-    example: 'admin',
-  })
-  name?: string
-
-  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @ApiProperty({

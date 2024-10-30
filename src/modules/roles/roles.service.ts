@@ -5,6 +5,7 @@ import { RolesRepository } from '../../database/repositories/roles.repository'
 import { CreatePermissionDto } from './dto/create-permission.dto'
 import { AddRoleUserDto } from './dto/add-role-user.dto'
 import { GetListDto } from './dto/get-list.dto'
+import { PageSizeInterface } from '../../interfaces/get-list-roles.interface'
 
 @Injectable()
 export class RolesService {
@@ -38,8 +39,12 @@ export class RolesService {
     }
   }
 
-  async getList(data: GetListDto): Promise<any[]> {
+  async getList(data: GetListDto): Promise<PageSizeInterface> {
     const roles = await this.rolesRepository.getList(data)
-    return roles
+    return {
+      data: roles,
+      page: data.page,
+      pageSize: data.limit,
+    }
   }
 }

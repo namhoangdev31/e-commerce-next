@@ -11,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { RoleEntity } from '../entity/role.entity'
 import { Repository } from 'typeorm'
 import { GetListDto } from '../../modules/roles/dto/get-list.dto'
+import { RolesInterface } from '../../interfaces/get-list-roles.interface'
 
 @Injectable()
 export class RolesRepository {
@@ -79,10 +80,13 @@ export class RolesRepository {
     }
   }
 
-  async getList(data: GetListDto): Promise<any[]> {
-    const { page, limit } = data
+  async getList(data: GetListDto): Promise<RolesInterface[]> {
+    const { page = 1, limit = 10 } = data
     const skip = (page - 1) * limit
-    const roles = await this.rolesModel.find()
-    return roles
+    const roles = await this.rolesModel.find().skip(skip).limit(limit)
+    return roles.map(role => ({
+      roleName: role.roleName,
+      isSystem: role.isSystem
+    }))
   }
 }

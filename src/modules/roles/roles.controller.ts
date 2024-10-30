@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { AddRoleUserDto } from './dto/add-role-user.dto'
 import { GetListDto } from './dto/get-list.dto'
+import { PageSizeInterface } from '../../interfaces/get-list-roles.interface'
 
 @Controller('roles')
 @ApiBearerAuth()
@@ -31,7 +32,7 @@ export class RolesController {
   }
 
   @Get('getList')
-  getList(@Query() data: GetListDto): Promise<any[]> {
+  getList(@Query() data: GetListDto): Promise<PageSizeInterface> {
     return this.rolesService.getList(data)
   }
 }
