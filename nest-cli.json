@@ -55,6 +55,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/payment-gateway/tsconfig.app.json"
       }
+    },
+    "admin-gateway": {
+      "type": "application",
+      "root": "apps/admin-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/admin-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/admin-gateway/tsconfig.app.json"
+      }
+    },
+    "main-gateway": {
+      "type": "application",
+      "root": "apps/main-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/main-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/main-gateway/tsconfig.app.json"
+      }
     }
   }
 }
