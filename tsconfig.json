@@ -11,8 +11,16 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {}
   },
-  "include": ["src/**/*", "test/**/*" , "views/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "views/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
