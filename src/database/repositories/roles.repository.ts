@@ -9,7 +9,7 @@ import { CreateRoleDto } from '../../modules/roles/dto/create-role.dto'
 import { CreatePermissionDto } from '../../modules/roles/dto/create-permission.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { RoleEntity } from '../entity/role.entity'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import { GetListDto } from '../../modules/roles/dto/get-list.dto'
 import { RolesInterface } from '../../interfaces/get-list-roles.interface'
 import { AddRoleUserDto } from '../../modules/roles/dto/add-role-user.dto'
@@ -76,20 +76,49 @@ export class RolesRepository {
   async syncRolesFromMySQLToMongoDB(): Promise<void> {
     const mysqlRoles = await this.roleEntity.find()
     const existingRoles = await this.rolesModel.find({
-      roleName: { $in: mysqlRoles.map(role => role.roleName) },
+      roleCode: { $in: mysqlRoles.map(role => role.roleCode) },
     })
 
-    const existingRoleNames = existingRoles.map(role => role.roleName)
-    const newRoles = mysqlRoles.filter(role => !existingRoleNames.includes(role.roleName))
+    const existingRoleNames = existingRoles.map(role => role.roleCode)
+    const newRoles = mysqlRoles.filter(role => !existingRoleNames.includes(role.roleCode))
 
     if (newRoles.length > 0) {
       await this.rolesModel.insertMany(
         newRoles.map(role => ({
+          roleCode: role.roleCode,
           roleName: role.roleName,
           description: role.description,
           isSystem: role.isSystem,
         })),
       )
+    }
+  }
+
+  async syncRolesFromMongoDBToMySQL(): Promise<void> {
+    const mongoRoles = await this.rolesModel.find()
+    const existingRoles = await this.roleEntity.find({
+      where: {
+        roleCode: In(mongoRoles.map(role => role.roleCode)),
+      },
+    })
+
+    const existingRoleCodes = existingRoles.map(role => role.roleCode)
+    const newRoles = mongoRoles.filter(role => !existingRoleCodes.includes(role.roleCode))
+
+    if (newRoles.length > 0) {
+      await this.roleEntity
+        .createQueryBuilder()
+        .insert()
+        .into(RoleEntity)
+        .values(
+          newRoles.map(role => ({
+            roleCode: role.roleCode,
+            roleName: role.roleName,
+            description: role.description,
+            isSystem: role.isSystem,
+          })),
+        )
+        .execute()
     }
   }
 
