@@ -35,18 +35,4 @@ export class RolePermissionsEntity {
     name: 'updated_at',
   })
   updatedAt: Date
-
-  @ManyToOne(() => RoleEntity, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'RESTRICT',
-  })
-  @JoinColumn([{ name: 'role_code', referencedColumnName: 'roleCode' }])
-  role: RoleEntity
-
-  @ManyToOne(() => PermissionsEntity, permissions => permissions.rolePermissions, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'RESTRICT',
-  })
-  @JoinColumn([{ name: 'permission_code', referencedColumnName: 'permissionCode' }])
-  permission: PermissionsEntity
 }

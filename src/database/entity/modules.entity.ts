@@ -25,7 +25,4 @@ export class ModulesEntity {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
-
-  @OneToMany(() => PermissionsEntity, permissions => permissions.module)
-  permissions: PermissionsEntity[]
 }
