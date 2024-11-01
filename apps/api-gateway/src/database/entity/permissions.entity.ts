@@ -35,12 +35,4 @@ export class PermissionsEntity {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
-
-  @ManyToOne(() => ModulesEntity, { nullable: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'module_id' })
-  module: ModulesEntity
-
-  //rolePermissions
-  @OneToMany(() => RolePermissionsEntity, rolePermissions => rolePermissions.permission)
-  rolePermissions: RolePermissionsEntity[]
 }
