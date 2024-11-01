@@ -10,8 +10,6 @@ import process from 'process'
 import requestIp from 'request-ip'
 
 async function bootstrap() {
-  // const { invalidCsrfTokenError, generateToken, validateRequest, doubleCsrfProtection } =
-  //   doubleCsrf(doubleCsrfOptions)
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
   const configService = app.get(ConfigService)
 
@@ -23,7 +21,6 @@ async function bootstrap() {
   )
   app.enableCors()
   app.use(requestIp.mw())
-  // app.use(doubleCsrfProtection)
 
   app.useStaticAssets(join(__dirname, '..', 'public'))
   app.setBaseViewsDir(join(__dirname, '..', 'views'))

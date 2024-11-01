@@ -35,6 +35,7 @@ import { UserSkillEntity } from './database/entity/user-skill.entity'
 import { UserSessionEntity } from './database/entity/user-session.entity'
 import { RolePermissionsEntity } from './database/entity/role-permissions.entity'
 import { SkillsEntity } from './database/entity/skills.entity'
+import { DEV_ENV } from './shared/constants/strings.constants'
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -59,7 +60,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      synchronize: true,
+      synchronize: process.env.NODE_ENV === DEV_ENV,
       retryAttempts: 3,
       timezone: '+07:00',
       entities: [
