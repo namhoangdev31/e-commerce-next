@@ -53,6 +53,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       }),
       inject: [ConfigService],
     }),
+    // process.env.NODE_ENV === DEV_ENV
     TypeOrmModule.forRoot({
       type: process.env.DB_TYPE as any,
       host: process.env.DB_HOST,
@@ -60,7 +61,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      synchronize: process.env.NODE_ENV === DEV_ENV,
+      synchronize: true,
       retryAttempts: 3,
       timezone: '+07:00',
       entities: [
