@@ -62,11 +62,4 @@ export class UserSessionEntity {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updateAt: Date | null
-
-  @ManyToOne(() => UsersEntities, users => users.userSessions, {
-    onDelete: 'CASCADE',
-    onUpdate: 'RESTRICT',
-  })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'id' }])
-  user: UsersEntities
 }

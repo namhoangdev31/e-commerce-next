@@ -7,7 +7,7 @@ export const LayoutConfirmEmail = (user: UsersDocument, otp: string): string => 
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Mã OTP của bạn</title>
+            <title>Your OTP Code</title>
             <style>
               body {
                 font-family: Arial, sans-serif;
@@ -49,13 +49,13 @@ export const LayoutConfirmEmail = (user: UsersDocument, otp: string): string => 
         </head>
         <body>
         <div class="container">
-            <h1>Xin chào ${user.username || 'Valued User'}!</h1>
-            <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Mã OTP (One-Time Password) của bạn là:</p>
+            <h1>Hello ${user.username || 'Valued User'}!</h1>
+            <p>Thank you for using our service. Your OTP (One-Time Password) is:</p>
             <div class="otp">${otp}</div>
-            <p>Mã OTP này có hiệu lực trong 10 phút. Vui lòng sử dụng nó để hoàn tất đăng nhập hoặc giao dịch của bạn.</p>
-            <p>Nếu bạn không yêu cầu mã OTP này, vui lòng bỏ qua email này.</p>
+            <p>This OTP is valid for 10 minutes. Please use it to complete your login or transaction.</p>
+            <p>If you did not request this OTP, please ignore this email.</p>
             <div class="footer">
-                <p>&copy; ${new Date().getFullYear()} Công ty của bạn. Tất cả các quyền được bảo lưu.</p>
+                <p>&copy; ${new Date().getFullYear()} Your Company. All rights reserved.</p>
             </div>
         </div>
         </body>

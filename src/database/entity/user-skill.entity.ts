@@ -45,18 +45,4 @@ export class UserSkillEntity {
     type: 'timestamp',
   })
   updatedAt: Date
-
-  @ManyToOne(() => SkillsEntity, skills => skills.userSkills, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'RESTRICT',
-  })
-  @JoinColumn([{ name: 'skillId', referencedColumnName: 'id' }])
-  skill: SkillsEntity
-
-  @ManyToOne(() => UsersEntities, users => users.userSkills, {
-    onDelete: 'CASCADE',
-    onUpdate: 'RESTRICT',
-  })
-  @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
-  user: UsersEntities
 }

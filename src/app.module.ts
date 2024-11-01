@@ -61,6 +61,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
       database: process.env.DB_DATABASE,
       synchronize: true,
       retryAttempts: 3,
+      timezone: '+07:00',
       entities: [
         UsersEntities,
         PermissionsEntity,

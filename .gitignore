@@ -1,10 +1,12 @@
 build
 dist
-/media
+media
 node_modules
-.idea
+.idea/dataSources
+.idea/
 .vscode
 test
+.idea/e-commerce-next.iml
 docker-compose-test.yml
 docker-compose.yml
 docker.dev

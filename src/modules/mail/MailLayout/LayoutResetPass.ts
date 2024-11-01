@@ -41,13 +41,13 @@ export const LayoutResetPass = (user: UsersDocument, otp: string, termPass: stri
     </head>
     <body>
     <div class="container">
-        <h1>Xin chào ${user.username || 'Valued User'}!</h1>
-        <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Mã OTP (One-Time Password) của bạn là:</p>
+        <h1>Hello ${user.username || 'Valued User'}!</h1>
+        <p>We have received a password reset request for your account. Your OTP (One-Time Password) is:</p>
         <div class="otp">${otp}</div>
-        <p>Mật khẩu mới của bạn là : ${termPass}. Vui lòng sử dụng nó để đặt lại mật khẩu của bạn.</p>
-        <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này và liên hệ với chúng tôi ngay lập tức.</p>
+        <p>Your new password is: ${termPass}. Please use it to reset your password.</p>
+        <p>If you did not request a password reset, please ignore this email and contact us immediately.</p>
         <div class="footer">
-            <p>&copy; ${new Date().getFullYear()} Công ty của bạn. Tất cả các quyền được bảo lưu.</p>
+            <p>&copy; ${new Date().getFullYear()} Your Company. All rights reserved.</p>
         </div>
     </div>
     </body>

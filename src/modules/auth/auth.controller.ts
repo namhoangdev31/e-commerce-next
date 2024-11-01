@@ -36,6 +36,7 @@ export class AuthController {
   @Post('login')
   @Public()
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Login with email and password if user is not active, send otp to email' })
   async login(@Body() dto: LoginDto, @Req() req: Request) {
     return this.authService.login(dto, req)
   }
@@ -72,6 +73,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async logout(@User() user: UsersDocument, @Req() req: Request) {
     return this.authService.logout(user, req)
+  }
+
+  @Post('sendRequestOtp')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async sendRequestOtp(@User() user: UsersDocument) {
+    return this.authService.sendRequestOtp(user)
   }
 }
 

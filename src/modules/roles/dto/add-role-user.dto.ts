@@ -6,7 +6,7 @@ export class AddRoleUserDto {
   @IsNotEmpty({ message: 'roleCode is empty' })
   roleCode: string
 
-  @ApiProperty({ example: 1 })
-  @IsNotEmpty({ message: 'userId is empty' })
-  userId: string | any
+  @ApiProperty({ example: 'hoangnam' })
+  @IsNotEmpty({ message: 'username is empty' })
+  username: string
 }

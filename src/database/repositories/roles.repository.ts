@@ -18,6 +18,9 @@ import { Users, UsersDocument } from '../schemas/users.schema'
 import { UserRoles, UserRolesDocument } from '../schemas/user-roles.schema'
 import { UserRolesEntity } from '../entity/user-roles.entity'
 import { UsersEntities } from '../entity/user.entity'
+import { PermissionsEntity } from '../entity/permissions.entity'
+import { AddPermissionForRoleDto } from '../../modules/roles/dto/add-permission-for-role.dto'
+import { RolePermissionsEntity } from '../entity/role-permissions.entity'
 
 @Injectable()
 export class RolesRepository {
@@ -40,14 +43,40 @@ export class RolesRepository {
     private userRolesEntity: Repository<UserRolesEntity>,
     @InjectRepository(UsersEntities)
     private userEntity: Repository<UsersEntities>,
+    @InjectRepository(PermissionsEntity)
+    private permissionsEntity: Repository<PermissionsEntity>,
+    @InjectRepository(RolePermissionsEntity)
+    private rolePermissionsEntity: Repository<RolePermissionsEntity>,
   ) {}
 
   async createPermissionByAdmin(
     createPermissionDto: CreatePermissionDto,
   ): Promise<PermissionDocument> {
-    return await this.permissionsModel.create({
-      ...createPermissionDto,
+    const permission = await this.permissionsModel.findOne({
+      permissionName: createPermissionDto.permissionName,
     })
+    if (permission) {
+      throw new BadRequestException('Permission already exists')
+    }
+
+    const result = await this.permissionsModel.create(createPermissionDto)
+
+    if (!result) {
+      throw new InternalServerErrorException('Failed to create permission')
+    }
+
+    await this.permissionsEntity
+      .createQueryBuilder()
+      .insert()
+      .into(PermissionsEntity)
+      .values({
+        permissionName: createPermissionDto.permissionName,
+        description: createPermissionDto.description,
+        permissionCode: createPermissionDto.permissionCode,
+      })
+      .execute()
+
+    return result
   }
 
   async createRoleByAdmin(createRoleDto: CreateRoleDto): Promise<RolesDocument> {
@@ -156,7 +185,7 @@ export class RolesRepository {
       })
 
       const findUser = await this.userModel.findOne({
-        _id: new Types.ObjectId(data.userId),
+        username: data.username,
       })
 
       if (!findRole || !findUser) {
@@ -170,7 +199,7 @@ export class RolesRepository {
 
       const findUserId = await this.userEntity
         .createQueryBuilder('users')
-        .where('users.username = :username', { username: findUser.username })
+        .where('users.username = :username', { username: data.username })
         .getOne()
 
       if (!findRoleId || !findUserId) {
@@ -178,8 +207,8 @@ export class RolesRepository {
       }
 
       const userRole = await this.userRoleModel.create({
-        userId: data.userId,
-        roleId: findRole._id,
+        username: data.username,
+        roleCode: data.roleCode,
         assignmentStartDate: new Date(),
       })
 
@@ -192,17 +221,58 @@ export class RolesRepository {
         .insert()
         .into(UserRolesEntity)
         .values({
-          userId: findUserId.id,
-          roleId: findRoleId.id,
+          username: findUserId.username,
+          roleCode: findRoleId.roleCode,
           assignmentStartDate: new Date(),
         })
         .execute()
 
       return {
         message: 'Add role successful!',
+        status: 200,
       }
     } catch (error) {
       throw new InternalServerErrorException('Failed to add role for user')
+    }
+  }
+
+  async addPermissionForRole(data: AddPermissionForRoleDto): Promise<any> {
+    try {
+      const findRole = await this.rolesModel.findOne({
+        roleCode: data.roleCode,
+      })
+
+      const findPermission = await this.permissionsModel.findOne({
+        permissionCode: data.permissionCode,
+      })
+
+      if (!findRole || !findPermission) {
+        throw new BadRequestException('Error not found')
+      }
+
+      await this.rolePermissionsModel.create({
+        roleCode: data.roleCode,
+        permissionCode: data.permissionCode,
+        accessLevel: data.accessLevel,
+      })
+
+      await this.rolePermissionsEntity
+        .createQueryBuilder()
+        .insert()
+        .into(RolePermissionsEntity)
+        .values({
+          roleCode: data.roleCode,
+          permissionCode: data.permissionCode,
+          accessLevel: data.accessLevel,
+        })
+        .execute()
+
+      return {
+        message: 'Add permission successful!',
+        statusCode: 200,
+      }
+    } catch (e) {
+      throw new InternalServerErrorException('Failed to add permission for role')
     }
   }
 }

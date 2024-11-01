@@ -1,56 +1,40 @@
-import { IsNotEmpty, IsEnum, IsOptional } from 'class-validator'
+import { IsNotEmpty, IsEnum, IsOptional, IsString } from 'class-validator'
 import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
+  Unique,
 } from 'typeorm'
-import { UsersEntities } from './user.entity'
-import { RoleEntity } from './role.entity'
-
-enum RoleModel {
-  Roles = 'Roles',
-  CustomRoles = 'CustomRoles',
-}
 
 @Entity('user_roles')
+@Unique(['username', 'roleCode'])
 export class UserRolesEntity {
   @PrimaryGeneratedColumn()
-  @IsNotEmpty()
   id: number
 
   @Column({
-    name: 'user_id',
-    type: 'int',
+    name: 'username',
+    type: 'varchar',
     nullable: false,
   })
   @IsNotEmpty()
-  userId: number
+  @IsString()
+  username: string
 
   @Column({
-    name: 'role_id',
-    type: 'int',
+    name: 'role_code',
+    type: 'varchar',
     nullable: false,
   })
+  @IsString()
   @IsNotEmpty()
-  roleId: number
-
-  @Column({
-    name: 'role_model',
-    type: 'enum',
-    enum: RoleModel,
-    nullable: false,
-  })
-  @IsNotEmpty()
-  @IsEnum(RoleModel)
-  roleModel: RoleModel
+  roleCode: string
 
   @Column({
     name: 'assignment_start_date',
-    type: 'datetime',
+    type: 'timestamp',
     nullable: false,
   })
   @IsNotEmpty()
@@ -58,7 +42,7 @@ export class UserRolesEntity {
 
   @Column({
     name: 'assignment_end_date',
-    type: 'datetime',
+    type: 'timestamp',
     nullable: true,
   })
   @IsOptional()
@@ -74,23 +58,13 @@ export class UserRolesEntity {
 
   @CreateDateColumn({
     name: 'created_at',
+    type: 'timestamp',
   })
   createdAt: Date
 
   @UpdateDateColumn({
     name: 'updated_at',
+    type: 'timestamp',
   })
   updatedAt: Date
-
-  @ManyToOne(() => UsersEntities, { nullable: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
-  user: UsersEntities
-
-  @ManyToOne(() => RoleEntity, { nullable: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'role_id' })
-  role: RoleEntity
-
-  // @ManyToOne(() => CoursesEntity, { onDelete: 'CASCADE' })
-  // @JoinColumn({ name: 'course_id' })
-  // course: CoursesEntity
 }

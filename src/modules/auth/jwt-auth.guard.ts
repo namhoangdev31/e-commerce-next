@@ -13,6 +13,7 @@ import { IS_PUBLIC_KEY } from './decorators/public.decorator'
 import { AuthRepository } from '../../database/repositories/auth.repository'
 import { Types } from 'mongoose'
 import { Request } from 'express'
+import { UserLoginInterface } from '../../interfaces/user-login.interface'
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -38,11 +39,11 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException()
     }
     try {
-      const data = await this.jwtService.verifyAsync(token, {
+      const data: UserLoginInterface = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       })
-      const userId = new Types.ObjectId(data.userId)
-      const sessionId = new Types.ObjectId(data.sessionId)
+      const userId = new Types.ObjectId(data.user.id)
+      const sessionId = new Types.ObjectId(data.user.session.sessionId)
       const session = await this.authRepository.findValidSession(sessionId, userId)
 
       if (!session) {
@@ -53,7 +54,9 @@ export class JwtAuthGuard implements CanActivate {
           { isOnline: true, lastActiveAt: new Date() },
         )
       }
-      const isEmailVerificationRoute = request.url === '/api/users/verify-email'
+
+      const isEmailVerificationRoute =
+        request.url === '/api/users/verifyEmail' || request.url === '/api/auth/sendRequestOtp'
 
       if (!isEmailVerificationRoute && !data.user.isValidateEmail) {
         throw new HttpException('Please validate your email!', HttpStatus.FORBIDDEN)

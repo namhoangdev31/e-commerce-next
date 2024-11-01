@@ -13,7 +13,4 @@ export class SkillsEntity {
   @Column({ name: 'description', nullable: true, type: 'text' })
   @IsNotEmpty()
   description: string
-
-  @OneToMany(() => UserSkillEntity, userSkill => userSkill.skill)
-  userSkills: UserSkillEntity[]
 }

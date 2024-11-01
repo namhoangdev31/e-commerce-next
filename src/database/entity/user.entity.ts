@@ -23,6 +23,8 @@ export class UsersEntities {
 
   @Column({
     unique: true,
+    name: 'username',
+    type: 'varchar',
   })
   @IsString()
   @IsNotEmpty()
@@ -76,11 +78,11 @@ export class UsersEntities {
   timeUpdateOtp?: Date
 
   @Column({
-    name: 'role_id',
-    type: 'int',
+    name: 'role_code',
+    type: 'varchar',
     nullable: true,
   })
-  roleId: number
+  roleCode: string
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -94,17 +96,4 @@ export class UsersEntities {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updated_at: Date
-
-  @ManyToOne(() => RoleEntity, { nullable: true, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'role_id' })
-  role: RoleEntity
-
-  @OneToMany(() => UserRolesEntity, userRole => userRole.user)
-  userRoles: UserRolesEntity[]
-
-  @OneToMany(() => UserSkillEntity, userSkill => userSkill.user)
-  userSkills: UserSkillEntity[]
-
-  @OneToMany(() => UserSessionEntity, userSession => userSession.user)
-  userSessions: UserSessionEntity[]
 }

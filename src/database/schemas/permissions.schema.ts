@@ -1,15 +1,28 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { IsEmpty, IsNotEmpty, IsString } from 'class-validator'
+import { IsEmpty, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 import { HydratedDocument, Types } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()
 @Schema({ timestamps: true })
 export class Permissions {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true, type: String })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Permission name is required',
+  })
   permissionName: string
+
+  @Prop({
+    required: true,
+    unique: true,
+    type: String,
+  })
+  @IsString()
+  @IsNotEmpty({
+    message: 'Permission code is required',
+  })
+  permissionCode: string
 
   @Prop()
   @IsString()
@@ -18,6 +31,7 @@ export class Permissions {
 
   @Prop({ type: Types.ObjectId, ref: 'Modules' })
   @IsEmpty()
+  @IsOptional()
   moduleId: Types.ObjectId
 }
 

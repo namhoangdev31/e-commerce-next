@@ -79,13 +79,19 @@ export class AuthService {
     if (user.email !== EMAIL_ADMIN) {
       const findRoleInUser = await this.authRepository.findUsersRoles({ userId })
       if (findRoleInUser) {
-        const roleId = new Types.ObjectId(findRoleInUser.roleId)
-        const findRole = await this.authRepository.findRolesFilter({ _id: roleId })
-        role = findRole.roleName
+        const findRole = await this.authRepository.findRolesFilter({
+          roleCode: findRoleInUser.roleCode,
+        })
+        role = findRole.roleCode
       }
     }
 
-    const accessToken = this.generateAccessToken(user, savedSession._id.toString(), role)
+    const accessToken = this.generateAccessToken(
+      user,
+      savedSession._id.toString(),
+      role,
+      savedSession,
+    )
     const refreshToken = this.generateRefreshToken(user._id.toString(), savedSession._id.toString())
 
     await this.authRepository.updateSessionToken(savedSession._id, accessToken)
@@ -163,17 +169,30 @@ export class AuthService {
     }
   }
 
-  private generateAccessToken(user: any, sessionId?: string, role?: string): string {
+  private generateAccessToken(
+    user: any,
+    sessionId?: string,
+    role?: string,
+    savedSession?: any,
+  ): string {
     const payload = {
-      userId: user._id,
-      sessionId,
       user: {
-        _id: user._id,
+        id: user._id,
         email: user.email,
         roleCode: role,
         firstName: user.firstName,
         lastName: user.lastName,
         isValidateEmail: user.isValidateEmail,
+        session: {
+          sessionId,
+          userId: user._id,
+          expiresAt: savedSession.expiresAt,
+          userAgent: savedSession.userAgent,
+          ipAddress: savedSession.ipAddress,
+          isRevoked: savedSession.isRevoked,
+          lastActiveAt: savedSession.lastActiveAt,
+          isOnline: savedSession.isOnline,
+        },
       },
     }
 
@@ -211,5 +230,11 @@ export class AuthService {
       console.error('Logout error:', error)
       throw new UnauthorizedException('Failed to logout. Please try again.')
     }
+  }
+
+  async sendRequestOtp(user: UsersDocument): Promise<void> {
+    const otp = this.generateOTP()
+    await this.authRepository.saveOtp(user, otp)
+    await this.mailService.sendUserOTP(user, otp)
   }
 }

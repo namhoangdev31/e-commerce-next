@@ -2,38 +2,42 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { User, UserDocument } from '../schemas/user.schema'
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import { UsersEntities } from '../entity/user.entity'
+import { Users, UsersDocument } from '../schemas/users.schema'
 
 @Injectable()
 export class UsersRepository {
   constructor(
-    @InjectModel(User.name)
-    private userModel: Model<UserDocument>,
+    @InjectModel(Users.name)
+    private userModel: Model<UsersDocument>,
+    @InjectRepository(UsersEntities)
+    private userEntity: Repository<UsersEntities>,
   ) {}
 
-  async create(data: Partial<User>): Promise<User> {
-    const createdUser = new this.userModel(data)
-    return createdUser.save()
-  }
+  async syncUsersFromMySQLToMongoDB(): Promise<void> {
+    const mysqlUsers = await this.userEntity.find()
+    const existingUsers = await this.userModel.find({
+      email: { $in: mysqlUsers.map(user => user.email) },
+    })
 
-  async findUnique(filter: Partial<User>): Promise<User | null> {
-    return this.userModel.findOne(filter).exec()
-  }
+    const existingEmails = existingUsers.map(user => user.email)
+    const newUsers = mysqlUsers.filter(user => !existingEmails.includes(user.email))
 
-  async findMany(params: {
-    skip?: number
-    limit?: number
-    filter?: Partial<User>
-    sort?: Record<string, 1 | -1>
-  }): Promise<User[]> {
-    const { skip, limit, filter, sort } = params
-    return this.userModel.find(filter).skip(skip).limit(limit).sort(sort).exec()
-  }
-
-  async update(filter: Partial<User>, data: Partial<User>): Promise<User | null> {
-    return this.userModel.findOneAndUpdate(filter, data, { new: true }).exec()
-  }
-
-  async delete(filter: Partial<User>): Promise<User | null> {
-    return this.userModel.findOneAndDelete(filter).exec()
+    if (newUsers.length > 0) {
+      await this.userModel.insertMany(
+        newUsers.map(user => ({
+          username: user.username,
+          email: user.email,
+          passwordHash: user.passwordHash,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profilePictureUrl: user.profilePictureUrl,
+          isValidateEmail: user.isValidateEmail,
+          roleCode: user.roleCode,
+        })),
+      )
+    }
   }
 }

@@ -8,6 +8,8 @@ import { GetListDto } from './dto/get-list.dto'
 import { PageSizeInterface } from '../../interfaces/page-size.interface'
 import { UsersDocument } from '../../database/schemas/users.schema'
 import { PermissionDocument } from '../../database/schemas/permissions.schema'
+import { ADMIN_ROLE, SUPER_ADMIN } from '../../shared/constants/strings.constants'
+import { AddPermissionForRoleDto } from './dto/add-permission-for-role.dto'
 
 @Injectable()
 export class RolesService {
@@ -15,7 +17,12 @@ export class RolesService {
 
   async createPermissionByAdmin(
     createPermissionDto: CreatePermissionDto,
-  ): Promise<PermissionDocument> {
+    user: UsersDocument,
+  ): Promise<any> {
+    if (!user?.roleCode || (user.roleCode !== ADMIN_ROLE && user.roleCode !== SUPER_ADMIN)) {
+      throw new UnauthorizedException('You do not have permission to create permission')
+    }
+
     try {
       const createdPermission = await this.rolesRepository.createPermissionByAdmin(
         createPermissionDto,
@@ -23,14 +30,19 @@ export class RolesService {
       if (!createdPermission) {
         throw new InternalServerErrorException('Failed to create permission')
       }
-      return createdPermission
+      return {
+        message: 'Create permission successful!',
+        statusCode: 200,
+      }
     } catch (error) {
-      throw new InternalServerErrorException('Error creating permission: ' + error.message)
+      throw new InternalServerErrorException(
+        `Error creating permission: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      )
     }
   }
 
   async create(createRoleDto: CreateRoleDto, user: UsersDocument) {
-    if (user.roleCode !== 'SUPER_ADMIN') {
+    if (user.roleCode !== SUPER_ADMIN) {
       throw new UnauthorizedException('You do not have permission to create role')
     }
     try {
@@ -61,6 +73,14 @@ export class RolesService {
       data: roles,
       page: data.page,
       pageSize: data.limit,
+    }
+  }
+
+  async addPermissionForRole(data: AddPermissionForRoleDto): Promise<any> {
+    await this.rolesRepository.addPermissionForRole(data)
+    return {
+      message: 'Create successful!',
+      statusCode: 200,
     }
   }
 }

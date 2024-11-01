@@ -10,6 +10,7 @@ import { GetListDto } from './dto/get-list.dto'
 import { PageSizeInterface } from '../../interfaces/page-size.interface'
 import { Users, UsersDocument } from '../../database/schemas/users.schema'
 import { User } from '../../shared/decorators'
+import { AddPermissionForRoleDto } from './dto/add-permission-for-role.dto'
 
 @Controller('roles')
 @ApiBearerAuth()
@@ -19,8 +20,11 @@ export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post('createPermissionByAdmin')
-  createPermissionByAdmin(@Body() createPermissionDto: CreatePermissionDto) {
-    return this.rolesService.createPermissionByAdmin(createPermissionDto)
+  createPermissionByAdmin(
+    @Body() createPermissionDto: CreatePermissionDto,
+    @User() user: UsersDocument,
+  ) {
+    return this.rolesService.createPermissionByAdmin(createPermissionDto, user)
   }
 
   @Post('createRoleBySuperAdmin')
@@ -39,5 +43,10 @@ export class RolesController {
   @Get('getList')
   getList(@Query() data: GetListDto): Promise<PageSizeInterface> {
     return this.rolesService.getList(data)
+  }
+
+  @Post('addPermissionForRole')
+  addPermissionForRole(@Body() data: AddPermissionForRoleDto): Promise<any> {
+    return this.rolesService.addPermissionForRole(data)
   }
 }

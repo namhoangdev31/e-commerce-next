@@ -6,9 +6,6 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
 import process from 'process'
-import { doubleCsrf } from 'csrf-csrf'
-import * as swaggerUI from 'swagger-ui-express'
-import { HttpExceptionFilter } from './shared/exceptions/http-exception-filter.exception'
 
 import requestIp from 'request-ip'
 
