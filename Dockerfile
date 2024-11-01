@@ -8,4 +8,4 @@ RUN yarn install
 
 COPY . .
 
-RUN yarn start:dev
+RUN yarn start
