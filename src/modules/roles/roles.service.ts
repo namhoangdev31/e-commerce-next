@@ -83,4 +83,13 @@ export class RolesService {
       statusCode: 200,
     }
   }
+
+  async getPermissions(data: GetListDto): Promise<PageSizeInterface> {
+    const permissions = await this.rolesRepository.getPermissions(data)
+    return {
+      data: permissions,
+      page: data.page,
+      pageSize: data.limit,
+    }
+  }
 }

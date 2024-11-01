@@ -232,9 +232,13 @@ export class AuthService {
     }
   }
 
-  async sendRequestOtp(user: UsersDocument): Promise<void> {
+  async sendRequestOtp(user: UsersDocument): Promise<{ message: string; statusCode: number }> {
     const otp = this.generateOTP()
     await this.authRepository.saveOtp(user, otp)
     await this.mailService.sendUserOTP(user, otp)
+    return {
+      message: 'OTP sent successfully',
+      statusCode: 200,
+    }
   }
 }

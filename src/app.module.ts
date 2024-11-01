@@ -36,6 +36,9 @@ import { UserSessionEntity } from './database/entity/user-session.entity'
 import { RolePermissionsEntity } from './database/entity/role-permissions.entity'
 import { SkillsEntity } from './database/entity/skills.entity'
 import { DEV_ENV } from './shared/constants/strings.constants'
+import { FirebaseModule } from 'nestjs-firebase'
+import { NotificationModule } from './modules/notification/notification.module'
+import { CdnServiceModule } from './modules/cdn-service/cdn-service.module';
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -105,6 +108,25 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
         },
       },
     }),
+    FirebaseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        googleApplicationCredential: {
+          type: process.env.FIREBASE_TYPE,
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          privateKeyId: process.env.FIREBASE_PRIVATE_KEY_ID,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          clientId: process.env.FIREBASE_CLIENT_ID,
+          authUri: process.env.FIREBASE_AUTH_URI,
+          tokenUri: process.env.FIREBASE_TOKEN_URI,
+          authProviderX509CertUrl: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
+          clientX509CertUrl: process.env.FIREBASE_CLIENT_X509_CERT_URL,
+          universeDomain: process.env.FIREBASE_UNIVERSE_DOMAIN,
+        },
+      }),
+      inject: [ConfigService],
+    }),
     DatabaseModule,
     AuthModule,
     CallModule,
@@ -135,8 +157,11 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
     ]),
     MailModule,
     SyncDataScheduleModule,
+    NotificationModule,
+    CdnServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports: [FirebaseModule],
 })
 export class AppModule {}

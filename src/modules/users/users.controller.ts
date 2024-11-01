@@ -82,10 +82,18 @@ export class UsersController {
   }
 
   @Get('getProfile')
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Public()
   async getProfile() {
     return await this.usersService.getDetailUser()
+  }
+
+  @Post('sendRequestOtp')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async sendRequestOtp(@User() user: UsersDocument) {
+    return this.usersService.sendRequestOtp(user)
   }
 }

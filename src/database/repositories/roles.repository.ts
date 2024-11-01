@@ -21,6 +21,7 @@ import { UsersEntities } from '../entity/user.entity'
 import { PermissionsEntity } from '../entity/permissions.entity'
 import { AddPermissionForRoleDto } from '../../modules/roles/dto/add-permission-for-role.dto'
 import { RolePermissionsEntity } from '../entity/role-permissions.entity'
+import { GetPermissionDto } from '../../interfaces/get-permission.dto'
 
 @Injectable()
 export class RolesRepository {
@@ -175,6 +176,30 @@ export class RolesRepository {
       roleName: role.roleName,
       description: role.description,
       isSystem: role.isSystem,
+    }))
+  }
+  async getPermissions(data: GetListDto): Promise<GetPermissionDto[]> {
+    const { page = 1, limit = 10, id } = data
+    const skip = (page - 1) * limit
+
+    if (id) {
+      const permissions = await this.permissionsEntity.find({
+        skip,
+        take: limit,
+        where: { id },
+      })
+      return permissions.map(permission => ({
+        permissionCode: permission.permissionCode,
+        permissionName: permission.permissionName,
+        description: permission.description,
+      }))
+    }
+
+    const permissions = await this.permissionsModel.find().skip(skip).limit(limit)
+    return permissions.map(permission => ({
+      permissionCode: permission.permissionCode,
+      permissionName: permission.permissionName,
+      description: permission.description,
     }))
   }
 

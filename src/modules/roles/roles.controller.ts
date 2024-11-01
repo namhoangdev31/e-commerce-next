@@ -49,4 +49,9 @@ export class RolesController {
   addPermissionForRole(@Body() data: AddPermissionForRoleDto): Promise<any> {
     return this.rolesService.addPermissionForRole(data)
   }
+
+  @Get('getPermissions')
+  getPermissions(@Query() data: GetListDto): Promise<PageSizeInterface> {
+    return this.rolesService.getPermissions(data)
+  }
 }

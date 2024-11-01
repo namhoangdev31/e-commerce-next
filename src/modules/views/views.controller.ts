@@ -53,4 +53,11 @@ export class ViewsController {
   getContent(): object {
     return { title: 'Content', subtitle: 'Subtitle' }
   }
+
+  @Get('roles')
+  @Render('src/role-manager')
+  @ApiExcludeEndpoint()
+  getRoles(): object {
+    return { title: 'Roles', subtitle: 'Subtitle' }
+  }
 }
