@@ -1,22 +1,78 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/api-gateway/src",
   "compilerOptions": {
-    "plugins": ["@nestjs/swagger"],
+    "plugins": [
+      "@nestjs/swagger"
+    ],
     "assets": [
-      { "include": "i18n/**/*", "watchAssets": true },
-      { "include": "mail/templates/**/*", "watchAssets": true },
-      { "include": "**/*.css", "watchAssets": true }
-    ]
+      {
+        "include": "i18n/**/*",
+        "watchAssets": true
+      },
+      {
+        "include": "mail/templates/**/*",
+        "watchAssets": true
+      },
+      {
+        "include": "**/*.css",
+        "watchAssets": true
+      }
+    ],
+    "webpack": true,
+    "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
   },
   "plugins": [
     {
       "name": "@nestjs/swagger",
       "options": {
-        "dtoFileNameSuffix": [".dto.ts", ".entity.ts"],
+        "dtoFileNameSuffix": [
+          ".dto.ts",
+          ".entity.ts"
+        ],
         "classValidatorShim": true,
         "introspectComments": true
       }
     }
-  ]
+  ],
+  "monorepo": true,
+  "root": "apps/api-gateway",
+  "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "payment-gateway": {
+      "type": "application",
+      "root": "apps/payment-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/payment-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/payment-gateway/tsconfig.app.json"
+      }
+    },
+    "admin-gateway": {
+      "type": "application",
+      "root": "apps/admin-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/admin-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/admin-gateway/tsconfig.app.json"
+      }
+    },
+    "main-gateway": {
+      "type": "application",
+      "root": "apps/main-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/main-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/main-gateway/tsconfig.app.json"
+      }
+    }
+  }
 }

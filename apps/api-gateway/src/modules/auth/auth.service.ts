@@ -16,7 +16,6 @@ import {
   INCORRECT_CREDENTIAL,
   SUPER_ADMIN,
 } from '../../shared/constants/strings.constants'
-import { LoginResponse } from 'src/interfaces/login'
 import { RefreshTokenDto } from './dto/refreshToken.dto'
 import process from 'process'
 import { MailService } from '../mail/mail.service'
@@ -31,6 +30,7 @@ import { OtpDto } from './dto/otp.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UsersEntities } from '../../database/entity/user.entity'
 import { Repository } from 'typeorm'
+import { LoginResponse } from '../../interfaces/login'
 
 @Injectable()
 export class AuthService {
