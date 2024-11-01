@@ -60,4 +60,11 @@ export class ViewsController {
   getRoles(): object {
     return { title: 'Roles', subtitle: 'Subtitle' }
   }
+
+  @Get('image-store')
+  @Render('src/image-store')
+  @ApiExcludeEndpoint()
+  getImageStore(): object {
+    return { title: 'Image Store', subtitle: 'Subtitle' }
+  }
 }
