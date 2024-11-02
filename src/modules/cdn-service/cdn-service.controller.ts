@@ -1,10 +1,11 @@
 import { Controller, Post, UploadedFile, UseInterceptors, Delete, Param } from '@nestjs/common'
-import { ApiBody, ApiConsumes } from '@nestjs/swagger'
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger'
 import { Public } from '../auth/decorators/public.decorator'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { CdnService } from './cdn-service.service'
 
 @Controller('cdn-service')
+@ApiTags('CDN Service')
 export class CdnServiceController {
   constructor(private readonly cdnService: CdnService) {}
 
