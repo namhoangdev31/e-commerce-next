@@ -15,8 +15,8 @@ export type UserCourseProgressDocument = HydratedDocument<UserCourseProgress>
 @Injectable()
 @Schema({ timestamps: true })
 export class UserCourseProgress {
-  @Prop({ type: Types.ObjectId, ref: 'Users', required: true })
-  userCode: Types.ObjectId
+  @Prop({ type: String, ref: 'Users', required: true })
+  userCode: string
 
   @Prop({ required: true })
   courseId: string

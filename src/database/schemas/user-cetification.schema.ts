@@ -6,11 +6,11 @@ import { Certification } from './cetifications.schema'
 
 @Schema()
 export class UserCertification {
-  @Prop({ type: Types.ObjectId, ref: 'Users', required: true })
-  userCode: Types.ObjectId
+  @Prop({ type: String, ref: 'Users', required: true })
+  userCode: string
 
-  @Prop({ type: Types.ObjectId, ref: 'Certification', required: true })
-  certificationId: Types.ObjectId
+  @Prop({ type: String, ref: 'Certification', required: true })
+  certificationId: string
 
   @Prop({ required: true })
   @IsDate()
