@@ -13,7 +13,6 @@ import { AuthService } from './auth.service'
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
 import { JwtAuthGuard } from './jwt-auth.guard'
-import { UserDocument } from '../../database/schemas/user.schema'
 import { User } from '../../shared/decorators'
 import { Public } from './decorators/public.decorator'
 import { RefreshTokenDto } from './dto/refreshToken.dto'
@@ -25,7 +24,6 @@ import {
   ApiExcludeEndpoint,
 } from '@nestjs/swagger'
 import { UsersDocument } from '../../database/schemas/users.schema'
-import { OtpDto } from './dto/otp.dto'
 import { PROD_ENV } from '../../shared/constants/strings.constants'
 
 @Controller('auth')
@@ -36,7 +34,9 @@ export class AuthController {
   @Post('login')
   @Public()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Login with email and password if user is not active, send otp to email' })
+  @ApiOperation({
+    summary: 'Login with email and password if user is not active, send otp to email',
+  })
   async login(@Body() dto: LoginDto, @Req() req: Request) {
     return this.authService.login(dto, req)
   }

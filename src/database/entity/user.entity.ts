@@ -16,13 +16,20 @@ import { UserSkillEntity } from './user-skill.entity'
 import { UserSessionEntity } from './user-session.entity'
 
 @Entity('users')
-@Unique(['username', 'email'])
+@Unique(['username', 'email', 'userCode'])
 export class UsersEntities {
   @PrimaryGeneratedColumn()
   id: number
 
   @Column({
-    unique: true,
+    name: 'user_code',
+    type: 'varchar',
+  })
+  @IsString()
+  @IsNotEmpty()
+  userCode: string
+
+  @Column({
     name: 'username',
     type: 'varchar',
   })
@@ -31,7 +38,8 @@ export class UsersEntities {
   username: string
 
   @Column({
-    unique: true,
+    name: 'email',
+    type: 'varchar',
   })
   @IsEmail()
   @IsNotEmpty()

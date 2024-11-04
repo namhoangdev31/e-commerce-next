@@ -14,7 +14,14 @@ import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { OtpDto } from '../auth/dto/otp.dto'
 import { User } from '../../shared/decorators'
 import { UsersDocument } from '../../database/schemas/users.schema'
@@ -95,5 +102,28 @@ export class UsersController {
   @ApiBearerAuth()
   async sendRequestOtp(@User() user: UsersDocument) {
     return this.usersService.sendRequestOtp(user)
+  }
+
+  @Post(':userCode/role/:roleCode')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Assign role to user' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'User role updated successfully' })
+  @ApiParam({
+    name: 'userCode',
+    description: 'Code of the user to assign role to',
+    example: '67287228e9647d06a5097ff6',
+  })
+  @ApiParam({
+    name: 'roleCode',
+    description: 'Code of the role to assign to user',
+    example: '6728881a420a057677044177',
+  })
+  async assignRoleToUser(
+    @Param('userCode') userCode: string,
+    @Param('roleCode') roleCode: string,
+    @User() user: UsersDocument,
+  ) {
+    return this.usersService.assignRolesToUser(userCode, roleCode, user)
   }
 }

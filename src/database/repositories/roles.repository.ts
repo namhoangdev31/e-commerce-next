@@ -73,7 +73,7 @@ export class RolesRepository {
       .values({
         permissionName: createPermissionDto.permissionName,
         description: createPermissionDto.description,
-        permissionCode: createPermissionDto.permissionCode,
+        permissionCode: result._id.toString(),
       })
       .execute()
 
@@ -92,7 +92,7 @@ export class RolesRepository {
         .into(RoleEntity)
         .values({
           roleName: result.roleName,
-          roleCode: result.roleCode,
+          roleCode: String(result._id),
           description: result.description,
           isSystem: result.isSystem,
         })
@@ -109,13 +109,13 @@ export class RolesRepository {
       roleCode: { $in: mysqlRoles.map(role => role.roleCode) },
     })
 
-    const existingRoleNames = existingRoles.map(role => role.roleCode)
-    const newRoles = mysqlRoles.filter(role => !existingRoleNames.includes(role.roleCode))
+    const existingRoleCodes = existingRoles.map(role => role.roleName)
+    const newRoles = mysqlRoles.filter(role => !existingRoleCodes.includes(role.roleName))
 
     if (newRoles.length > 0) {
       await this.rolesModel.insertMany(
         newRoles.map(role => ({
-          roleCode: role.roleCode,
+          _id: role.roleCode,
           roleName: role.roleName,
           description: role.description,
           isSystem: role.isSystem,
@@ -128,12 +128,12 @@ export class RolesRepository {
     const mongoRoles = await this.rolesModel.find()
     const existingRoles = await this.roleEntity.find({
       where: {
-        roleCode: In(mongoRoles.map(role => role.roleCode)),
+        roleCode: In(mongoRoles.map(role => role._id.toString())),
       },
     })
 
     const existingRoleCodes = existingRoles.map(role => role.roleCode)
-    const newRoles = mongoRoles.filter(role => !existingRoleCodes.includes(role.roleCode))
+    const newRoles = mongoRoles.filter(role => !existingRoleCodes.includes(role._id.toString()))
 
     if (newRoles.length > 0) {
       await this.roleEntity
@@ -142,7 +142,7 @@ export class RolesRepository {
         .into(RoleEntity)
         .values(
           newRoles.map(role => ({
-            roleCode: role.roleCode,
+            roleCode: role._id.toString(),
             roleName: role.roleName,
             description: role.description,
             isSystem: role.isSystem,
@@ -172,12 +172,13 @@ export class RolesRepository {
 
     const roles = await this.rolesModel.find().skip(skip).limit(limit)
     return roles.map(role => ({
-      roleCode: role.roleCode,
+      roleCode: role._id.toString(),
       roleName: role.roleName,
       description: role.description,
       isSystem: role.isSystem,
     }))
   }
+
   async getPermissions(data: GetListDto): Promise<GetPermissionDto[]> {
     const { page = 1, limit = 10, id } = data
     const skip = (page - 1) * limit
@@ -197,7 +198,7 @@ export class RolesRepository {
 
     const permissions = await this.permissionsModel.find().skip(skip).limit(limit)
     return permissions.map(permission => ({
-      permissionCode: permission.permissionCode,
+      permissionCode: String(permission._id),
       permissionName: permission.permissionName,
       description: permission.description,
     }))
@@ -206,11 +207,11 @@ export class RolesRepository {
   async addRoleForUser(data: AddRoleUserDto): Promise<any> {
     try {
       const findRole = await this.rolesModel.findOne({
-        roleCode: data.roleCode,
+        _id: new Types.ObjectId(data.roleCode),
       })
 
       const findUser = await this.userModel.findOne({
-        username: data.username,
+        _id: new Types.ObjectId(data.userCode),
       })
 
       if (!findRole || !findUser) {
@@ -219,20 +220,20 @@ export class RolesRepository {
 
       const findRoleId = await this.roleEntity
         .createQueryBuilder('roles')
-        .where('roles.roleCode = :roleCode', { roleCode: data.roleCode })
+        .where('roles.role_code = :roleCode', { roleCode: data.roleCode })
         .getOne()
 
-      const findUserId = await this.userEntity
+      const finduserCode = await this.userEntity
         .createQueryBuilder('users')
-        .where('users.username = :username', { username: data.username })
+        .where('users.user_code = :userCode', { userCode: data.userCode })
         .getOne()
 
-      if (!findRoleId || !findUserId) {
+      if (!findRoleId || !finduserCode) {
         throw new BadRequestException('Error not found')
       }
 
       const userRole = await this.userRoleModel.create({
-        username: data.username,
+        username: data.userCode,
         roleCode: data.roleCode,
         assignmentStartDate: new Date(),
       })
@@ -246,7 +247,7 @@ export class RolesRepository {
         .insert()
         .into(UserRolesEntity)
         .values({
-          username: findUserId.username,
+          userCode: finduserCode.userCode,
           roleCode: findRoleId.roleCode,
           assignmentStartDate: new Date(),
         })
@@ -299,5 +300,9 @@ export class RolesRepository {
     } catch (e) {
       throw new InternalServerErrorException('Failed to add permission for role')
     }
+  }
+
+  async findRoleByCode(roleCode: string): Promise<RolesDocument> {
+    return this.rolesModel.findOne({ _id: new Types.ObjectId(roleCode) })
   }
 }

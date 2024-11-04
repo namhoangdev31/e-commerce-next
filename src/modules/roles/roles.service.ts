@@ -41,7 +41,7 @@ export class RolesService {
     }
   }
 
-  async create(createRoleDto: CreateRoleDto, user: UsersDocument) {
+  async createRoles(createRoleDto: CreateRoleDto, user: UsersDocument) {
     if (user.roleCode !== SUPER_ADMIN) {
       throw new UnauthorizedException('You do not have permission to create role')
     }
@@ -60,36 +60,52 @@ export class RolesService {
   }
 
   async addRoleForUser(data: AddRoleUserDto) {
-    await this.rolesRepository.addRoleForUser(data)
-    return {
-      message: 'Create successful!',
-      statusCode: 200,
+    try {
+      await this.rolesRepository.addRoleForUser(data)
+      return {
+        message: 'Create successful!',
+        statusCode: 200,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Error adding role to user: ' + error.message)
     }
   }
 
   async getList(data: GetListDto): Promise<PageSizeInterface> {
-    const roles = await this.rolesRepository.getList(data)
-    return {
-      data: roles,
-      page: data.page,
-      pageSize: data.limit,
+    try {
+      const roles = await this.rolesRepository.getList(data)
+      return {
+        data: roles,
+        page: data.page,
+        pageSize: data.limit,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Error getting roles list: ' + error.message)
     }
   }
 
   async addPermissionForRole(data: AddPermissionForRoleDto): Promise<any> {
-    await this.rolesRepository.addPermissionForRole(data)
-    return {
-      message: 'Create successful!',
-      statusCode: 200,
+    try {
+      await this.rolesRepository.addPermissionForRole(data)
+      return {
+        message: 'Create successful!',
+        statusCode: 200,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Error adding permission to role: ' + error.message)
     }
   }
 
   async getPermissions(data: GetListDto): Promise<PageSizeInterface> {
-    const permissions = await this.rolesRepository.getPermissions(data)
-    return {
-      data: permissions,
-      page: data.page,
-      pageSize: data.limit,
+    try {
+      const permissions = await this.rolesRepository.getPermissions(data)
+      return {
+        data: permissions,
+        page: data.page,
+        pageSize: data.limit,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Error getting permissions list: ' + error.message)
     }
   }
 }

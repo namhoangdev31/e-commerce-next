@@ -18,7 +18,7 @@ export class PermissionsEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ name: 'permission_name', type: 'varchar', length: 255, unique: true })
+  @Column({ name: 'permission_name', type: 'varchar', length: 255 })
   permissionName: string
 
   @Column({ type: 'text', nullable: true })
@@ -27,7 +27,7 @@ export class PermissionsEntity {
   @Column({ name: 'module_id', nullable: true })
   moduleId: number
 
-  @Column({ name: 'permission_code', type: 'varchar', length: 255, unique: true })
+  @Column({ name: 'permission_code', type: 'varchar', length: 255 })
   permissionCode: string
 
   @CreateDateColumn({ name: 'created_at' })

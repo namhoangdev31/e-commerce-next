@@ -7,7 +7,7 @@ import { Certification } from './cetifications.schema'
 @Schema()
 export class UserCertification {
   @Prop({ type: Types.ObjectId, ref: 'Users', required: true })
-  userId: Types.ObjectId
+  userCode: Types.ObjectId
 
   @Prop({ type: Types.ObjectId, ref: 'Certification', required: true })
   certificationId: Types.ObjectId

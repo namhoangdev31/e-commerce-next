@@ -22,7 +22,7 @@ import process from 'process'
 import { MailService } from '../mail/mail.service'
 import { RegisterInterface } from '../../interfaces/register.interface'
 import * as requestIp from 'request-ip'
-import { UserStatus } from '../../database/schemas/user-online.schema'
+
 import { User } from '../../shared/decorators'
 import { UsersDocument } from '../../database/schemas/users.schema'
 import { Types } from 'mongoose'
@@ -53,11 +53,11 @@ export class AuthService {
       throw new BadRequestException(INCORRECT_CREDENTIAL)
     }
 
-    const userId = new Types.ObjectId(user._id)
+    const userCode = new Types.ObjectId(user._id)
     const clientIp = requestIp.getClientIp(req as any)
 
     const session = {
-      userId: user._id,
+      userCode: String(user._id),
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       userAgent: req.headers['user-agent'],
       ipAddress: clientIp,
@@ -67,22 +67,24 @@ export class AuthService {
       lastActiveAt: new Date(),
     }
 
-    await this.authRepository.deleteManySessions({ userId })
+    await this.authRepository.deleteManySessions({
+      userCode: session.userCode,
+    })
 
     const savedSession = await this.authRepository.saveSession(session)
     if (!savedSession) {
       throw new UnauthorizedException('Failed to create session')
     }
 
-    let role = user.email === EMAIL_ADMIN ? SUPER_ADMIN : DEFAULT_ROLE
+    let role = user.email === EMAIL_ADMIN ? DEFAULT_ROLE : DEFAULT_ROLE
 
     if (user.email !== EMAIL_ADMIN) {
-      const findRoleInUser = await this.authRepository.findUsersRoles({ userId })
+      const findRoleInUser = await this.authRepository.findUsersRoles({ userCode })
       if (findRoleInUser) {
         const findRole = await this.authRepository.findRolesFilter({
-          roleCode: findRoleInUser.roleCode,
+          _id: new Types.ObjectId(findRoleInUser.roleCode),
         })
-        role = findRole.roleCode
+        role = findRole.roleName
       }
     }
 
@@ -106,7 +108,7 @@ export class AuthService {
   async register(data: RegisterDto): Promise<RegisterInterface> {
     let user, createUser
     try {
-      const user = await this.authRepository.create(data)
+      user = await this.authRepository.create(data)
       const findUser = await this.usersSqlModel
         .createQueryBuilder('users')
         .where('email = :email', { email: data.email })
@@ -116,6 +118,7 @@ export class AuthService {
         createUser = await this.usersSqlModel.save({
           ...data,
           passwordHash: user.passwordHash,
+          userCode: String(user._id),
           isValidateEmail: false,
         })
       }
@@ -131,8 +134,8 @@ export class AuthService {
       ])
 
       return {
-        accessToken: this.generateAccessToken(user),
         message: 'Registration successful! Please check your email to validate your account.',
+        statusCode: 200,
       }
     } catch (e) {
       console.error('Error during registration: ', e)
@@ -154,8 +157,28 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token')
     }
 
-    const accessToken = this.generateAccessToken(user)
-    const refreshToken = this.generateRefreshToken(user._id)
+    const session = {
+      userCode: String(user._id),
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      isRevoked: false,
+      token: '',
+      isOnline: true,
+      lastActiveAt: new Date(),
+    }
+
+    const savedSession = await this.authRepository.saveSession({
+      ...session,
+      userAgent: '',
+      ipAddress: '',
+    })
+
+    const accessToken = this.generateAccessToken(
+      user,
+      savedSession._id.toString(),
+      DEFAULT_ROLE,
+      savedSession,
+    )
+    const refreshToken = this.generateRefreshToken(user._id, savedSession._id.toString())
 
     const updatedUser = await this.authRepository.saveRefresh(refreshToken, user._id)
     if (!updatedUser) {
@@ -183,16 +206,19 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         isValidateEmail: user.isValidateEmail,
-        session: {
-          sessionId,
-          userId: user._id,
-          expiresAt: savedSession.expiresAt,
-          userAgent: savedSession.userAgent,
-          ipAddress: savedSession.ipAddress,
-          isRevoked: savedSession.isRevoked,
-          lastActiveAt: savedSession.lastActiveAt,
-          isOnline: savedSession.isOnline,
-        },
+        session:
+          sessionId || savedSession
+            ? {
+                sessionId,
+                userCode: user._id,
+                expiresAt: savedSession.expiresAt,
+                userAgent: savedSession.userAgent,
+                ipAddress: savedSession.ipAddress,
+                isRevoked: savedSession.isRevoked,
+                lastActiveAt: savedSession.lastActiveAt,
+                isOnline: savedSession.isOnline,
+              }
+            : null,
       },
     }
 
@@ -202,9 +228,9 @@ export class AuthService {
     })
   }
 
-  private generateRefreshToken(userId: any, sessionId?: string): string {
+  private generateRefreshToken(userCode: any, sessionId?: string): string {
     return this.jwtService.sign(
-      { userId, sessionId },
+      { userCode, sessionId },
       { expiresIn: '90d', secret: process.env.JWT_SECRET },
     )
   }
@@ -216,7 +242,7 @@ export class AuthService {
   async logout(@User() user: UsersDocument, @Req() req: Request): Promise<LogoutResponse> {
     try {
       const deleteResult = await this.authRepository.deleteManySessions({
-        userId: new Types.ObjectId(user._id),
+        userCode: new Types.ObjectId(user._id),
       })
 
       if (!deleteResult || deleteResult.deletedCount === 0) {

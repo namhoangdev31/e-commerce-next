@@ -10,11 +10,11 @@ export type UserCustomFieldValuesDocument = HydratedDocument<UserCustomFieldValu
 @Injectable()
 @Schema({ timestamps: true })
 export class UserCustomFieldValues {
-  @Prop({ type: Types.ObjectId, ref: 'Users', required: true }) // FK to Users
-  userId: Types.ObjectId // Foreign Key to Users
+  @Prop({ type: String, ref: 'Users', required: true }) // FK to Users
+  userCode: string // Foreign Key to Users
 
-  @Prop({ type: Types.ObjectId, ref: 'CustomFields', required: true }) // FK to CustomFieldsEntity
-  customFieldId: Types.ObjectId // Foreign Key to CustomFieldsEntity
+  @Prop({ type: String, ref: 'CustomFields', required: true }) // FK to CustomFieldsEntity
+  customFieldId: string // Foreign Key to CustomFieldsEntity
 
   @Prop({ required: true })
   @IsString()

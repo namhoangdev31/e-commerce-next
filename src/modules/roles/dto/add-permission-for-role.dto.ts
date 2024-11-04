@@ -7,7 +7,7 @@ export class AddPermissionForRoleDto {
   })
   @IsString()
   @ApiProperty({
-    example: 'ADMIN_ROLE',
+    example: '_id',
   })
   roleCode: string
 
@@ -16,7 +16,7 @@ export class AddPermissionForRoleDto {
   })
   @IsString()
   @ApiProperty({
-    example: 'ADMIN_PERMISSION',
+    example: '_id',
   })
   permissionCode: string
 

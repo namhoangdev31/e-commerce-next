@@ -9,19 +9,18 @@ import {
 } from 'typeorm'
 
 @Entity('user_roles')
-@Unique(['username', 'roleCode'])
 export class UserRolesEntity {
   @PrimaryGeneratedColumn()
   id: number
 
   @Column({
-    name: 'username',
+    name: 'user_code',
     type: 'varchar',
     nullable: false,
   })
   @IsNotEmpty()
   @IsString()
-  username: string
+  userCode: string
 
   @Column({
     name: 'role_code',

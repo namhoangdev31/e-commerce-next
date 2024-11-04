@@ -6,7 +6,7 @@ export class GroupMembership {
   groupId: Types.ObjectId
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userId: Types.ObjectId
+  userCode: Types.ObjectId
 }
 
 export const GroupMembershipSchema = SchemaFactory.createForClass(GroupMembership)

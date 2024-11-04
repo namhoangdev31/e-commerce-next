@@ -14,11 +14,11 @@ enum ProficiencyLevel {
 @Injectable()
 @Schema({ timestamps: true })
 export class UserSkills {
-  @Prop({ type: Types.ObjectId, ref: 'Users', required: true })
-  userId: Types.ObjectId
+  @Prop({ type: String, required: true })
+  userCode: string
 
-  @Prop({ type: Types.ObjectId, ref: 'Skills', required: true })
-  skillId: Types.ObjectId
+  @Prop({ type: String, required: true })
+  skillCode: string
 
   @Prop({ required: true, enum: ProficiencyLevel })
   @IsEnum(ProficiencyLevel)

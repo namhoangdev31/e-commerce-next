@@ -5,7 +5,7 @@ export class RefreshTokenDto {
   @IsString()
   refreshToken: string
 
-  @IsNotEmpty({ message: 'userId is emtpy' })
+  @IsNotEmpty({ message: 'userCode is emtpy' })
   @IsString()
-  userId: string
+  userCode: string
 }

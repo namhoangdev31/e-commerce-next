@@ -9,9 +9,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 
-import { RoleEntity } from './role.entity'
-import { PermissionsEntity } from './permissions.entity'
-
 @Entity('role_permissions')
 export class RolePermissionsEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })

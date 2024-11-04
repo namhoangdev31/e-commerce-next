@@ -16,7 +16,7 @@ export interface User {
 
 export interface Session {
   sessionId?: string
-  userId?: string
+  userCode?: string
   expiresAt?: Date
   userAgent?: string
   ipAddress?: string

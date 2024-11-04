@@ -21,6 +21,7 @@ import { Repository } from 'typeorm'
 import { ChangePassDto } from './dto/change-pass.dto'
 import { UserNotFoundException } from '../../shared/exceptions/UserNotFoundException.exception'
 import { UserDetailInterfaces } from '../../interfaces/user-detail.interfaces'
+import { UsersRepository } from 'src/database/repositories/users.repository'
 
 @Injectable()
 export class UsersService {
@@ -29,6 +30,7 @@ export class UsersService {
     private readonly mailService: MailService,
     @InjectRepository(UsersEntities)
     private usersSqlModel: Repository<UsersEntities>,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
   async forgotPassword(data: ForgotPassDto): Promise<void> {
@@ -100,14 +102,14 @@ export class UsersService {
   async verifyEmail(otp: OtpDto, user: UsersDocument): Promise<any> {
     try {
       const isOtpValid = await this.isOtpValid(otp, user)
-      const userId = new Types.ObjectId(user._id)
+      const userCode = new Types.ObjectId(user._id)
       if (!isOtpValid) throw new BadRequestException('OTP code is invalid!')
 
       if (await this.isEmailAlreadyValidated(user)) {
         throw new BadRequestException('Email is already validated!')
       }
 
-      const sessionsDeleted = await this.authRepository.deleteSession(userId)
+      const sessionsDeleted = await this.authRepository.deleteSession(userCode)
       if (!sessionsDeleted) {
         throw new BadRequestException('No sessions found to delete')
       }
@@ -152,9 +154,9 @@ export class UsersService {
 
   async changePassword(user: UsersDocument, data: ChangePassDto): Promise<void> {
     try {
-      const userId = new Types.ObjectId(user._id)
+      const userCode = new Types.ObjectId(user._id)
 
-      const findUser = await this.authRepository.findById(userId)
+      const findUser = await this.authRepository.findById(userCode)
 
       if (!findUser) throw new UserNotFoundException()
 
@@ -202,5 +204,9 @@ export class UsersService {
       message: 'OTP sent successfully',
       statusCode: 200,
     }
+  }
+
+  async assignRolesToUser(userCode: string, roleCode: string, user: UsersDocument): Promise<any> {
+    return this.usersRepository.assignRolesToUser(userCode, roleCode, user)
   }
 }

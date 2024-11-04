@@ -1,12 +1,26 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Unique,
+} from 'typeorm'
 import { IsNotEmpty, IsString, IsUrl, Length, IsOptional } from 'class-validator'
 
 @Entity('badges')
+@Unique(['badgeCode', 'badgeName'])
 export class BadgesEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ name: 'badge_name', length: 100, unique: true })
+  @Column({ name: 'badge_code', length: 100 })
+  @IsNotEmpty()
+  @IsString()
+  @Length(2, 100)
+  badgeCode: string
+
+  @Column({ name: 'badge_name', length: 100 })
   @IsNotEmpty()
   @IsString()
   @Length(2, 100)

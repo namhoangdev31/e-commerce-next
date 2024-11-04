@@ -10,7 +10,7 @@ export type UserAchievementsDocument = HydratedDocument<UserAchievements>
 @Schema({ timestamps: true })
 export class UserAchievements {
   @Prop({ type: Types.ObjectId, ref: 'Users', required: true })
-  userId: Types.ObjectId
+  userCode: Types.ObjectId
 
   @Prop({ required: true })
   achievementId: string

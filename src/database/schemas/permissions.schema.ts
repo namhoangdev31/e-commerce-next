@@ -13,17 +13,6 @@ export class Permissions {
   })
   permissionName: string
 
-  @Prop({
-    required: true,
-    unique: true,
-    type: String,
-  })
-  @IsString()
-  @IsNotEmpty({
-    message: 'Permission code is required',
-  })
-  permissionCode: string
-
   @Prop()
   @IsString()
   @IsEmpty()

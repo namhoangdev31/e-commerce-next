@@ -1,41 +1,40 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { UsersEntities } from './user.entity'
 
-@Index('userId', ['userId'], {})
 @Entity('user_session')
 export class UserSessionEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number
 
-  @Column('int', { name: 'userId' })
-  userId: number
+  @Column('varchar', { name: 'user_code' })
+  userCode: string
 
   @Column('varchar', { name: 'token', nullable: true, length: 255 })
   token: string | null
 
   @Column('datetime', {
-    name: 'expiresAt',
+    name: 'expires_at',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
   })
   expiresAt: Date | null
 
   @Column('tinyint', {
-    name: 'isRevoked',
+    name: 'is_revoked',
     nullable: true,
     width: 1,
     default: () => "'0'",
   })
   isRevoked: boolean | null
 
-  @Column('varchar', { name: 'userAgent', length: 255 })
+  @Column('varchar', { name: 'user_agent', length: 255 })
   userAgent: string
 
-  @Column('varchar', { name: 'ipAddress', length: 255 })
+  @Column('varchar', { name: 'ip_address', length: 255 })
   ipAddress: string
 
   @Column('tinyint', {
-    name: 'isOnline',
+    name: 'is_online',
     nullable: true,
     width: 1,
     default: () => "'1'",
@@ -43,7 +42,7 @@ export class UserSessionEntity {
   isOnline: boolean | null
 
   @Column('datetime', {
-    name: 'lastActiveAt',
+    name: 'last_activeAt',
     nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
   })

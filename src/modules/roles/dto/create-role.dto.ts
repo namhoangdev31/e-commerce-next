@@ -24,17 +24,6 @@ export class CreateRoleDto {
   description: string
 
   @ApiProperty({
-    example: 'ADMIN_ROLE',
-    description: 'Whether the role is a system role',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty({
-    message: MESSAGE_REQUIRED,
-  })
-  roleCode: string
-
-  @ApiProperty({
     example: false,
     description: 'Whether the role is a system role',
     default: false,

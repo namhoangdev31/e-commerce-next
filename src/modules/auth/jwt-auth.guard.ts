@@ -42,9 +42,9 @@ export class JwtAuthGuard implements CanActivate {
       const data: UserLoginInterface = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       })
-      const userId = new Types.ObjectId(data.user.id)
+      const userCode = new Types.ObjectId(data.user.id)
       const sessionId = new Types.ObjectId(data.user.session.sessionId)
-      const session = await this.authRepository.findValidSession(sessionId, userId)
+      const session = await this.authRepository.findValidSession(sessionId, userCode)
 
       if (!session) {
         throw new UnauthorizedException('Session expired')

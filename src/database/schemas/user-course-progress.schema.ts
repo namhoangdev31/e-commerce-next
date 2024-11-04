@@ -16,7 +16,7 @@ export type UserCourseProgressDocument = HydratedDocument<UserCourseProgress>
 @Schema({ timestamps: true })
 export class UserCourseProgress {
   @Prop({ type: Types.ObjectId, ref: 'Users', required: true })
-  userId: Types.ObjectId
+  userCode: Types.ObjectId
 
   @Prop({ required: true })
   courseId: string
@@ -48,4 +48,4 @@ export class UserCourseProgress {
 }
 
 export const UserCourseProgressSchema = SchemaFactory.createForClass(UserCourseProgress)
-UserCourseProgressSchema.index({ userId: 1, courseId: 1 }, { unique: true })
+UserCourseProgressSchema.index({ userCode: 1, courseId: 1 }, { unique: true })

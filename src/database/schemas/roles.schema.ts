@@ -13,11 +13,6 @@ export class Roles {
   @IsNotEmpty({ message: 'Role name is required' })
   roleName: string
 
-  @Prop({ required: true, unique: true, type: String })
-  @IsString()
-  @IsNotEmpty({ message: 'Role code is required' })
-  roleCode: string
-
   @Prop({ type: String })
   @IsString()
   @IsOptional()

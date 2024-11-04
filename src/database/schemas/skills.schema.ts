@@ -11,11 +11,11 @@ export class Skills {
   @Prop({ required: true })
   @IsString()
   @IsNotEmpty()
-  skillName: string // SkillName
+  skillName: string
 
   @Prop({ type: String })
   @IsString()
-  description?: string // Description (optional)
+  description?: string
 }
 
 export const SkillsSchema = SchemaFactory.createForClass(Skills)

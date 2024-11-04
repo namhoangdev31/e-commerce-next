@@ -32,7 +32,7 @@ export class RolesController {
     @Body() createRoleDto: CreateRoleDto,
     @User() user: UsersDocument,
   ): Promise<any> {
-    return this.rolesService.create(createRoleDto, user)
+    return this.rolesService.createRoles(createRoleDto, user)
   }
 
   @Post('addRoleForUser')

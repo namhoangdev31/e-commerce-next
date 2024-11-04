@@ -17,7 +17,6 @@ import {
   UserCustomFieldValues,
   UserCustomFieldValuesSchema,
 } from './schemas/user-custom-field-values.schema'
-import { User, UserSchema } from './schemas/user.schema'
 import { Modules, ModuleSchema } from './schemas/modules.schema'
 import { CustomFields, CustomFieldsSchema } from './schemas/custom-fields.schema'
 import { UserSession, UserSessionSchema } from './schemas/user-session.schema'
@@ -51,7 +50,7 @@ import { RolePermissionsEntity } from './entity/role-permissions.entity'
       { name: SkillEndorsements.name, schema: SkillEndorsementsSchema },
       { name: Skills.name, schema: SkillsSchema },
       { name: UserCustomFieldValues.name, schema: UserCustomFieldValuesSchema },
-      { name: User.name, schema: UserSchema },
+
       { name: UserRoles.name, schema: UserRolesSchema },
       { name: Users.name, schema: UsersSchema },
       { name: UserSkills.name, schema: UserSkillsSchema },

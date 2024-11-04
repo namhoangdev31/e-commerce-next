@@ -16,7 +16,7 @@ import { Course } from './courses.interface'
  * a comprehensive view of a user's profile and progress within the system.
  */
 export interface UserDetailInterfaces {
-  userID: string | number // Unique identifier for the user
+  userCode: string | number // Unique identifier for the user
   username: string // User's chosen username
   firstName: string // User's first name
   lastName: string // User's last name

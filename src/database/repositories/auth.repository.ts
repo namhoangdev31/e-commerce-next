@@ -68,10 +68,10 @@ export class AuthRepository {
   }
 
   public async refreshToken(data: RefreshTokenDto): Promise<UsersDocument> {
-    let userId = new Types.ObjectId(data.userId)
+    let userCode = new Types.ObjectId(data.userCode)
     return this.userModel.findOne({
       refreshToken: data.refreshToken,
-      _id: userId,
+      _id: userCode,
     })
   }
 
@@ -88,11 +88,11 @@ export class AuthRepository {
 
   public async findValidSession(
     sessionId: Types.ObjectId,
-    userId: Types.ObjectId,
+    userCode: Types.ObjectId,
   ): Promise<UserSessionDocument | null> {
     return this.userSessionModel.findOne({
       _id: sessionId,
-      userId: userId,
+      userCode: userCode,
     })
   }
 
@@ -101,7 +101,7 @@ export class AuthRepository {
   }
 
   public async deleteSession(id: Types.ObjectId): Promise<any> {
-    return this.userSessionModel.findOneAndDelete({ userId: id })
+    return this.userSessionModel.findOneAndDelete({ userCode: id })
   }
 
   public async updateSession(filter: any, update: any): Promise<any> {
@@ -114,9 +114,9 @@ export class AuthRepository {
 
   public async updateResetPasswordToken(
     token: string,
-    userId: Types.ObjectId,
+    userCode: Types.ObjectId,
   ): Promise<UsersDocument> {
-    return this.userModel.findByIdAndUpdate(userId, { resetPasswordToken: token })
+    return this.userModel.findByIdAndUpdate(userCode, { resetPasswordToken: token })
   }
 
   public async updateOne(

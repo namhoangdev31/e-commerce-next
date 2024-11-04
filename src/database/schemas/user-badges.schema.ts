@@ -7,11 +7,11 @@ export type UserBadgesDocument = HydratedDocument<UserBadge>
 @Injectable()
 @Schema({ timestamps: true })
 export class UserBadge {
-  @Prop({ type: Types.ObjectId, ref: 'Users', required: true, unique: true })
-  userId: Types.ObjectId
+  @Prop({ type: String, required: true })
+  userCode: string
 
-  @Prop({ type: Types.ObjectId, ref: 'Badges', required: true })
-  badgeId: Types.ObjectId
+  @Prop({ type: String, required: true })
+  badgeCode: string
 
   @Prop({ required: true })
   dateEarned: Date

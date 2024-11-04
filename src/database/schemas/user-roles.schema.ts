@@ -14,9 +14,9 @@ enum RoleModelEnum {
 @Schema({ timestamps: true })
 export class UserRoles {
   @Prop({ type: String, required: true })
-  username: string
+  userCode: string
 
-  @Prop({ type: String, refPath: 'roleModel', required: true })
+  @Prop({ type: String, required: true })
   roleCode: string
 
   @Prop({ type: Date, required: true })

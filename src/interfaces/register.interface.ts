@@ -1,4 +1,5 @@
 export interface RegisterInterface {
-  accessToken: string
+  accessToken?: string
   message: string
+  statusCode: number
 }
