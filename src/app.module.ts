@@ -39,6 +39,7 @@ import { DEV_ENV } from './shared/constants/strings.constants'
 import { FirebaseModule } from 'nestjs-firebase'
 import { NotificationModule } from './modules/notification/notification.module'
 import { CdnServiceModule } from './modules/cdn-service/cdn-service.module';
+import { ModuleModule } from './modules/module/module.module';
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -159,6 +160,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
     SyncDataScheduleModule,
     NotificationModule,
     CdnServiceModule,
+    ModuleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

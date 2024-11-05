@@ -10,6 +10,7 @@ import { UsersDocument } from '../../database/schemas/users.schema'
 import { PermissionDocument } from '../../database/schemas/permissions.schema'
 import { ADMIN_ROLE, SUPER_ADMIN } from '../../shared/constants/strings.constants'
 import { AddPermissionForRoleDto } from './dto/add-permission-for-role.dto'
+import { PostMessageInterface } from '../../interfaces/post-message.interface'
 
 @Injectable()
 export class RolesService {
@@ -59,7 +60,7 @@ export class RolesService {
     }
   }
 
-  async addRoleForUser(data: AddRoleUserDto) {
+  async addRoleForUser(data: AddRoleUserDto): Promise<PostMessageInterface> {
     try {
       await this.rolesRepository.addRoleForUser(data)
       return {
@@ -84,12 +85,12 @@ export class RolesService {
     }
   }
 
-  async addPermissionForRole(data: AddPermissionForRoleDto): Promise<any> {
+  async addPermissionForRole(data: AddPermissionForRoleDto): Promise<PostMessageInterface> {
     try {
       await this.rolesRepository.addPermissionForRole(data)
       return {
-        message: 'Create successful!',
         statusCode: 200,
+        message: 'Create successful!',
       }
     } catch (error) {
       throw new InternalServerErrorException('Error adding permission to role: ' + error.message)
@@ -106,6 +107,14 @@ export class RolesService {
       }
     } catch (error) {
       throw new InternalServerErrorException('Error getting permissions list: ' + error.message)
+    }
+  }
+
+  async roleCheck(data: PostMessageInterface): Promise<PostMessageInterface> {
+    return {
+      message: 'Check done!',
+      statusCode: 200,
+      data: true,
     }
   }
 }

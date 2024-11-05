@@ -11,6 +11,8 @@ import { PageSizeInterface } from '../../interfaces/page-size.interface'
 import { Users, UsersDocument } from '../../database/schemas/users.schema'
 import { User } from '../../shared/decorators'
 import { AddPermissionForRoleDto } from './dto/add-permission-for-role.dto'
+import { PostMessageInterface } from '../../interfaces/post-message.interface'
+import { RoleCheckDto } from './dto/role-check.dto'
 
 @Controller('roles')
 @ApiBearerAuth()
@@ -46,12 +48,17 @@ export class RolesController {
   }
 
   @Post('addPermissionForRole')
-  addPermissionForRole(@Body() data: AddPermissionForRoleDto): Promise<any> {
+  addPermissionForRole(@Body() data: AddPermissionForRoleDto): Promise<PostMessageInterface> {
     return this.rolesService.addPermissionForRole(data)
   }
 
   @Get('getPermissions')
   getPermissions(@Query() data: GetListDto): Promise<PageSizeInterface> {
     return this.rolesService.getPermissions(data)
+  }
+
+  @Post('roleCheck')
+  roleCheck(@Body() data: RoleCheckDto): Promise<PostMessageInterface> {
+    return this.rolesService.roleCheck(data)
   }
 }
