@@ -11,6 +11,7 @@ import { PermissionDocument } from '../../database/schemas/permissions.schema'
 import { ADMIN_ROLE, SUPER_ADMIN } from '../../shared/constants/strings.constants'
 import { AddPermissionForRoleDto } from './dto/add-permission-for-role.dto'
 import { PostMessageInterface } from '../../interfaces/post-message.interface'
+import { RoleCheckDto } from './dto/role-check.dto'
 
 @Injectable()
 export class RolesService {
@@ -110,7 +111,7 @@ export class RolesService {
     }
   }
 
-  async roleCheck(data: PostMessageInterface): Promise<PostMessageInterface> {
+  async roleCheck(data: RoleCheckDto): Promise<PostMessageInterface> {
     return {
       message: 'Check done!',
       statusCode: 200,

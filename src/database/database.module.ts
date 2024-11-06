@@ -35,6 +35,8 @@ import { UserSkillEntity } from './entity/user-skill.entity'
 import { UserSessionEntity } from './entity/user-session.entity'
 import { SkillsEntity } from './entity/skills.entity'
 import { RolePermissionsEntity } from './entity/role-permissions.entity'
+import { UserLogSchema } from './schemas/user-log.schema'
+import { UserLog } from './schemas/user-log.schema'
 
 @Module({
   imports: [
@@ -50,7 +52,7 @@ import { RolePermissionsEntity } from './entity/role-permissions.entity'
       { name: SkillEndorsements.name, schema: SkillEndorsementsSchema },
       { name: Skills.name, schema: SkillsSchema },
       { name: UserCustomFieldValues.name, schema: UserCustomFieldValuesSchema },
-
+      { name: UserLog.name, schema: UserLogSchema },
       { name: UserRoles.name, schema: UserRolesSchema },
       { name: Users.name, schema: UsersSchema },
       { name: UserSkills.name, schema: UserSkillsSchema },

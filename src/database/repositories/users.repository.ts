@@ -1,7 +1,41 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
+/**
+ * Repository class for managing user-related database operations
+ * Handles both MongoDB and MySQL operations for user data
+ *
+ * Key features:
+ * - User CRUD operations (create, read, update, delete)
+ * - Role management and assignment
+ * - Data synchronization between MongoDB and MySQL
+ * - Search and filtering capabilities
+ * - Profile management
+ * - Bulk operations support
+ *
+ * The repository interacts with:
+ * - MongoDB collections: Users, UserRoles
+ * - MySQL tables: UsersEntities, RoleEntity, UserRolesEntity
+ *
+ * Security features:
+ * - Role-based access control
+ * - Permission validation
+ * - Error handling with appropriate exceptions
+ *
+ * Main operations:
+ * - syncUsersFromMySQLToMongoDB: Syncs user data between databases
+ * - assignRolesToUser: Manages role assignments
+ * - CRUD operations: findAll, findById, update, delete
+ * - Bulk operations: bulkUpdate, bulkDelete
+ * - Search and filter: search, filter
+ * - Profile management: updateProfile
+ */
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
-
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UsersEntities } from '../entity/user.entity'
@@ -10,20 +44,28 @@ import { RolesRepository } from './roles.repository'
 import { UserRoles, UserRolesDocument } from '../schemas/user-roles.schema'
 import { UserRolesEntity } from '../entity/user-roles.entity'
 import { RoleEntity } from '../entity/role.entity'
+import { UpdateUserDto } from 'src/modules/users/dto/update-user.dto'
+import { SearchUserDto } from 'src/modules/users/dto/search-user.dto'
+import { FilterUserDto } from 'src/modules/users/dto/filter-user.dto'
+import { UpdateProfileDto } from 'src/modules/users/dto/update-profile.dto'
+import { PageSizeInterface } from '../../interfaces/page-size.interface'
+import { GetListDto } from '../../modules/users/dto/get-list.dto'
+import { ADMIN_ROLE, SUPER_ADMIN } from '../../shared/constants/strings.constants'
+import { PostMessageInterface } from '../../interfaces/post-message.interface'
 
 @Injectable()
 export class UsersRepository {
   constructor(
     @InjectModel(Users.name)
-    private userModel: Model<UsersDocument>,
+    private readonly userModel: Model<UsersDocument>,
     @InjectModel(UserRoles.name)
-    private userRoleModel: Model<UserRolesDocument>,
+    private readonly userRoleModel: Model<UserRolesDocument>,
     @InjectRepository(UsersEntities)
-    private userEntity: Repository<UsersEntities>,
+    private readonly userEntity: Repository<UsersEntities>,
     @InjectRepository(RoleEntity)
-    private roleEntity: Repository<RoleEntity>,
+    private readonly roleEntity: Repository<RoleEntity>,
     @InjectRepository(UserRolesEntity)
-    private userRolesEntity: Repository<UserRolesEntity>,
+    private readonly userRolesEntity: Repository<UserRolesEntity>,
     private readonly rolesRepository: RolesRepository,
   ) {}
 
@@ -54,80 +96,242 @@ export class UsersRepository {
 
   async assignRolesToUser(userCode: string, roleCode: string, user: UsersDocument): Promise<any> {
     try {
-      const findRole = await this.rolesRepository.findRoleByCode(roleCode)
+      const [findRole, findUser, findRoleId, findUserCode] = await Promise.all([
+        this.rolesRepository.findRoleByCode(roleCode),
+        this.userModel.findById(new Types.ObjectId(userCode)),
+        this.roleEntity
+          .createQueryBuilder('roles')
+          .where('roles.role_code = :roleCode', { roleCode })
+          .getOne(),
+        this.userEntity
+          .createQueryBuilder('users')
+          .where('users.user_code = :userCode', { userCode })
+          .getOne(),
+      ])
 
-      const findUser = await this.userModel.findOne({
-        _id: new Types.ObjectId(userCode),
-      })
-
-      if (!findRole || !findUser) {
-        throw new BadRequestException('Error not found')
+      if (!findRole || !findUser || !findRoleId || !findUserCode) {
+        throw new BadRequestException('Required data not found')
       }
 
-      const findRoleId = await this.roleEntity
-        .createQueryBuilder('roles')
-        .where('roles.role_code = :roleCode', { roleCode })
-        .getOne()
+      const existingUserRole = await this.userRoleModel.findOne({ userCode })
 
-      const findUserCode = await this.userEntity
-        .createQueryBuilder('users')
-        .where('users.user_code = :userCode', { userCode: userCode })
-        .getOne()
-
-      if (!findRoleId || !findUserCode) {
-        throw new BadRequestException('Error not found')
-      }
-
-      const existingUserRole = await this.userRoleModel.findOne({
-        userCode: userCode,
-      })
-      let userRole: any
       if (existingUserRole) {
-        userRole = await this.userRoleModel.findOneAndUpdate(
-          { userCode: userCode },
-          { roleCode: roleCode, assignmentStartDate: new Date() },
-          { new: true },
-        )
-
-        await this.userRolesEntity
-          .createQueryBuilder()
-          .update(UserRolesEntity)
-          .set({
-            roleCode: findRoleId.roleCode,
-            assignmentStartDate: new Date(),
-          })
-          .where('userCode = :userCode', { userCode: findUserCode.userCode })
-          .execute()
+        await Promise.all([
+          this.userRoleModel.findOneAndUpdate(
+            { userCode },
+            { roleCode, assignmentStartDate: new Date() },
+            { new: true },
+          ),
+          this.userRolesEntity
+            .createQueryBuilder()
+            .update(UserRolesEntity)
+            .set({
+              roleCode: findRoleId.roleCode,
+              assignmentStartDate: new Date(),
+            })
+            .where('userCode = :userCode', { userCode: findUserCode.userCode })
+            .execute(),
+        ])
       } else {
-        userRole = await this.userRoleModel.create({
-          userCode: userCode,
-          roleCode: roleCode,
-          assignmentStartDate: new Date(),
-        })
-
-        // Insert into MySQL
-        await this.userRolesEntity
-          .createQueryBuilder()
-          .insert()
-          .into(UserRolesEntity)
-          .values({
-            userCode: findUserCode.userCode,
-            roleCode: findRoleId.roleCode,
+        await Promise.all([
+          this.userRoleModel.create({
+            userCode,
+            roleCode,
             assignmentStartDate: new Date(),
-          })
-          .execute()
-      }
-
-      if (!userRole) {
-        throw new InternalServerErrorException('Failed to add/update role for user')
+          }),
+          this.userRolesEntity
+            .createQueryBuilder()
+            .insert()
+            .into(UserRolesEntity)
+            .values({
+              userCode: findUserCode.userCode,
+              roleCode: findRoleId.roleCode,
+              assignmentStartDate: new Date(),
+            })
+            .execute(),
+        ])
       }
 
       return {
-        message: existingUserRole ? 'Update role successful!' : 'Add role successful!',
+        message: `${existingUserRole ? 'Update' : 'Add'} role successful!`,
         status: 200,
       }
     } catch (error) {
       throw new InternalServerErrorException('Failed to add/update role for user')
     }
+  }
+
+  async findAll(data: GetListDto): Promise<PageSizeInterface> {
+    try {
+      const users = await this.userModel.find().exec()
+      return {
+        data: users.map(user => ({
+          userCode: user._id,
+          username: user.username,
+          email: user.email,
+          fullName: `${user.firstName} ${user.lastName}`,
+          isValidateEmail: user.isValidateEmail,
+        })),
+        page: data.page,
+        pageSize: data.limit,
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch users')
+    }
+  }
+
+  async findById(userCode: string): Promise<UsersDocument> {
+    try {
+      const user = await this.userModel.findById(new Types.ObjectId(userCode)).exec()
+      if (!user) {
+        throw new NotFoundException('User not found')
+      }
+      return user
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
+      throw new InternalServerErrorException('Failed to fetch user')
+    }
+  }
+
+  async update(userCode: string, updateUserDto: UpdateUserDto): Promise<UsersDocument> {
+    try {
+      const user = await this.userModel
+        .findByIdAndUpdate(userCode, updateUserDto, { new: true })
+        .exec()
+      if (!user) {
+        throw new NotFoundException('User not found')
+      }
+      return user
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
+      throw new InternalServerErrorException('Failed to update user')
+    }
+  }
+
+  async delete(userCode: string, user: UsersDocument): Promise<PostMessageInterface> {
+    try {
+      const role = await this.rolesRepository.findRoleByCode(user.roleCode)
+      const hasPermission =
+        userCode === String(user._id) ||
+        role.roleName === SUPER_ADMIN ||
+        role.roleName === ADMIN_ROLE
+
+      if (!hasPermission) {
+        throw new ForbiddenException('You do not have permission to do this')
+      }
+
+      const deletedUser = await this.userModel
+        .findByIdAndDelete(new Types.ObjectId(userCode))
+        .exec()
+
+      if (!deletedUser) {
+        throw new NotFoundException('User not found')
+      }
+
+      return {
+        message: 'Delete success!',
+        statusCode: 200,
+      }
+    } catch (error) {
+      if (error instanceof NotFoundException || error instanceof ForbiddenException) {
+        throw error
+      }
+      throw new InternalServerErrorException('Failed to delete user')
+    }
+  }
+
+  async bulkUpdate(users: UpdateUserDto[]): Promise<any> {
+    try {
+      const bulkOps = users.map(user => ({
+        updateOne: {
+          filter: { _id: new Types.ObjectId(user._id) },
+          update: { $set: user },
+        },
+      }))
+      return await this.userModel.bulkWrite(bulkOps)
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to bulk update users')
+    }
+  }
+
+  async bulkDelete(userCodes: string[]): Promise<any> {
+    try {
+      return await this.userModel.deleteMany({ _id: { $in: userCodes } })
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to bulk delete users')
+    }
+  }
+
+  async search(searchParams: SearchUserDto): Promise<UsersDocument[]> {
+    try {
+      if (!searchParams.username) {
+        return await this.userModel.find().exec()
+      }
+
+      const searchRegex = new RegExp(searchParams.username, 'i')
+      return await this.userModel
+        .find({
+          $or: [
+            { username: searchRegex },
+            { email: searchRegex },
+            { firstName: searchRegex },
+            { lastName: searchRegex }
+          ],
+        })
+        .exec()
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to search users')
+    }
+  }
+
+  async filter(filterParams: FilterUserDto): Promise<UsersDocument[]> {
+    try {
+      const query = Object.entries(filterParams)
+        .filter(([_, value]) => value)
+        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+
+      return await this.userModel.find(query).exec()
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to filter users')
+    }
+  }
+
+  async updateProfile(
+    userCode: string,
+    updateProfileDto: UpdateProfileDto,
+  ): Promise<UsersDocument> {
+    try {
+      const user = await this.userModel.findById(userCode)
+      if (!user) {
+        throw new NotFoundException('User not found')
+      }
+
+      Object.assign(user, updateProfileDto)
+      return await user.save()
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
+      throw new InternalServerErrorException('Failed to update user profile')
+    }
+  }
+
+  async getLoginHistory(userCode: string): Promise<any> {
+    // TODO: Implement user login history
+    throw new InternalServerErrorException('User login history not implemented')
+  }
+
+  async getChanges(userCode: string): Promise<any> {
+    // TODO: Implement user changes history
+    throw new InternalServerErrorException('User changes history not implemented')
+  }
+
+  async getActivity(userCode: string): Promise<any> {
+    // TODO: Implement user activity
+    throw new InternalServerErrorException('User activity not implemented')
   }
 }
