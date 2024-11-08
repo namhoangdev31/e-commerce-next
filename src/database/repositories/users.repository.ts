@@ -96,7 +96,7 @@ export class UsersRepository {
 
   async assignRolesToUser(userCode: string, roleCode: string, user: UsersDocument): Promise<any> {
     try {
-      const [findRole, findUser, findRoleId, findUserCode] = await Promise.all([
+      const [findRole, findUser, findroleCode, findUserCode] = await Promise.all([
         this.rolesRepository.findRoleByCode(roleCode),
         this.userModel.findById(new Types.ObjectId(userCode)),
         this.roleEntity
@@ -109,7 +109,7 @@ export class UsersRepository {
           .getOne(),
       ])
 
-      if (!findRole || !findUser || !findRoleId || !findUserCode) {
+      if (!findRole || !findUser || !findroleCode || !findUserCode) {
         throw new BadRequestException('Required data not found')
       }
 
@@ -126,7 +126,7 @@ export class UsersRepository {
             .createQueryBuilder()
             .update(UserRolesEntity)
             .set({
-              roleCode: findRoleId.roleCode,
+              roleCode: findroleCode.roleCode,
               assignmentStartDate: new Date(),
             })
             .where('userCode = :userCode', { userCode: findUserCode.userCode })
@@ -145,7 +145,7 @@ export class UsersRepository {
             .into(UserRolesEntity)
             .values({
               userCode: findUserCode.userCode,
-              roleCode: findRoleId.roleCode,
+              roleCode: findroleCode.roleCode,
               assignmentStartDate: new Date(),
             })
             .execute(),
@@ -279,7 +279,7 @@ export class UsersRepository {
             { username: searchRegex },
             { email: searchRegex },
             { firstName: searchRegex },
-            { lastName: searchRegex }
+            { lastName: searchRegex },
           ],
         })
         .exec()

@@ -22,6 +22,7 @@ import { PermissionsEntity } from '../entity/permissions.entity'
 import { AddPermissionForRoleDto } from '../../modules/roles/dto/add-permission-for-role.dto'
 import { RolePermissionsEntity } from '../entity/role-permissions.entity'
 import { GetPermissionDto } from '../../interfaces/get-permission.dto'
+import { UpdateRoleDto } from 'src/modules/roles/dto/update-role.dto'
 
 @Injectable()
 export class RolesRepository {
@@ -218,7 +219,7 @@ export class RolesRepository {
         throw new BadRequestException('Error not found')
       }
 
-      const findRoleId = await this.roleEntity
+      const findroleCode = await this.roleEntity
         .createQueryBuilder('roles')
         .where('roles.role_code = :roleCode', { roleCode: data.roleCode })
         .getOne()
@@ -228,7 +229,7 @@ export class RolesRepository {
         .where('users.user_code = :userCode', { userCode: data.userCode })
         .getOne()
 
-      if (!findRoleId || !finduserCode) {
+      if (!findroleCode || !finduserCode) {
         throw new BadRequestException('Error not found')
       }
 
@@ -248,7 +249,7 @@ export class RolesRepository {
         .into(UserRolesEntity)
         .values({
           userCode: finduserCode.userCode,
-          roleCode: findRoleId.roleCode,
+          roleCode: findroleCode.roleCode,
           assignmentStartDate: new Date(),
         })
         .execute()
@@ -304,5 +305,75 @@ export class RolesRepository {
 
   async findRoleByCode(roleCode: string): Promise<RolesDocument> {
     return this.rolesModel.findOne({ _id: new Types.ObjectId(roleCode) })
+  }
+
+
+  async findById(roleCode: string) {
+    try {
+      return await this.rolesModel.findById(roleCode)
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to find role')
+    }
+  }
+
+  async update(roleCode: string, updateRoleDto: UpdateRoleDto) {
+    try {
+      return await this.rolesModel.findByIdAndUpdate(roleCode, updateRoleDto, { new: true })
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to update role')
+    }
+  }
+
+  async delete(roleCode: string) {
+    try {
+      return await this.rolesModel.findByIdAndDelete(roleCode)
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to delete role')
+    }
+  }
+
+  async getModules(roleCode: string) {
+    try {
+      const role = await this.rolesModel.findById(new Types.ObjectId(roleCode)).populate('modules')
+      return role?.modules || []
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get role modules')
+    }
+  }
+
+  async assignModule(roleCode: string, moduleCode: string) {
+    try {
+      return await this.rolesModel.findByIdAndUpdate(
+        roleCode,
+        { $addToSet: { modules: moduleCode } },
+        { new: true }
+      )
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to assign module')
+    }
+  }
+
+  async removeModule(roleCode: string, moduleCode: string) {
+    try {
+      return await this.rolesModel.findByIdAndUpdate(
+        roleCode,
+        { $pull: { modules: moduleCode } },
+        { new: true }
+      )
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to remove module')
+    }
+  }
+
+  async bulkAssignModules(roleCode: string, moduleCodes: string[]) {
+    try {
+      return await this.rolesModel.findByIdAndUpdate(
+        roleCode,
+        { $addToSet: { modules: { $each: moduleCodes } } },
+        { new: true }
+      )
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to bulk assign modules')
+    }
   }
 }

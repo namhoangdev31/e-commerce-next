@@ -1,26 +1,45 @@
-import { Injectable } from '@nestjs/common';
-import { CreateModuleDto } from './dto/create-module.dto';
-import { UpdateModuleDto } from './dto/update-module.dto';
+import { Injectable } from '@nestjs/common'
+import { CreateModuleDto } from './dto/create-module.dto'
+import { UpdateModuleDto } from './dto/update-module.dto'
+import { GetListDto } from '../users/dto/get-list.dto'
+import { PageSizeInterface } from '../../interfaces/page-size.interface'
 
 @Injectable()
 export class ModuleService {
   create(createModuleDto: CreateModuleDto) {
-    return 'This action adds a new module';
+    return 'This action adds a new module'
+  }
+  findAll(data: GetListDto): Promise<PageSizeInterface> {
+    return Promise.resolve({
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      pageSize: 10,
+    })
   }
 
-  findAll() {
-    return `This action returns all module`;
+  findOne(moduleCode: string) {
+    return `This action returns module ${moduleCode}`
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} module`;
+  update(moduleCode: string, updateModuleDto: UpdateModuleDto) {
+    return `This action updates module ${moduleCode}`
   }
 
-  update(id: number, updateModuleDto: UpdateModuleDto) {
-    return `This action updates a #${id} module`;
+  remove(moduleCode: string) {
+    return `This action removes module ${moduleCode}`
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} module`;
+  getActivity(moduleCode: string) {
+    return `This action returns activity for module ${moduleCode}`
+  }
+
+  getChanges(moduleCode: string) {
+    return `This action returns changes for module ${moduleCode}`
+  }
+
+  checkAccess(data: any) {
+    return `This action checks module access`
   }
 }

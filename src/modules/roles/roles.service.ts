@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common'
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { CreateRoleDto } from './dto/create-role.dto'
 import { UpdateRoleDto } from './dto/update-role.dto'
 import { RolesRepository } from '../../database/repositories/roles.repository'
@@ -116,6 +121,77 @@ export class RolesService {
       message: 'Check done!',
       statusCode: 200,
       data: true,
+    }
+  }
+  async findById(roleCode: string) {
+    try {
+      const role = await this.rolesRepository.findById(roleCode)
+      if (!role) {
+        throw new NotFoundException(`Role with ID ${roleCode} not found`)
+      }
+      return role
+    } catch (error) {
+      throw new InternalServerErrorException('Error finding role: ' + error.message)
+    }
+  }
+
+  async update(roleCode: string, updateRoleDto: UpdateRoleDto) {
+    try {
+      const updatedRole = await this.rolesRepository.update(roleCode, updateRoleDto)
+      if (!updatedRole) {
+        throw new NotFoundException(`Role with ID ${roleCode} not found`)
+      }
+      return updatedRole
+    } catch (error) {
+      throw new InternalServerErrorException('Error updating role: ' + error.message)
+    }
+  }
+
+  async delete(roleCode: string) {
+    try {
+      const deletedRole = await this.rolesRepository.delete(roleCode)
+      if (!deletedRole) {
+        throw new NotFoundException(`Role with ID ${roleCode} not found`)
+      }
+      return deletedRole
+    } catch (error) {
+      throw new InternalServerErrorException('Error deleting role: ' + error.message)
+    }
+  }
+
+  async getModules(roleCode: string) {
+    try {
+      const modules = await this.rolesRepository.getModules(roleCode)
+      return modules
+    } catch (error) {
+      throw new InternalServerErrorException('Error getting role modules: ' + error.message)
+    }
+  }
+
+  async assignModule(roleCode: string, moduleCode: string) {
+    try {
+      const result = await this.rolesRepository.assignModule(roleCode, moduleCode)
+      return result
+    } catch (error) {
+      throw new InternalServerErrorException('Error assigning module to role: ' + error.message)
+    }
+  }
+
+  async removeModule(roleCode: string, moduleCode: string) {
+    try {
+      const result = await this.rolesRepository.removeModule(roleCode, moduleCode)
+      return result
+    } catch (error) {
+      throw new InternalServerErrorException('Error removing module from role: ' + error.message)
+    }
+  }
+
+  async bulkAssignModules(roleCode: string, moduleCodes: string[]) {
+    try {
+      const result = await this.rolesRepository.bulkAssignModules(roleCode, moduleCodes)
+      return result
+    } catch (error) {
+      throw new InternalServerErrorException('Error bulk assigning modules: ' + error.message)
     }
   }
 }

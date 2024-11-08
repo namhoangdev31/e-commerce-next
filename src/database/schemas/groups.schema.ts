@@ -1,9 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument, Types } from 'mongoose'
-import { IsOptional, IsString, IsBoolean, IsNotEmpty } from 'class-validator'
+import { IsOptional, IsString, IsBoolean, IsNotEmpty, IsNumber } from 'class-validator'
 
 export class Group {
-  _id: Types.ObjectId
 
   @Prop({ required: true })
   @IsString()
@@ -14,13 +13,21 @@ export class Group {
   @IsString()
   description: string
 
-  @Prop({ type: Types.ObjectId, ref: 'Groups', required: false })
+  @Prop({ type: String, required: false })
   @IsOptional()
-  parentGroupId?: Types.ObjectId
+  parentGroupId?: string
 
   @Prop({ required: true, default: false })
   @IsBoolean()
-  isDynamic: boolean
+  isActive: boolean
+
+  @Prop({ required: true, default: 'chat', type: 'varchar' })
+  @IsString()
+  type: string
+
+  @Prop({ required: true, default: 10 })
+  @IsNumber()
+  maxMembers: number
 }
 
 export const GroupSchema = SchemaFactory.createForClass(Group)

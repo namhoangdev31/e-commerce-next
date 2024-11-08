@@ -49,4 +49,20 @@ export class MailService {
       return false
     }
   }
+
+  async sendVerificationEmail(user: UsersDocument, token: string): Promise<void> {
+    await this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Verify your email',
+      html: LayoutConfirmEmail(user, token),
+    })
+  }
+
+  async sendPasswordResetEmail(user: UsersDocument, otp: string, termPass: string): Promise<void> {
+    await this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Reset your password',
+      html: LayoutResetPass(user, otp, termPass),
+    })
+  }
 }

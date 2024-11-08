@@ -6,7 +6,7 @@ export type ModuleProgressDocument = HydratedDocument<ModuleProgress>
 @Schema({ timestamps: true })
 export class ModuleProgress {
   @Prop({ type: Types.ObjectId, ref: 'Module', required: true })
-  moduleId: Types.ObjectId
+  moduleCode: Types.ObjectId
 
   @Prop({ default: false })
   completed: boolean

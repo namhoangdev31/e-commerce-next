@@ -527,7 +527,7 @@
     // Role-Permission Assignment
     document.getElementById('assignmentForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const roleId = document.getElementById('roleSelect').value;
+      const roleCode = document.getElementById('roleSelect').value;
       const checkedPermissions = Array.from(document.querySelectorAll('input[name="permissions"]:checked'))
         .map(checkbox => checkbox.value);
 

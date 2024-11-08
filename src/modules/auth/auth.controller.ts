@@ -8,10 +8,10 @@ import {
   Req,
   UseGuards,
   Param,
+  Put,
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto/login.dto'
-import { RegisterDto } from './dto/register.dto'
 import { JwtAuthGuard } from './jwt-auth.guard'
 import { User } from '../../shared/decorators'
 import { Public } from './decorators/public.decorator'
@@ -22,9 +22,11 @@ import {
   ApiOperation,
   ApiTags,
   ApiExcludeEndpoint,
+  ApiParam,
 } from '@nestjs/swagger'
 import { UsersDocument } from '../../database/schemas/users.schema'
 import { PROD_ENV } from '../../shared/constants/strings.constants'
+import { ForgotPassDto, ResetPassDto } from '../users/dto/forgot-pass.dto'
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -34,53 +36,79 @@ export class AuthController {
   @Post('login')
   @Public()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: 'Login with email and password if user is not active, send otp to email',
-  })
+  @ApiOperation({ summary: 'Login with email and password' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Login successful' })
   async login(@Body() dto: LoginDto, @Req() req: Request) {
     return this.authService.login(dto, req)
   }
 
-  @Post('register')
-  @Public()
-  @HttpCode(HttpStatus.CREATED)
-  async registerCustomer(@Body() dto: RegisterDto) {
-    return this.authService.register(dto)
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  @ApiBearerAuth()
-  @HttpCode(HttpStatus.OK)
-  async getProfile(@User() user: UsersDocument, @Req() req: Request) {
-    const userReturn = user
-    return {
-      userReturn,
-    }
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('refreshToken')
-  @ApiBearerAuth()
-  @HttpCode(HttpStatus.OK)
-  async refreshToken(@Body() dto: RefreshTokenDto) {
-    return this.authService.refreshToken(dto)
-  }
-
-  @UseGuards(JwtAuthGuard)
   @Post('logout')
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout current user session' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Logout successful' })
   async logout(@User() user: UsersDocument, @Req() req: Request) {
     return this.authService.logout(user, req)
   }
 
-  @Post('sendRequestOtp')
-  @HttpCode(HttpStatus.OK)
+  @Post('refresh')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async sendRequestOtp(@User() user: UsersDocument) {
-    return this.authService.sendRequestOtp(user)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Refresh access token' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Token refreshed successfully' })
+  async refreshToken(@Body() dto: RefreshTokenDto) {
+    return this.authService.refreshToken(dto)
+  }
+
+  @Put('password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Change password' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Password changed successfully' })
+  async changePassword(@User() user: UsersDocument, @Body() dto: any) {
+    return this.authService.changePassword(user, dto)
+  }
+
+  @Post('password/reset')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Request password reset' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Reset email sent successfully' })
+  async requestPasswordReset(@Body() dto: any) {
+    return this.authService.requestPasswordReset(dto)
+  }
+
+  @Put('password/reset/:token')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reset password with token' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Password reset successful' })
+  @ApiParam({ name: 'token', description: 'Password reset token' })
+  async resetPassword(@Param('token') token: string, @Body() dto: ForgotPassDto) {
+    return this.authService.resetPassword(token, dto)
+  }
+
+  @Get('verifyEmail/:token')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Verify email with token' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Email verified successfully' })
+  @ApiParam({ name: 'token', description: 'Email verification token' })
+  async verifyEmail(@Param('token') token: string) {
+    return this.authService.verifyEmail(token)
+  }
+
+  @Post('verifyEmail/resend')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Resend email verification' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Verification email resent' })
+  async resendVerificationEmail(@User() user: UsersDocument) {
+    return this.authService.resendVerificationEmail(user)
   }
 }
 

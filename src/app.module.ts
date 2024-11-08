@@ -38,8 +38,10 @@ import { SkillsEntity } from './database/entity/skills.entity'
 import { DEV_ENV } from './shared/constants/strings.constants'
 import { FirebaseModule } from 'nestjs-firebase'
 import { NotificationModule } from './modules/notification/notification.module'
-import { CdnServiceModule } from './modules/cdn-service/cdn-service.module';
-import { ModuleModule } from './modules/module/module.module';
+import { CdnServiceModule } from './modules/cdn-service/cdn-service.module'
+import { ModuleModule } from './modules/module/module.module'
+import { GroupsModule } from './modules/groups/groups.module'
+import { NonUserModule } from './modules/non-user/non-user.module'
 
 export const API_PREFIX = process.env.API_PREFIX || 'api'
 export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
@@ -140,6 +142,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
     StreamModule,
     UsersModule,
     ViewsModule,
+    ModuleModule,
     RouterModule.register([
       { path: ADMIN_PREFIX, module: ViewsModule },
       {
@@ -153,6 +156,11 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
           { path: '/', module: RolesModule },
           { path: '/', module: ClassModule },
           { path: '/db', module: SyncDataScheduleModule },
+          { path: '/', module: ModuleModule },
+          {
+            path: '/',
+            module: NonUserModule,
+          },
         ],
       },
     ]),
@@ -160,7 +168,8 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
     SyncDataScheduleModule,
     NotificationModule,
     CdnServiceModule,
-    ModuleModule,
+    GroupsModule,
+    NonUserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

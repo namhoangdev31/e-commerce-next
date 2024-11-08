@@ -21,7 +21,7 @@ export class Permissions {
   @Prop({ type: Types.ObjectId, ref: 'Modules' })
   @IsEmpty()
   @IsOptional()
-  moduleId: Types.ObjectId
+  moduleCode: Types.ObjectId
 }
 
 export type PermissionDocument = HydratedDocument<Permissions>

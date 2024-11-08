@@ -25,7 +25,7 @@ export class PermissionsEntity {
   description: string
 
   @Column({ name: 'module_id', nullable: true })
-  moduleId: number
+  moduleCode: number
 
   @Column({ name: 'permission_code', type: 'varchar', length: 255 })
   permissionCode: string
