@@ -307,7 +307,6 @@ export class RolesRepository {
     return this.rolesModel.findOne({ _id: new Types.ObjectId(roleCode) })
   }
 
-
   async findById(roleCode: string) {
     try {
       return await this.rolesModel.findById(roleCode)
@@ -346,7 +345,7 @@ export class RolesRepository {
       return await this.rolesModel.findByIdAndUpdate(
         roleCode,
         { $addToSet: { modules: moduleCode } },
-        { new: true }
+        { new: true },
       )
     } catch (error) {
       throw new InternalServerErrorException('Failed to assign module')
@@ -358,7 +357,7 @@ export class RolesRepository {
       return await this.rolesModel.findByIdAndUpdate(
         roleCode,
         { $pull: { modules: moduleCode } },
-        { new: true }
+        { new: true },
       )
     } catch (error) {
       throw new InternalServerErrorException('Failed to remove module')
@@ -370,7 +369,7 @@ export class RolesRepository {
       return await this.rolesModel.findByIdAndUpdate(
         roleCode,
         { $addToSet: { modules: { $each: moduleCodes } } },
-        { new: true }
+        { new: true },
       )
     } catch (error) {
       throw new InternalServerErrorException('Failed to bulk assign modules')

@@ -44,13 +44,13 @@ import { UsersEntities } from '../../database/entity/user.entity'
 import { Repository } from 'typeorm'
 import { ChangePassDto } from './dto/change-pass.dto'
 import { UserNotFoundException } from '../../shared/exceptions/UserNotFoundException.exception'
-import { UsersRepository } from 'src/database/repositories/users.repository'
 import { FilterUserDto } from './dto/filter-user.dto'
 import { SearchUserDto } from './dto/search-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UpdateProfileDto } from './dto/update-profile.dto'
 import { PageSizeInterface } from '../../interfaces/page-size.interface'
 import { GetListDto } from './dto/get-list.dto'
+import { UsersRepository } from '../../database/repositories/users.repository'
 
 @Injectable()
 export class UsersService {

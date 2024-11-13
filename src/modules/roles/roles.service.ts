@@ -31,9 +31,8 @@ export class RolesService {
     }
 
     try {
-      const createdPermission = await this.rolesRepository.createPermissionByAdmin(
-        createPermissionDto,
-      )
+      const createdPermission =
+        await this.rolesRepository.createPermissionByAdmin(createPermissionDto)
       if (!createdPermission) {
         throw new InternalServerErrorException('Failed to create permission')
       }

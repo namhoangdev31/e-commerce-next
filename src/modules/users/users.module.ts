@@ -7,6 +7,7 @@ import { DatabaseModule } from '../../database/database.module'
 import { MailModule } from '../mail/mail.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersEntities } from '../../database/entity/user.entity'
+import { UsersRepository } from '../../database/repositories/users.repository'
 
 @Module({
   imports: [
