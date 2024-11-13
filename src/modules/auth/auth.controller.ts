@@ -9,6 +9,8 @@ import {
   UseGuards,
   Param,
   Put,
+  VERSION_NEUTRAL,
+  Version,
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto/login.dto'
@@ -28,13 +30,17 @@ import { UsersDocument } from '../../database/schemas/users.schema'
 import { PROD_ENV } from '../../shared/constants/strings.constants'
 import { ForgotPassDto, ResetPassDto } from '../users/dto/forgot-pass.dto'
 
-@Controller('auth')
+@Controller({
+  path: 'auth',
+  version: VERSION_NEUTRAL,
+})
 @ApiTags('Authentication')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
   @Public()
+  // @Version('1')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login with email and password' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Login successful' })

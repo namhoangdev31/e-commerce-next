@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core'
-import { ValidationPipe } from '@nestjs/common'
+import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AppModule } from './app.module'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
 import process from 'process'
-
+import compression from 'compression' // Changed from * as compression to default import
 import requestIp from 'request-ip'
 
 async function bootstrap() {
@@ -22,9 +22,12 @@ async function bootstrap() {
     }),
   )
   app.enableCors()
+  app.use(compression()) // Corrected the usage of compression
   app.use(requestIp.mw())
   // app.use(doubleCsrfProtection)
-
+  app.enableVersioning({
+    type: VersioningType.URI,
+  })
   app.useStaticAssets(join(__dirname, '..', 'public'))
   app.setBaseViewsDir(join(__dirname, '..', 'views'))
   app.setViewEngine('ejs')
