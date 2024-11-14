@@ -31,8 +31,10 @@ import { UsersDocument } from '../../database/schemas/users.schema'
 import { GetListDto } from './dto/get-list.dto'
 import { UserRoleDto } from './dto/user-role.dto'
 
-@Controller('users')
-@ApiTags('Users')
+@Controller({
+  path: 'users',
+  version: '1',
+})
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

@@ -15,11 +15,14 @@ import { CreateGroupDto } from './dto/create-group.dto'
 import { UpdateGroupDto } from './dto/update-group.dto'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger'
+import { AddMemberGroupDto, AddMembersGroupDto } from './dto/add-member-group.dto'
 
-@Controller('groups')
+@Controller({
+  path: 'groups',
+  version: '1',
+})
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
-@ApiTags('Groups')
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
@@ -39,59 +42,59 @@ export class GroupsController {
     return this.groupsService.findAll()
   }
 
-  @Get(':groupId')
+  @Get(':groupCode')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get group by ID' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Retrieved group' })
-  findOne(@Param('groupId') groupId: string) {
-    return this.groupsService.findOne(groupId)
+  findOne(@Param('groupCode') groupCode: string) {
+    return this.groupsService.findOne(groupCode)
   }
 
-  @Patch(':groupId')
+  @Patch(':groupCode')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Update group' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Group updated successfully' })
-  update(@Param('groupId') groupId: string, @Body() updateGroupDto: UpdateGroupDto) {
-    return this.groupsService.update(groupId, updateGroupDto)
+  update(@Param('groupCode') groupCode: string, @Body() updateGroupDto: UpdateGroupDto) {
+    return this.groupsService.update(groupCode, updateGroupDto)
   }
 
-  @Delete(':groupId')
+  @Delete(':groupCode')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete group' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Group deleted successfully' })
-  remove(@Param('groupId') groupId: string) {
-    return this.groupsService.remove(groupId)
+  remove(@Param('groupCode') groupCode: string) {
+    return this.groupsService.remove(groupCode)
   }
 
-  @Get(':groupId/members')
+  @Get(':groupCode/members')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get group members' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Retrieved group members' })
-  getMembers(@Param('groupId') groupId: string) {
-    return this.groupsService.getMembers(groupId)
+  getMembers(@Param('groupCode') groupCode: string) {
+    return this.groupsService.getMembers(groupCode)
   }
 
-  @Post(':groupId/members')
+  @Post('add/members')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Add member to group' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Member added successfully' })
-  addMember(@Param('groupId') groupId: string, @Body() data: { userCode: string }) {
-    return this.groupsService.addMember(groupId, data.userCode)
+  addMember(@Body() data: AddMemberGroupDto) {
+    return this.groupsService.addMember(data)
   }
 
-  @Delete(':groupId/members/:userCode')
+  @Delete(':groupCode/members/:userCode')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Remove member from group' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Member removed successfully' })
-  removeMember(@Param('groupId') groupId: string, @Param('userCode') userCode: string) {
-    return this.groupsService.removeMember(groupId, userCode)
+  removeMember(@Param('groupCode') groupCode: string, @Param('userCode') userCode: string) {
+    return this.groupsService.removeMember(groupCode, userCode)
   }
 
-  @Post(':groupId/members/bulk')
+  @Post(':groupCode/members/bulk')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Add multiple members to group' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'Members added successfully' })
-  addMembers(@Param('groupId') groupId: string, @Body() data: { userCodes: string[] }) {
-    return this.groupsService.addMembers(groupId, data.userCodes)
+  addMembers(@Param('groupCode') groupCode: string, @Body() data: AddMembersGroupDto) {
+    return this.groupsService.addMembers(groupCode, data.userCodes)
   }
 }

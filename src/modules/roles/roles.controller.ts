@@ -26,10 +26,12 @@ import { AddPermissionForRoleDto } from './dto/add-permission-for-role.dto'
 import { PostMessageInterface } from '../../interfaces/post-message.interface'
 import { RoleCheckDto } from './dto/role-check.dto'
 
-@Controller('roles')
+@Controller({
+  path: 'roles',
+  version: '1',
+})
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@ApiTags('Roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 

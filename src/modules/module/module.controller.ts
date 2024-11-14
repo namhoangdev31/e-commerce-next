@@ -22,7 +22,6 @@ import { GetListDto } from '../users/dto/get-list.dto'
 @Controller('modules')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@ApiTags('Modules')
 export class ModuleController {
   constructor(private readonly moduleService: ModuleService) {}
 

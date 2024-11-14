@@ -146,7 +146,7 @@ export const ADMIN_PREFIX = process.env.ADMIN_PREFIX || 'admin'
     RouterModule.register([
       { path: ADMIN_PREFIX, module: ViewsModule },
       {
-        path: API_PREFIX,
+        path: '/',
         children: [
           { path: '/', module: HeaderModule },
           { path: '/', module: GlobalModule },

@@ -12,7 +12,7 @@ export enum DynamicGroupRuleOperator {
 
 export class DynamicGroupRule {
   @Prop({ type: Types.ObjectId, ref: 'Groups', required: true })
-  groupID: Types.ObjectId
+  groupCode: Types.ObjectId
 
   @Prop({ type: Types.ObjectId, ref: 'CustomFields', required: true })
   fieldID: Types.ObjectId

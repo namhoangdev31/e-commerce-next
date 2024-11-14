@@ -4,8 +4,10 @@ import { CreateNonUserDto, GuestDto } from './dto/create-non-user.dto'
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger'
 import { Public } from '../auth/decorators/public.decorator'
 
-@Controller('guest')
-@ApiTags('Guest Access')
+@Controller({
+  path: 'guest',
+  version: '1',
+})
 @Public()
 export class NonUserController {
   constructor(private readonly nonUserService: NonUserService) {}
@@ -29,12 +31,12 @@ export class NonUserController {
   }
 
   @Public()
-  @Post('groups/public/:groupId')
+  @Post('groups/public/:groupCode')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get public group details' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Retrieved public group details' })
-  async getPublicGroupDetails(@Body() guestDto: GuestDto, @Param('groupId') groupId: string) {
-    return this.nonUserService.getPublicGroupDetails(groupId)
+  async getPublicGroupDetails(@Body() guestDto: GuestDto, @Param('groupCode') groupCode: string) {
+    return this.nonUserService.getPublicGroupDetails(groupCode)
   }
 
   @Public()

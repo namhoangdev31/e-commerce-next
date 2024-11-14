@@ -18,7 +18,7 @@ export class UserGroup {
   userCode: string
 
   @Column({ name: 'group_code' })
-  groupId: string
+  groupCode: string
 
   @Column({ default: false })
   isAdmin: boolean

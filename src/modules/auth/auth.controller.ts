@@ -32,19 +32,27 @@ import { ForgotPassDto, ResetPassDto } from '../users/dto/forgot-pass.dto'
 
 @Controller({
   path: 'auth',
-  version: VERSION_NEUTRAL,
+  version: '1',
 })
-@ApiTags('Authentication')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
   @Public()
-  // @Version('1')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login with email and password' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Login successful' })
-  async login(@Body() dto: LoginDto, @Req() req: Request) {
+  async loginV1(@Body() dto: LoginDto, @Req() req: Request) {
+    return this.authService.login(dto, req)
+  }
+
+  @Post('login')
+  @Public()
+  @Version('2')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Login with email and password' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Login successful' })
+  async loginV2(@Body() dto: LoginDto, @Req() req: Request) {
     return this.authService.login(dto, req)
   }
 

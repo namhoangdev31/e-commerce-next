@@ -29,8 +29,8 @@ export class NonUserService {
     }
   }
 
-  getPublicGroupDetails(groupId: string) {
-    return `This action returns details of public group ${groupId}`
+  getPublicGroupDetails(groupCode: string) {
+    return `This action returns details of public group ${groupCode}`
   }
 
   getPreviewLessons(guestDto: GuestDto) {

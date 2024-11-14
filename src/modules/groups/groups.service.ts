@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { CreateGroupDto } from './dto/create-group.dto'
 import { UpdateGroupDto } from './dto/update-group.dto'
+import { AddMemberGroupDto } from './dto/add-member-group.dto'
 
 @Injectable()
 export class GroupsService {
@@ -12,31 +13,31 @@ export class GroupsService {
     return `This action returns all groups`
   }
 
-  findOne(groupId: string) {
-    return `This action returns a #${groupId} group`
+  findOne(groupCode: string) {
+    return `This action returns a #${groupCode} group`
   }
 
-  update(groupId: string, updateGroupDto: UpdateGroupDto) {
-    return `This action updates a #${groupId} group`
+  update(groupCode: string, updateGroupDto: UpdateGroupDto) {
+    return `This action updates a #${groupCode} group`
   }
 
-  remove(groupId: string) {
-    return `This action removes a #${groupId} group`
+  remove(groupCode: string) {
+    return `This action removes a #${groupCode} group`
   }
 
-  getMembers(groupId: string) {
-    return `This action returns members of group #${groupId}`
+  getMembers(groupCode: string) {
+    return `This action returns members of group #${groupCode}`
   }
 
-  addMember(groupId: string, userCode: string) {
-    return `This action adds user #${userCode} to group #${groupId}`
+  addMember(data: AddMemberGroupDto) {
+    return `This action adds user #${data.userCode} to group #${data.groupCode}`
   }
 
-  removeMember(groupId: string, userCode: string) {
-    return `This action removes user #${userCode} from group #${groupId}`
+  removeMember(groupCode: string, userCode: string) {
+    return `This action removes user #${userCode} from group #${groupCode}`
   }
 
-  addMembers(groupId: string, userCodes: string[]) {
-    return `This action adds users ${userCodes.join(', ')} to group #${groupId}`
+  addMembers(groupCode: string, userCodes: string[]) {
+    return `This action adds users ${userCodes.join(', ')} to group #${groupCode}`
   }
 }

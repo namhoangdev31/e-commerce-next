@@ -3,7 +3,6 @@ import { HydratedDocument, Types } from 'mongoose'
 import { IsOptional, IsString, IsBoolean, IsNotEmpty, IsNumber } from 'class-validator'
 
 export class Group {
-
   @Prop({ required: true })
   @IsString()
   @IsNotEmpty()
@@ -15,7 +14,7 @@ export class Group {
 
   @Prop({ type: String, required: false })
   @IsOptional()
-  parentGroupId?: string
+  parentgroupCode?: string
 
   @Prop({ required: true, default: false })
   @IsBoolean()
@@ -25,9 +24,10 @@ export class Group {
   @IsString()
   type: string
 
-  @Prop({ required: true, default: 10 })
+  @Prop({ required: true })
   @IsNumber()
-  maxMembers: number
+  @IsOptional()
+  maxMembers?: number
 }
 
 export const GroupSchema = SchemaFactory.createForClass(Group)

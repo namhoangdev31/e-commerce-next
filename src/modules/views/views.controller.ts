@@ -8,7 +8,6 @@ import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger'
 
 @Controller()
 @Public()
-@ApiTags('Views')
 export class ViewsController {
   constructor(private readonly viewsService: ViewsService) {}
 

@@ -51,7 +51,6 @@
     "@supabase/supabase-js": "^2.46.1",
     "@types/compression": "^1.7.5",
     "@types/swagger-ui-express": "^4.1.7",
-    "@types/ws": "^8.5.13",
     "@vercel/node": "^3.2.24",
     "bcrypt": "^5.1.1",
     "bullmq": "^5.25.6",

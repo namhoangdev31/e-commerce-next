@@ -3,7 +3,7 @@ import { HydratedDocument, Types } from 'mongoose'
 
 export class GroupMembership {
   @Prop({ type: Types.ObjectId, ref: 'Group', required: true })
-  groupId: Types.ObjectId
+  groupCode: Types.ObjectId
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userCode: Types.ObjectId

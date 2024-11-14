@@ -4,8 +4,10 @@ import { Public } from '../auth/decorators/public.decorator'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { CdnService } from './cdn-service.service'
 
-@Controller('cdn-service')
-@ApiTags('CDN Service')
+@Controller({
+  path: 'cdn-service',
+  version: '1',
+})
 export class CdnServiceController {
   constructor(private readonly cdnService: CdnService) {}
 
